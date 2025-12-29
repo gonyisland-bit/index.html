@@ -8,6 +8,7 @@
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
     <style>
         :root {
             --bg-color: #ffffff;
@@ -17,363 +18,283 @@
             --rpg-border: #4d4d4d;
         }
 
-        html, body { 
-            height: 100%; margin: 0; padding: 0; 
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
             touch-action: pan-x pan-y;
             -webkit-text-size-adjust: none;
-            overflow: hidden;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--primary-color);
-            display: flex; 
-            justify-content: center; 
-            align-items: center;    
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
         }
 
         .wrapper {
             width: 100%;
-            max-width: 500px;
-            height: 100%;
+            max-width: 600px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        header { 
-            padding-bottom: 20px; 
-            cursor: pointer; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            flex-shrink: 0;
-        }
-        .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 2.8rem; letter-spacing: -1px; line-height: 1; }
-        .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3rem; letter-spacing: -2px; margin-left: -5px; line-height: 1; }
-        .title-image { width: 100px; height: auto; border-radius: 15px; margin-top: 10px; transition: 0.3s; }
-
-        main { 
-            width: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            flex: 1; 
+            text-align: center;
         }
 
         #rpg-textbox {
-            width: 100%;
-            background: white;
+            width: 90%;
+            max-width: 450px;
             border: 4px solid var(--rpg-border);
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 20px;
+            padding: 15px;
+            margin: 20px auto;
             position: relative;
-            box-sizing: border-box;
         }
+
         #rpg-content {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--text-gray-70);
-            min-height: 1.4rem;
-            word-break: keep-all;
-            text-align: center;
+            min-height: 1.5rem;
         }
+
         #rpg-textbox::after {
-            content: '▼'; position: absolute; bottom: 5px; right: 10px;
-            font-size: 0.7rem; color: var(--rpg-border); animation: bounce 0.8s infinite;
+            content: '▼';
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            animation: bounce 0.8s infinite;
         }
 
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+        @keyframes bounce {
+            50% { transform: translateY(3px); }
+        }
 
-        #game-view {
-            width: 100%;
+        header {
+            padding: 40px 0 10px;
+            cursor: pointer;
+        }
+
+        .title-coffee {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 3.2rem;
+        }
+
+        .title-game {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-left: -5px;
+        }
+
+        .title-image {
+            width: 33vw;
+            max-width: 150px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .btn-main {
+            padding: 18px 60px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: black;
+            color: white;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #hand-display {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            max-width: 450px;
+        }
+
+        /* ✅ 손 + 돈다발 겹침을 위한 핵심 */
+        .hand-wrapper {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-width: 75px;
         }
 
-        #hand-display { 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 15px;
-            width: 100%;
-            max-width: 400px;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto;
-        }
-
-        .hand-wrapper { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
+        .info-container {
+            height: 40px;
             position: relative;
         }
 
-        .info-container { height: 40px; display: flex; align-items: flex-end; margin-bottom: -5px; z-index: 2; }
-        
-        /* 현금다발 아이콘 스타일 및 애니메이션 */
-        .result-item { 
-            font-size: 35px; 
-            opacity: 0; 
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            transform: translateY(20px) scale(0.5); /* 손바닥 위치에서 튀어나오도록 설정 */
-        }
-        .show-item { 
-            opacity: 1 !important; 
-            transform: translateY(0) scale(1) rotate(15deg); /* 쥐여진 느낌을 위해 약간 회전 */
+        .result-item {
+            position: absolute;
+            top: -18px;
+            font-size: 32px;
+            opacity: 0;
+            transition: 0.4s;
+            pointer-events: none;
         }
 
-        .hand { 
-            font-size: 50px; 
-            cursor: pointer; 
-            user-select: none; 
-            -webkit-tap-highlight-color: transparent;
-            transition: transform 0.2s;
-            z-index: 1;
-        }
-        .hand:active { transform: scale(0.9); }
-        .hand-number { font-size: 0.75rem; font-weight: 800; color: var(--text-gray-70); margin-top: 5px; }
-
-        .hand.winner { 
-            filter: drop-shadow(0 0 15px #ffd700); /* 돈이니까 금빛 아우라 */
-            animation: grab 0.5s ease-out forwards;
-        }
-        
-        @keyframes grab {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1.1); }
+        .show-item {
+            opacity: 1;
         }
 
-        .hand.clapping { animation: clap 0.4s infinite alternate; }
-
-        @keyframes clap { from { transform: scale(1); } to { transform: scale(1.15); } }
-
-        .option-group { margin-bottom: 20px; font-weight: 700; color: var(--text-gray-70); }
-        select { padding: 8px 12px; font-size: 1rem; border: 2px solid #000; border-radius: 10px; background: white; }
-
-        .btn-main { padding: 15px 50px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 12px; cursor: pointer; text-transform: uppercase; }
-
-        #result-area { 
-            margin-top: 20px; 
-            width: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-        }
-        
-        .coffee-list { 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            gap: 5px; 
-            margin-bottom: 15px; 
-            font-size: 1.2rem; 
-            width: 100%;
+        .hand {
+            font-size: 55px;
+            cursor: pointer;
         }
 
-        .footer { padding-top: 20px; font-size: 0.65rem; color: var(--text-gray-70); flex-shrink: 0; }
-        .hidden { display: none !important; }
+        .hand-number {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-gray-70);
+        }
+
+        .hand.winner {
+            filter: drop-shadow(0 0 10px var(--winner-red));
+            animation: shake 0.1s infinite;
+        }
+
+        .hand.clapping {
+            animation: clap 0.4s infinite alternate;
+        }
+
+        @keyframes shake {
+            from { transform: translate(1px,1px); }
+            to { transform: translate(-1px,2px); }
+        }
+
+        @keyframes clap {
+            to { transform: scale(1.15); }
+        }
+
+        .hidden { display: none; }
 
         #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease-out;
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
-        .splash-logo { width: 100px; animation: pulse 1.5s infinite; }
     </style>
 </head>
+
 <body>
 
-    <div id="splash-screen">
-        <img src="coffee.png" alt="Logo" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/924/924514.png'">
-        <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1rem; margin-top: 10px;">Ready for Coffee?</div>
+<div id="splash-screen">
+    <div>Ready for Coffee?</div>
+</div>
+
+<div class="wrapper">
+    <header onclick="resetGame()">
+        <span class="title-coffee">coffee</span>
+        <span class="title-game">game</span>
+        <img id="main-img" src="coffee.png" class="title-image">
+    </header>
+
+    <div id="rpg-textbox">
+        <div id="rpg-content">How many people are here?</div>
     </div>
 
-    <div class="wrapper">
-        <header onclick="resetGame()">
-            <div class="title-container">
-                <span class="title-coffee">coffee</span>
-                <span class="title-game">game</span>
-            </div>
-            <img src="coffee.png" alt="Coffee" id="main-img" class="title-image" onerror="this.style.display='none'">
-        </header>
-
-        <main id="main-content">
-            <div id="rpg-textbox">
-                <div id="rpg-content">How many people are here?</div>
-            </div>
-
-            <div id="setup-view">
-                <div class="option-group">
-                    Members:
-                    <select id="member-select">
-                        <option value="2">2</option><option value="3" selected>3</option>
-                        <option value="4">4</option><option value="5">5</option>
-                        <option value="6">6</option><option value="7">7</option>
-                        <option value="8">8</option><option value="9">9</option><option value="10">10</option>
-                    </select>
-                </div>
-                <button class="btn-main" onclick="startGame()">start</button>
-            </div>
-
-            <div id="game-view" class="hidden">
-                <div id="hand-display"></div>
-                <div id="result-area" class="hidden">
-                    <div class="coffee-list" id="coffee-list"></div>
-                    <button class="btn-main" onclick="resetGame()">game over</button>
-                </div>
-            </div>
-        </main>
-
-        <div class="footer">designed by gony</div>
+    <div id="setup-view">
+        Members:
+        <select id="member-select">
+            <option>2</option><option selected>3</option><option>4</option>
+            <option>5</option><option>6</option>
+        </select>
+        <br><br>
+        <button class="btn-main" onclick="startGame()">start</button>
     </div>
 
-    <script>
-        window.onload = () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.classList.add('hidden'), 800);
-            }, 1000);
-        };
+    <div id="game-view" class="hidden">
+        <div id="hand-display"></div>
+    </div>
+</div>
 
-        let isGameOver = false;
-        let winnerIndex = -1;
-        const safeMsgs = ["Safe!", "Phew...", "Lucky me!", "Not me!", "Survived!"];
+<script>
+let winnerIndex = -1;
+let isGameOver = false;
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function updateText(t) {
+    document.getElementById('rpg-content').innerText = t;
+}
 
-        function playSound(type) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            if(type === 'tap') {
-                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-            } else if(type === 'win') {
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+function startGame() {
+    const count = Number(member-select.value);
+    winnerIndex = Math.floor(Math.random() * count);
+    isGameOver = false;
+
+    setup-view.classList.add('hidden');
+    game-view.classList.remove('hidden');
+    hand-display.innerHTML = '';
+    updateText("Make a lucky choice...");
+
+    for (let i = 0; i < count; i++) {
+        const w = document.createElement('div');
+        w.className = 'hand-wrapper';
+
+        const info = document.createElement('div');
+        info.className = 'info-container';
+
+        const item = document.createElement('div');
+        item.className = 'result-item';
+        item.id = `item-${i}`;
+        item.innerText = '💵';   // ✅ 돈다발
+
+        info.appendChild(item);
+
+        const hand = document.createElement('div');
+        hand.className = 'hand';
+        hand.id = `hand-${i}`;
+        hand.innerText = '✊';
+        hand.onclick = () => openHand(i, count);
+
+        const num = document.createElement('div');
+        num.className = 'hand-number';
+        num.innerText = i + 1;
+
+        w.append(info, hand, num);
+        hand-display.appendChild(w);
+    }
+}
+
+function openHand(i, total) {
+    if (isGameOver) return;
+
+    const hand = document.getElementById(`hand-${i}`);
+    const item = document.getElementById(`item-${i}`);
+
+    if (i === winnerIndex) {
+        isGameOver = true;
+        hand.classList.add('winner');
+        item.classList.add('show-item'); // ✅ 손 위 돈다발 표시
+        updateText("Congratulations.");
+        for (let j = 0; j < total; j++) {
+            if (j !== i) {
+                document.getElementById(`hand-${j}`).innerText = '👏';
             }
         }
+    }
+}
 
-        function updateText(msg) {
-            document.getElementById('rpg-content').innerText = msg;
-        }
+function resetGame() {
+    setup-view.classList.remove('hidden');
+    game-view.classList.add('hidden');
+    updateText("How many people are here?");
+}
 
-        function startGame() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const count = parseInt(document.getElementById('member-select').value);
-            winnerIndex = Math.floor(Math.random() * count);
-            isGameOver = false;
+setTimeout(() => splash-screen.remove(), 1000);
+</script>
 
-            document.getElementById('setup-view').classList.add('hidden');
-            document.getElementById('game-view').classList.remove('hidden');
-            document.getElementById('result-area').classList.add('hidden');
-            
-            updateText("Make a lucky choice...");
-            document.getElementById('main-img').src = 'coffee.png';
-            
-            const display = document.getElementById('hand-display');
-            display.innerHTML = ''; 
-
-            for (let i = 0; i < count; i++) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'hand-wrapper';
-                const infoContainer = document.createElement('div');
-                infoContainer.className = 'info-container';
-                
-                const item = document.createElement('div');
-                item.className = 'result-item';
-                item.id = `item-${i}`;
-                item.innerText = '💵'; // 현금 아이콘으로 변경
-                
-                infoContainer.appendChild(item);
-
-                const hand = document.createElement('div');
-                hand.className = 'hand';
-                hand.id = `hand-${i}`;
-                hand.innerText = '✊';
-                hand.onclick = () => openHand(i, count);
-
-                const num = document.createElement('div');
-                num.className = 'hand-number';
-                num.innerText = i + 1;
-
-                wrapper.appendChild(infoContainer);
-                wrapper.appendChild(hand);
-                wrapper.appendChild(num);
-                display.appendChild(wrapper);
-            }
-        }
-
-        function openHand(index, total) {
-            if (isGameOver) return;
-            const handEl = document.getElementById(`hand-${index}`);
-            const itemEl = document.getElementById(`item-${index}`);
-            if (handEl.classList.contains('open')) return;
-
-            handEl.classList.add('open');
-            handEl.innerText = '🖐️';
-            
-            if (index === winnerIndex) {
-                isGameOver = true;
-                playSound('win');
-
-                handEl.classList.add('winner');
-                itemEl.classList.add('show-item'); 
-                
-                updateText("JACKPOT! You got it!");
-                document.getElementById('main-img').src = 'coffee_broken.png';
-                
-                for (let i = 0; i < total; i++) {
-                    if (i !== winnerIndex) {
-                        const otherHand = document.getElementById(`hand-${i}`);
-                        otherHand.innerText = '👏';
-                        otherHand.classList.add('clapping');
-                    }
-                }
-                showFinish(total);
-            } else {
-                playSound('tap');
-                updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
-                setTimeout(() => { if(!isGameOver) updateText("Make a lucky choice..."); }, 1000);
-            }
-        }
-
-        function showFinish(total) {
-            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-            setTimeout(() => {
-                document.getElementById('result-area').classList.remove('hidden');
-                const list = document.getElementById('coffee-list');
-                list.innerHTML = '';
-                for (let i = 0; i < total; i++) {
-                    const span = document.createElement('span');
-                    span.innerText = '☕';
-                    list.appendChild(span);
-                }
-            }, 800);
-        }
-
-        function resetGame() {
-            document.getElementById('setup-view').classList.remove('hidden');
-            document.getElementById('game-view').classList.add('hidden');
-            isGameOver = false;
-            document.getElementById('main-img').src = 'coffee.png';
-            updateText("How many people are here?");
-        }
-    </script>
 </body>
 </html>

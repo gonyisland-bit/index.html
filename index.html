@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>coffee game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
@@ -25,27 +26,33 @@
             overflow: hidden;
         }
 
+        /* --- 타이틀 스타일 수정 (Pinterest 스타일) --- */
         header {
-            padding: 30px 0 10px;
+            padding: 50px 0 20px;
             cursor: pointer;
             z-index: 10;
             text-align: center;
         }
-
-        h1 {
+        .title-coffee {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: 3.2rem;
+            letter-spacing: -1px;
+        }
+        .title-game {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
             font-size: 3.5rem;
-            font-weight: 900;
-            margin: 0;
-            letter-spacing: -3px;
-            text-transform: lowercase;
-            text-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+            letter-spacing: -2px;
+            margin-left: -5px; /* 두 단어 밀착 */
         }
 
         .title-image {
-            width: 100px;
+            width: 80px;
             height: auto;
-            margin-top: 10px;
-            border-radius: 15px;
+            margin-top: 15px;
+            border-radius: 10px;
         }
 
         main {
@@ -58,55 +65,42 @@
             padding-bottom: 120px;
         }
 
-        #setup-view {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
         .option-group {
             margin: 30px 0;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
         }
 
         select {
             padding: 8px 15px;
-            font-size: 1.2rem;
-            border: 3px solid #000;
-            border-radius: 12px;
+            font-size: 1.1rem;
+            border: 2px solid #000;
+            border-radius: 10px;
             margin-left: 10px;
-            font-weight: bold;
         }
 
         .btn-main {
             padding: 18px 60px;
-            font-size: 1.4rem;
-            font-weight: 900;
+            font-size: 1.3rem;
+            font-weight: 800;
             background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: 15px;
             cursor: pointer;
-            box-shadow: 0 6px 0 #333;
             transition: all 0.1s;
         }
-        .btn-main:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #333;
-        }
+        .btn-main:active { transform: scale(0.95); }
 
-        /* --- 손 배치 레이아웃 핵심 수정 --- */
+        /* --- 손 배치 레이아웃 --- */
         #hand-display {
             display: flex;
-            flex-wrap: wrap; /* 자동 줄바꿈 */
-            justify-content: center; /* 가로 중앙 정렬 */
-            align-content: flex-start;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 15px;
             padding: 20px;
             width: 100%;
-            max-width: 500px; /* 4개 배치 시 적절한 너비 */
+            max-width: 450px;
             margin: 0 auto;
             box-sizing: border-box;
         }
@@ -115,49 +109,62 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* 4개 배치를 위해 너비 계산 (gap 고려) */
-            flex: 0 0 calc(25% - 15px); 
-            min-width: 70px; /* 모바일 최소 가독성 확보 */
+            flex: 0 0 calc(25% - 15px);
+            min-width: 75px;
         }
 
         .hand {
-            font-size: 50px; /* 4개 배치를 위해 크기 소폭 조정 */
+            font-size: 55px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             user-select: none;
         }
 
+        /* 손 아래 숫자 표기 */
+        .hand-number {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #999;
+            margin-top: 5px;
+        }
+
         .result-item {
-            font-size: 30px;
-            height: 35px;
+            font-size: 28px;
+            height: 32px;
             margin-bottom: 5px;
             opacity: 0;
-            transform: translateY(10px);
             transition: all 0.4s ease-out;
         }
 
+        /* 당첨 손 및 박수 손 애니메이션 */
         .hand.winner {
             filter: drop-shadow(0 0 10px var(--winner-red)) sepia(1) hue-rotate(-50deg) saturate(5);
             animation: shake 0.1s infinite;
         }
 
+        .hand.clapping {
+            animation: clap 0.4s infinite alternate;
+        }
+
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
-            25% { transform: translate(-2px, -1px) rotate(-1deg); }
-            50% { transform: translate(2px, 0px) rotate(1deg); }
-            75% { transform: translate(-1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            100% { transform: translate(-1px, 2px) rotate(-1deg); }
+        }
+
+        @keyframes clap {
+            from { transform: scale(1); }
+            to { transform: scale(1.15); }
         }
 
         .hand.open { transform: scale(1.1); }
-        .show-item { opacity: 1; transform: translateY(0); }
+        .show-item { opacity: 1; }
 
         #result-area { text-align: center; margin-top: 30px; width: 100%; }
         .coffee-list {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 8px;
+            gap: 5px;
             margin: 20px 0;
             font-size: 1.5rem;
         }
@@ -165,8 +172,7 @@
         .footer {
             position: fixed;
             bottom: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
+            font-size: 0.7rem;
             color: #ccc;
         }
 
@@ -176,7 +182,10 @@
 <body>
 
     <header onclick="resetGame()">
-        <h1>coffee game</h1>
+        <div>
+            <span class="title-coffee">coffee</span>
+            <span class="title-game">game</span>
+        </div>
         <img src="coffee.png" alt="Coffee" class="title-image" onerror="this.style.display='none'">
     </header>
 
@@ -232,21 +241,33 @@
                 
                 const item = document.createElement('div');
                 item.className = 'result-item';
+                item.id = `item-${i}`;
                 item.innerText = '💰';
 
                 const hand = document.createElement('div');
                 hand.className = 'hand';
+                hand.id = `hand-${i}`;
                 hand.innerText = '✊';
-                hand.onclick = () => openHand(i, hand, item, count);
+                hand.onclick = () => openHand(i, count);
+
+                const num = document.createElement('div');
+                num.className = 'hand-number';
+                num.innerText = i + 1;
 
                 wrapper.appendChild(item);
                 wrapper.appendChild(hand);
+                wrapper.appendChild(num);
                 display.appendChild(wrapper);
             }
         }
 
-        function openHand(index, handEl, itemEl, total) {
-            if (isGameOver || handEl.classList.contains('open')) return;
+        function openHand(index, total) {
+            if (isGameOver) return;
+            
+            const handEl = document.getElementById(`hand-${index}`);
+            const itemEl = document.getElementById(`item-${index}`);
+            
+            if (handEl.classList.contains('open')) return;
 
             handEl.classList.add('open');
             handEl.innerText = '🖐️';
@@ -255,6 +276,15 @@
                 isGameOver = true;
                 handEl.classList.add('winner');
                 itemEl.classList.add('show-item'); 
+                
+                // 나머지 손들을 박수치는 모양(👏)으로 변경
+                for (let i = 0; i < total; i++) {
+                    if (i !== winnerIndex) {
+                        const otherHand = document.getElementById(`hand-${i}`);
+                        otherHand.innerText = '👏';
+                        otherHand.classList.add('clapping');
+                    }
+                }
                 
                 showFinish(total);
             }
@@ -284,7 +314,7 @@
                     top: document.body.scrollHeight,
                     behavior: 'smooth'
                 });
-            }, 500);
+            }, 600);
         }
 
         function resetGame() {

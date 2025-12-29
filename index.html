@@ -25,12 +25,13 @@
             overflow: hidden;
         }
 
-        /* 매력적인 타이틀: 그림자 효과 및 볼드체 */
         header {
-            padding: 50px 0 30px;
+            padding: 40px 0 10px;
             cursor: pointer;
             z-index: 10;
+            text-align: center;
         }
+
         h1 {
             font-size: 3.8rem;
             font-weight: 900;
@@ -38,22 +39,35 @@
             letter-spacing: -3px;
             text-transform: lowercase;
             text-shadow: 4px 4px 0px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
         }
-        h1:active { transform: scale(0.95); }
+
+        /* 추가된 이미지 스타일 */
+        .title-image {
+            width: 120px; /* 적절한 크기로 조정 가능 */
+            height: auto;
+            margin-top: 10px;
+            border-radius: 15px;
+        }
 
         main {
             flex: 1;
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* 가로 중앙 정렬 */
             overflow-y: auto;
             padding-bottom: 120px;
         }
 
+        #setup-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
         .option-group {
-            margin: 40px 0;
+            margin: 30px 0;
             font-size: 1.3rem;
             font-weight: 700;
         }
@@ -84,40 +98,42 @@
             box-shadow: 0 2px 0 #333;
         }
 
+        /* 손 선택 화면 중앙 정렬 수정 */
         #hand-display {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
+            gap: 20px;
             padding: 20px;
-            width: 100%;
+            width: 90%; /* 화면 너비에 맞춤 */
             max-width: 400px;
+            margin: 0 auto; /* 좌우 자동 마진으로 중앙 정렬 */
+            justify-items: center; /* 그리드 내부 아이템 중앙 정렬 */
         }
 
         .hand-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 130px;
+            width: 100%;
         }
 
         .hand {
-            font-size: 70px;
+            font-size: 65px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             user-select: none;
-            filter: grayscale(0.2);
         }
 
         .result-item {
             font-size: 35px;
             height: 40px;
             margin-bottom: 5px;
-            transform: translateY(10px);
             opacity: 0;
+            transform: translateY(10px);
             transition: all 0.4s ease-out;
         }
 
-        /* 당첨된 손 효과: 빨간색 & 부르르 떨림 */
+        /* 당첨 효과 */
         .hand.winner {
             filter: drop-shadow(0 0 10px var(--winner-red)) sepia(1) hue-rotate(-50deg) saturate(5);
             animation: shake 0.1s infinite;
@@ -125,11 +141,10 @@
 
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
-            20% { transform: translate(-1px, -2px) rotate(-1deg); }
-            40% { transform: translate(-3px, 0px) rotate(1deg); }
-            60% { transform: translate(3px, 2px) rotate(0deg); }
-            80% { transform: translate(1px, -1px) rotate(1deg); }
-            100% { transform: translate(-1px, 2px) rotate(-1deg); }
+            25% { transform: translate(-2px, -1px) rotate(-1deg); }
+            50% { transform: translate(2px, 0px) rotate(1deg); }
+            75% { transform: translate(-1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
         .hand.open { transform: scale(1.1); }
@@ -160,6 +175,7 @@
 
     <header onclick="resetGame()">
         <h1>coffee game</h1>
+        <img src="coffee.png" alt="Coffee" class="title-image" onerror="this.style.display='none'">
     </header>
 
     <main id="main-content">
@@ -207,6 +223,8 @@
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
+            
+            // 인원수가 7명 이상일 때 3열, 그 미만은 2열로 정렬하며 가로 중앙 집중
             display.style.gridTemplateColumns = count > 6 ? "repeat(3, 1fr)" : "repeat(2, 1fr)";
 
             for (let i = 0; i < count; i++) {
@@ -236,7 +254,7 @@
             
             if (index === winnerIndex) {
                 isGameOver = true;
-                handEl.classList.add('winner'); // 빨간색 & 진동 효과 추가
+                handEl.classList.add('winner');
                 itemEl.classList.add('show-item'); 
                 
                 showFinish(total);

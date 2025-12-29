@@ -3,90 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Coffee Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+    <title>coffee game</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg-color: #f4ece1;
-            --primary-color: #4e342e;
-            --accent-color: #d84315;
+            --bg-color: #ffffff;
+            --primary-color: #000000;
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Special Elite', system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--primary-color);
-            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
             height: 100vh;
+            overflow: hidden; /* 전체 바디 스크롤 방지 */
         }
 
-        /* 메인 페이지 */
-        #start-screen, #game-screen {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+        /* 타이틀: 소문자, sans-serif, 볼드, 클릭 시 초기화 */
+        header {
+            padding: 40px 0 20px;
+            cursor: pointer;
+            z-index: 10;
         }
-
         h1 {
             font-size: 3.5rem;
-            margin-bottom: 20px;
-            text-transform: uppercase;
+            font-weight: 800;
+            margin: 0;
             letter-spacing: -2px;
+            text-transform: lowercase;
+        }
+
+        /* 메인 컨텐츠 영역 */
+        main {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto; /* 인원 많을 때 스크롤 가능 */
+            padding-bottom: 100px;
         }
 
         .option-group {
-            margin: 20px 0;
+            margin: 40px 0;
             font-size: 1.2rem;
+            font-weight: bold;
         }
 
         select {
-            padding: 10px 20px;
+            padding: 8px 15px;
             font-size: 1.2rem;
-            border-radius: 10px;
-            border: 2px solid var(--primary-color);
-            background: white;
-            font-family: inherit;
+            border: 2px solid #000;
+            border-radius: 8px;
+            margin-left: 10px;
         }
 
-        .btn-start {
-            margin-top: 30px;
-            padding: 15px 60px;
-            font-size: 1.5rem;
+        /* 큰 버튼 스타일 */
+        .btn-main {
+            padding: 18px 80px;
+            font-size: 1.4rem;
+            font-weight: bold;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-radius: 12px;
             cursor: pointer;
-            font-family: inherit;
+            transition: transform 0.1s;
         }
+        .btn-main:active { transform: scale(0.95); }
 
-        .footer {
-            position: absolute;
-            bottom: 20px;
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-
-        /* 게임 화면 */
-        #game-screen.hidden { display: none; }
-        
-        .hand-container {
+        /* 손 컨테이너 */
+        #hand-display {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 30px;
             padding: 20px;
             width: 100%;
+            max-width: 400px;
             box-sizing: border-box;
         }
 
@@ -94,146 +92,182 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            cursor: pointer;
+            min-height: 120px;
         }
 
         .hand {
-            width: 80px;
-            height: 80px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* 주먹 쥔 손 이미지 (이모지로 대체 가능하나 요청대로 그래픽 느낌 구현) */
-            font-size: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-size: 60px;
+            transition: transform 0.2s;
+            cursor: pointer;
+            user-select: none;
         }
 
-        .hand.open {
-            transform: scale(1.2) rotate(-10deg);
+        .result-item {
+            font-size: 30px;
+            height: 35px;
+            margin-bottom: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        .item-label {
-            margin-top: 10px;
-            font-weight: bold;
-            height: 24px;
-            color: var(--accent-color);
-        }
+        .hand.open { transform: scale(1.1); }
+        .show { opacity: 1; }
 
-        .coffee-count {
-            margin-top: 40px;
-            display: flex;
-            gap: 10px;
-            font-size: 2rem;
-        }
-
-        #reset-btn {
+        /* 결과 영역 */
+        #result-area {
+            text-align: center;
             margin-top: 20px;
-            padding: 10px 20px;
-            border: 1px solid var(--primary-color);
-            background: none;
-            border-radius: 5px;
-            font-family: inherit;
         }
+
+        .coffee-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin: 20px 0;
+            font-size: 1.5rem;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 15px;
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="start-screen">
-        <h1>Coffee<br>Game</h1>
-        <div class="option-group">
-            <label for="member-select">MEMBER: </label>
-            <select id="member-select">
-                <option value="2">2</option>
-                <option value="3" selected>3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-            </select>
-        </div>
-        <button class="btn-start" onclick="startGame()">START</button>
-        <div class="footer">designed by gony</div>
-    </div>
+    <header onclick="resetGame()">
+        <h1>coffee game</h1>
+    </header>
 
-    <div id="game-screen" class="hidden">
-        <div id="hand-display" class="hand-container"></div>
-        <div id="coffee-list" class="coffee-count"></div>
-        <button id="reset-btn" onclick="location.reload()">다시 하기</button>
-    </div>
+    <main id="main-content">
+        <div id="setup-view">
+            <div class="option-group">
+                member
+                <select id="member-select">
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <button class="btn-main" onclick="startGame()">start</button>
+        </div>
+
+        <div id="game-view" class="hidden">
+            <div id="hand-display"></div>
+            
+            <div id="result-area" class="hidden">
+                <div class="coffee-list" id="coffee-list"></div>
+                <button class="btn-main" onclick="resetGame()">reset</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="footer">designed by gony</div>
 
     <script>
-        const items = ['💰', '🍎', '🐱', '💎', '🍦', '🎁', '⭐', '🍀', '🍕'];
         let isGameOver = false;
+        let winnerIndex = -1;
 
         function startGame() {
-            const memberCount = document.getElementById('member-select').value;
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('game-screen').classList.remove('hidden');
+            const count = parseInt(document.getElementById('member-select').value);
+            winnerIndex = Math.floor(Math.random() * count);
+            isGameOver = false;
 
-            const handDisplay = document.getElementById('hand-display');
-            const winnerIndex = Math.floor(Math.random() * memberCount);
+            document.getElementById('setup-view').classList.add('hidden');
+            document.getElementById('game-view').classList.remove('hidden');
+            document.getElementById('result-area').classList.add('hidden');
+            
+            const display = document.getElementById('hand-display');
+            display.innerHTML = ''; // 기존 손 제거
+            
+            // 인원이 많으면 3열로 변경
+            display.style.gridTemplateColumns = count > 6 ? "repeat(3, 1fr)" : "repeat(2, 1fr)";
 
-            // 그리드 레이아웃 조정 (인원이 많으면 3열로)
-            if(memberCount > 6) handDisplay.style.gridTemplateColumns = "repeat(3, 1fr)";
-
-            for (let i = 0; i < memberCount; i++) {
+            for (let i = 0; i < count; i++) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'hand-wrapper';
                 
+                // 돈(💰)이 나타날 공간
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.id = `item-${i}`;
+                item.innerText = '💰';
+
                 const hand = document.createElement('div');
                 hand.className = 'hand';
-                hand.innerHTML = '✊'; // 쥐고 있는 손
-                
-                const label = document.createElement('div');
-                label.className = 'item-label';
+                hand.innerText = '✊';
+                hand.onclick = () => openHand(i, hand, item, count);
 
-                wrapper.onclick = () => revealHand(hand, label, i === winnerIndex, memberCount);
-                
+                wrapper.appendChild(item);
                 wrapper.appendChild(hand);
-                wrapper.appendChild(label);
-                handDisplay.appendChild(wrapper);
+                display.appendChild(wrapper);
             }
         }
 
-        function revealHand(handElement, labelElement, isWinner, total) {
-            if (isGameOver || handElement.classList.contains('open')) return;
+        function openHand(index, handEl, itemEl, total) {
+            if (isGameOver || handEl.classList.contains('open')) return;
 
-            handElement.classList.add('open');
+            handEl.classList.add('open');
             
-            if (isWinner) {
+            if (index === winnerIndex) {
+                // 당첨 시
                 isGameOver = true;
-                handElement.innerHTML = '☕'; // 커피 등장
-                labelElement.innerText = '당첨!!!';
+                handEl.innerText = '🖐️';
+                itemEl.classList.add('show'); // 당첨자만 돈 표시
                 
-                // 폭죽 애니메이션
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-
-                // 하단에 인원수만큼 커피 표시
-                const coffeeList = document.getElementById('coffee-list');
-                for(let i=0; i<total; i++) {
-                    const cf = document.createElement('span');
-                    cf.innerText = '☕';
-                    coffeeList.appendChild(cf);
-                }
+                showFinish(total);
             } else {
-                // 꽝인 경우 랜덤 아이템 등장
-                const randomItem = items[Math.floor(Math.random() * items.length)];
-                handElement.innerHTML = '🖐️'; // 펴진 손
-                setTimeout(() => {
-                    handElement.innerHTML = randomItem;
-                }, 100);
-                labelElement.innerText = '통과';
+                // 꽝 시
+                handEl.innerText = '🖐️';
+                // 돈 표시 안 함 (아이템 위치 비워둠)
             }
+        }
+
+        function showFinish(total) {
+            // 폭죽 효과
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#000000', '#FFD700', '#ffffff']
+            });
+
+            const resultArea = document.getElementById('result-area');
+            const coffeeList = document.getElementById('coffee-list');
+            resultArea.classList.remove('hidden');
+            coffeeList.innerHTML = '';
+
+            // 인원 수만큼 커피 아이콘 생성
+            for (let i = 0; i < total; i++) {
+                const span = document.createElement('span');
+                span.innerText = '☕';
+                coffeeList.appendChild(span);
+            }
+            
+            // 스크롤을 하단으로 이동시켜 커피와 리셋버튼이 보이게 함
+            document.getElementById('main-content').scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        function resetGame() {
+            // 모든 상태 초기화 후 첫 화면으로
+            document.getElementById('setup-view').classList.remove('hidden');
+            document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('hand-display').innerHTML = '';
+            isGameOver = false;
         }
     </script>
 </body>

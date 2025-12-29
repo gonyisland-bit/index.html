@@ -9,6 +9,7 @@
         :root {
             --bg-color: #ffffff;
             --primary-color: #000000;
+            --winner-red: #ff4d4d;
         }
 
         body {
@@ -21,118 +22,135 @@
             flex-direction: column;
             align-items: center;
             height: 100vh;
-            overflow: hidden; /* 전체 바디 스크롤 방지 */
+            overflow: hidden;
         }
 
-        /* 타이틀: 소문자, sans-serif, 볼드, 클릭 시 초기화 */
+        /* 매력적인 타이틀: 그림자 효과 및 볼드체 */
         header {
-            padding: 40px 0 20px;
+            padding: 50px 0 30px;
             cursor: pointer;
             z-index: 10;
         }
         h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: 3.8rem;
+            font-weight: 900;
             margin: 0;
-            letter-spacing: -2px;
+            letter-spacing: -3px;
             text-transform: lowercase;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
         }
+        h1:active { transform: scale(0.95); }
 
-        /* 메인 컨텐츠 영역 */
         main {
             flex: 1;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-y: auto; /* 인원 많을 때 스크롤 가능 */
-            padding-bottom: 100px;
+            overflow-y: auto;
+            padding-bottom: 120px;
         }
 
         .option-group {
             margin: 40px 0;
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-size: 1.3rem;
+            font-weight: 700;
         }
 
         select {
             padding: 8px 15px;
             font-size: 1.2rem;
-            border: 2px solid #000;
-            border-radius: 8px;
+            border: 3px solid #000;
+            border-radius: 12px;
             margin-left: 10px;
+            font-weight: bold;
         }
 
-        /* 큰 버튼 스타일 */
         .btn-main {
-            padding: 18px 80px;
-            font-size: 1.4rem;
-            font-weight: bold;
+            padding: 20px 80px;
+            font-size: 1.5rem;
+            font-weight: 900;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             cursor: pointer;
-            transition: transform 0.1s;
+            box-shadow: 0 6px 0 #333;
+            transition: all 0.1s;
         }
-        .btn-main:active { transform: scale(0.95); }
+        .btn-main:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #333;
+        }
 
-        /* 손 컨테이너 */
         #hand-display {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
+            gap: 25px;
             padding: 20px;
             width: 100%;
             max-width: 400px;
-            box-sizing: border-box;
         }
 
         .hand-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 120px;
+            min-height: 130px;
         }
 
         .hand {
-            font-size: 60px;
-            transition: transform 0.2s;
+            font-size: 70px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             user-select: none;
+            filter: grayscale(0.2);
         }
 
         .result-item {
-            font-size: 30px;
-            height: 35px;
+            font-size: 35px;
+            height: 40px;
             margin-bottom: 5px;
+            transform: translateY(10px);
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: all 0.4s ease-out;
+        }
+
+        /* 당첨된 손 효과: 빨간색 & 부르르 떨림 */
+        .hand.winner {
+            filter: drop-shadow(0 0 10px var(--winner-red)) sepia(1) hue-rotate(-50deg) saturate(5);
+            animation: shake 0.1s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-1px, -2px) rotate(-1deg); }
+            40% { transform: translate(-3px, 0px) rotate(1deg); }
+            60% { transform: translate(3px, 2px) rotate(0deg); }
+            80% { transform: translate(1px, -1px) rotate(1deg); }
+            100% { transform: translate(-1px, 2px) rotate(-1deg); }
         }
 
         .hand.open { transform: scale(1.1); }
-        .show { opacity: 1; }
+        .show-item { opacity: 1; transform: translateY(0); }
 
-        /* 결과 영역 */
-        #result-area {
-            text-align: center;
-            margin-top: 20px;
-        }
-
+        #result-area { text-align: center; margin-top: 30px; width: 100%; }
         .coffee-list {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 5px;
+            gap: 8px;
             margin: 20px 0;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
         }
 
         .footer {
             position: fixed;
             bottom: 15px;
-            font-size: 0.7rem;
-            color: #888;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #ccc;
         }
 
         .hidden { display: none !important; }
@@ -165,7 +183,6 @@
 
         <div id="game-view" class="hidden">
             <div id="hand-display"></div>
-            
             <div id="result-area" class="hidden">
                 <div class="coffee-list" id="coffee-list"></div>
                 <button class="btn-main" onclick="resetGame()">reset</button>
@@ -189,19 +206,15 @@
             document.getElementById('result-area').classList.add('hidden');
             
             const display = document.getElementById('hand-display');
-            display.innerHTML = ''; // 기존 손 제거
-            
-            // 인원이 많으면 3열로 변경
+            display.innerHTML = ''; 
             display.style.gridTemplateColumns = count > 6 ? "repeat(3, 1fr)" : "repeat(2, 1fr)";
 
             for (let i = 0; i < count; i++) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'hand-wrapper';
                 
-                // 돈(💰)이 나타날 공간
                 const item = document.createElement('div');
                 item.className = 'result-item';
-                item.id = `item-${i}`;
                 item.innerText = '💰';
 
                 const hand = document.createElement('div');
@@ -219,54 +232,47 @@
             if (isGameOver || handEl.classList.contains('open')) return;
 
             handEl.classList.add('open');
+            handEl.innerText = '🖐️';
             
             if (index === winnerIndex) {
-                // 당첨 시
                 isGameOver = true;
-                handEl.innerText = '🖐️';
-                itemEl.classList.add('show'); // 당첨자만 돈 표시
+                handEl.classList.add('winner'); // 빨간색 & 진동 효과 추가
+                itemEl.classList.add('show-item'); 
                 
                 showFinish(total);
-            } else {
-                // 꽝 시
-                handEl.innerText = '🖐️';
-                // 돈 표시 안 함 (아이템 위치 비워둠)
             }
         }
 
         function showFinish(total) {
-            // 폭죽 효과
             confetti({
-                particleCount: 100,
-                spread: 70,
+                particleCount: 150,
+                spread: 80,
                 origin: { y: 0.6 },
-                colors: ['#000000', '#FFD700', '#ffffff']
+                colors: ['#ff0000', '#000000', '#ffd700']
             });
 
-            const resultArea = document.getElementById('result-area');
-            const coffeeList = document.getElementById('coffee-list');
-            resultArea.classList.remove('hidden');
-            coffeeList.innerHTML = '';
+            setTimeout(() => {
+                const resultArea = document.getElementById('result-area');
+                const coffeeList = document.getElementById('coffee-list');
+                resultArea.classList.remove('hidden');
+                coffeeList.innerHTML = '';
 
-            // 인원 수만큼 커피 아이콘 생성
-            for (let i = 0; i < total; i++) {
-                const span = document.createElement('span');
-                span.innerText = '☕';
-                coffeeList.appendChild(span);
-            }
-            
-            // 스크롤을 하단으로 이동시켜 커피와 리셋버튼이 보이게 함
-            document.getElementById('main-content').scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
+                for (let i = 0; i < total; i++) {
+                    const span = document.createElement('span');
+                    span.innerText = '☕';
+                    coffeeList.appendChild(span);
+                }
+                
+                document.getElementById('main-content').scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 500);
         }
 
         function resetGame() {
-            // 모든 상태 초기화 후 첫 화면으로
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
-            document.getElementById('hand-display').innerHTML = '';
             isGameOver = false;
         }
     </script>

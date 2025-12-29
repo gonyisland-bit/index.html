@@ -12,7 +12,6 @@
         :root {
             --bg-color: #ffffff;
             --primary-color: #000000;
-            --winner-red: #ff4d4d;
             --text-gray-70: #4d4d4d;
             --rpg-border: #4d4d4d;
         }
@@ -37,7 +36,7 @@
 
         .wrapper {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px; /* 이미지가 커졌으므로 전체 폭 확대 */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -46,7 +45,7 @@
 
         #rpg-textbox {
             width: 90%;
-            max-width: 450px;
+            max-width: 500px;
             background: white;
             border: 4px solid var(--rpg-border);
             border-radius: 8px;
@@ -85,39 +84,65 @@
         .btn-main { padding: 18px 60px; font-size: 1.3rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; }
         .btn-main:active { transform: scale(0.95); }
 
+        /* 손 이미지 영역 스타일 수정 */
         #hand-display { 
-            display: flex; flex-wrap: wrap; justify-content: center; 
-            gap: 15px; padding: 20px; width: 100%; max-width: 450px; 
-            margin: 0 auto; box-sizing: border-box; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 20px; 
+            padding: 20px; 
+            width: 100%; 
+            max-width: 700px; 
+            margin: 0 auto; 
+            box-sizing: border-box; 
         }
 
-        /* 손 이미지 스타일 */
-        .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(25% - 15px); min-width: 75px; position: relative; }
+        .hand-wrapper { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            flex: 0 0 calc(33.33% - 20px); /* 3열 배치 권장 (이미지가 크므로) */
+            min-width: 150px; 
+            position: relative; 
+        }
+
+        /* 손 이미지 크기 3배 확대 (70px -> 210px) */
         .hand-img { 
-            width: 70px; height: 70px; 
+            width: 100%;
+            max-width: 210px; 
+            height: auto; 
+            aspect-ratio: 1 / 1;
             object-fit: contain; 
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             cursor: pointer; 
             -webkit-tap-highlight-color: transparent;
         }
-        .hand-number { font-size: 0.8rem; font-weight: 800; color: var(--text-gray-70); margin-top: 5px; }
 
-        /* 당첨 시 흔들기 애니메이션 */
+        .hand-number { font-size: 1.2rem; font-weight: 800; color: var(--text-gray-70); margin-top: 10px; }
+
+        /* 당첨 시 흔들기 애니메이션 (붉은 색 제거) */
         .hand-img.winner { 
             animation: shake 0.1s infinite; 
-            filter: drop-shadow(0 0 10px rgba(255, 77, 77, 0.5));
+            /* 붉은 외곽 필터 제거됨 */
         }
 
         /* 박수 애니메이션 */
         .hand-img.clapping { animation: clap 0.4s infinite alternate; }
 
-        @keyframes shake { 0% { transform: translate(2px, 2px) rotate(0deg); } 100% { transform: translate(-2px, -2px) rotate(-1deg); } }
-        @keyframes clap { from { transform: scale(1); } to { transform: scale(1.15); } }
+        @keyframes shake { 0% { transform: translate(3px, 3px) rotate(0deg); } 100% { transform: translate(-3px, -3px) rotate(-1deg); } }
+        @keyframes clap { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-        #result-area { text-align: center; margin: 20px 0; width: 100%; }
-        .coffee-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 15px 0; font-size: 1.5rem; }
+        #result-area { 
+            text-align: center; 
+            margin: 30px 0; 
+            width: 100%; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .coffee-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 15px 0; font-size: 2rem; }
 
-        .footer { width: 100%; text-align: center; padding: 30px 0; font-size: 0.7rem; color: var(--text-gray-70); }
+        .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
         #splash-screen {
@@ -229,7 +254,7 @@
                 wrapper.className = 'hand-wrapper';
 
                 const handImg = document.createElement('img');
-                handImg.src = 'hand_nothing.png'; // 기본 이미지
+                handImg.src = 'hand_nothing.png';
                 handImg.className = 'hand-img';
                 handImg.id = `hand-${i}`;
                 handImg.onclick = () => openHand(i, count);
@@ -254,14 +279,12 @@
                 playSound('win');
                 if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
 
-                // 당첨 이미지로 교체 및 흔들기 애니메이션
                 handImg.src = 'hand_money.png';
                 handImg.classList.add('winner');
                 
                 updateText("Congratulations!");
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 
-                // 나머지 손들을 박수 이미지로 교체
                 for (let i = 0; i < total; i++) {
                     if (i !== winnerIndex) {
                         const otherHand = document.getElementById(`hand-${i}`);
@@ -274,9 +297,7 @@
                 playSound('tap');
                 if (navigator.vibrate) navigator.vibrate(20);
                 
-                // 꽝인 경우 (단순히 이미지가 열리는 연출이 필요하다면 여기서 src 변경 가능)
-                // 요청사항에 꽝 이미지는 없으므로 투명도를 조절하거나 'Safe' 텍스트만 띄움
-                handImg.style.opacity = "0.5";
+                handImg.style.opacity = "0.3"; // 꽝 선택 시 더 명확하게 흐릿해짐
                 handImg.dataset.opened = "true";
                 
                 updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);

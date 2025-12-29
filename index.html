@@ -16,7 +16,6 @@
             --text-gray-70: #4d4d4d; /* 70% 그레이 (#4d4d4d) */
         }
 
-        /* 가로 모드 대응을 위해 overflow-y 허용 */
         html, body {
             height: 100%;
             margin: 0;
@@ -31,7 +30,7 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
-            overflow-y: auto; /* 전체 스크롤 지원 */
+            overflow-y: auto;
         }
 
         /* 스플래시 화면 */
@@ -51,19 +50,17 @@
         }
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
-        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
+        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; transition: transform 0.3s; }
 
-        /* 메인 콘텐츠 영역 */
         main {
-            flex: 1 0 auto; /* 콘텐츠 길이에 따라 늘어남 */
+            flex: 1 0 auto;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 50px; /* 푸터 공간 확보 */
+            padding-bottom: 50px;
         }
 
-        /* 가이드 텍스트 (진한 70% 그레이 적용) */
         #guide-display { 
             font-weight: 800; 
             color: var(--text-gray-70); 
@@ -93,8 +90,6 @@
         .show-item { opacity: 1 !important; transform: translateY(0); }
 
         .hand { font-size: 55px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; user-select: none; z-index: 2; }
-        
-        /* 손 숫자 (진한 70% 그레이 적용) */
         .hand-number { font-size: 0.8rem; font-weight: 800; color: var(--text-gray-70); margin-top: 5px; }
 
         .hand.winner { filter: drop-shadow(0 0 10px var(--winner-red)) sepia(1) hue-rotate(-50deg) saturate(5); animation: shake 0.1s infinite; }
@@ -106,7 +101,6 @@
         #result-area { text-align: center; margin-top: 10px; width: 100%; }
         .coffee-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 15px 0; font-size: 1.5rem; }
 
-        /* 제일 하단 배치를 위해 position 수정 */
         .footer { 
             width: 100%;
             text-align: center;
@@ -130,7 +124,7 @@
             <span class="title-coffee">coffee</span>
             <span class="title-game">game</span>
         </div>
-        <img src="coffee.png" alt="Coffee" class="title-image" onerror="this.style.display='none'">
+        <img src="coffee.png" alt="Coffee" id="main-img" class="title-image" onerror="this.style.display='none'">
     </header>
 
     <main id="main-content">
@@ -201,6 +195,9 @@
             const guide = document.getElementById('guide-display');
             guide.innerText = "Choose your hand";
             guide.classList.remove('thanks-style');
+
+            // 게임 시작 시 이미지를 원상복구합니다
+            document.getElementById('main-img').src = 'coffee.png';
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
@@ -261,6 +258,9 @@
                 msgEl.innerText = "당첨!!";
                 msgEl.classList.add('msg-winner');
                 
+                // 당첨 시 메인 이미지를 coffee_broken.png로 변경합니다
+                document.getElementById('main-img').src = 'coffee_broken.png';
+                
                 const guide = document.getElementById('guide-display');
                 guide.innerText = "Thanks!";
                 guide.classList.add('thanks-style');
@@ -270,8 +270,6 @@
                         const otherHand = document.getElementById(`hand-${i}`);
                         otherHand.innerText = '👏';
                         otherHand.classList.add('clapping');
-                        
-                        // 당첨 시 나머지 손의 말표시(result-msg)를 완전히 제거하거나 숨김
                         document.getElementById(`msg-${i}`).style.opacity = '0';
                     }
                 }
@@ -304,6 +302,8 @@
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
             isGameOver = false;
+            // 리셋 시에도 이미지를 원상복구합니다
+            document.getElementById('main-img').src = 'coffee.png';
         }
     </script>
 </body>

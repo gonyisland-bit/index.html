@@ -13,15 +13,25 @@
             --bg-color: #ffffff;
             --primary-color: #000000;
             --winner-red: #ff4d4d;
+            --text-gray-70: #4d4d4d; /* 70% 그레이 (#4d4d4d) */
+        }
+
+        /* 가로 모드 대응을 위해 overflow-y 허용 */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0; padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--primary-color);
-            display: flex; flex-direction: column; align-items: center;
-            height: 100vh; overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            overflow-y: auto; /* 전체 스크롤 지원 */
         }
 
         /* 스플래시 화면 */
@@ -35,17 +45,34 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
         header {
-            padding: 40px 0 20px; cursor: pointer; z-index: 10;
+            padding: 40px 0 20px; cursor: pointer;
             text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;
+            flex-shrink: 0;
         }
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
 
-        main { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 120px; }
+        /* 메인 콘텐츠 영역 */
+        main {
+            flex: 1 0 auto; /* 콘텐츠 길이에 따라 늘어남 */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 50px; /* 푸터 공간 확보 */
+        }
 
-        /* 가이드 텍스트 (Choose your hand / Thanks) */
-        #guide-display { font-weight: 800; color: #ddd; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; font-size: 0.9rem; min-height: 1.2rem; }
+        /* 가이드 텍스트 (진한 70% 그레이 적용) */
+        #guide-display { 
+            font-weight: 800; 
+            color: var(--text-gray-70); 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            margin-bottom: 15px; 
+            font-size: 0.9rem; 
+            min-height: 1.2rem; 
+        }
         .thanks-style { color: var(--winner-red) !important; font-family: 'Playfair Display', serif; font-style: italic; text-transform: none !important; font-size: 1.4rem !important; }
 
         .option-group { margin: 25px 0; font-size: 1.2rem; font-weight: 700; }
@@ -57,7 +84,6 @@
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px; width: 100%; max-width: 450px; margin: 0 auto; box-sizing: border-box; }
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(25% - 15px); min-width: 75px; position: relative; }
 
-        /* 겹침 방지 레이아웃: 메시지와 아이템을 각각 배치 */
         .info-container { height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; margin-bottom: 5px; }
         .result-msg { font-size: 0.75rem; font-weight: 800; opacity: 0; transition: 0.3s; height: 15px; }
         .msg-safe { color: #4CAF50; }
@@ -67,7 +93,9 @@
         .show-item { opacity: 1 !important; transform: translateY(0); }
 
         .hand { font-size: 55px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; user-select: none; z-index: 2; }
-        .hand-number { font-size: 0.8rem; font-weight: 800; color: #eee; margin-top: 5px; }
+        
+        /* 손 숫자 (진한 70% 그레이 적용) */
+        .hand-number { font-size: 0.8rem; font-weight: 800; color: var(--text-gray-70); margin-top: 5px; }
 
         .hand.winner { filter: drop-shadow(0 0 10px var(--winner-red)) sepia(1) hue-rotate(-50deg) saturate(5); animation: shake 0.1s infinite; }
         .hand.clapping { animation: clap 0.4s infinite alternate; }
@@ -78,7 +106,15 @@
         #result-area { text-align: center; margin-top: 10px; width: 100%; }
         .coffee-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 15px 0; font-size: 1.5rem; }
 
-        .footer { position: fixed; bottom: 15px; font-size: 0.7rem; color: #eee; }
+        /* 제일 하단 배치를 위해 position 수정 */
+        .footer { 
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.7rem; 
+            color: var(--text-gray-70);
+            flex-shrink: 0;
+        }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -183,7 +219,7 @@
                 const item = document.createElement('div');
                 item.className = 'result-item';
                 item.id = `item-${i}`;
-                item.innerText = '🪙'; // 동전 아이콘으로 변경
+                item.innerText = '🪙';
 
                 infoContainer.appendChild(msg);
                 infoContainer.appendChild(item);
@@ -225,7 +261,6 @@
                 msgEl.innerText = "당첨!!";
                 msgEl.classList.add('msg-winner');
                 
-                // 가이드 텍스트 변경
                 const guide = document.getElementById('guide-display');
                 guide.innerText = "Thanks!";
                 guide.classList.add('thanks-style');
@@ -235,6 +270,9 @@
                         const otherHand = document.getElementById(`hand-${i}`);
                         otherHand.innerText = '👏';
                         otherHand.classList.add('clapping');
+                        
+                        // 당첨 시 나머지 손의 말표시(result-msg)를 완전히 제거하거나 숨김
+                        document.getElementById(`msg-${i}`).style.opacity = '0';
                     }
                 }
                 showFinish(total);

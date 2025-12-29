@@ -8,7 +8,6 @@
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
     <style>
         :root {
             --bg-color: #ffffff;
@@ -18,24 +17,28 @@
             --rpg-border: #4d4d4d;
         }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            touch-action: pan-x pan-y;
-            -webkit-text-size-adjust: none;
+        /* 확대 축소 방지 및 터치 동작 제어 */
+        html, body { 
+            height: 100%; 
+            margin: 0; 
+            padding: 0; 
+            touch-action: pan-x pan-y; /* 핀치 줌 방지 보조 */
+            -webkit-text-size-adjust: none; /* iOS 글자 크기 자동확대 방지 */
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--primary-color);
-            display: flex;
-            flex-direction: column;
+            display: flex; 
+            flex-direction: column; 
             align-items: center;
-            overflow-x: hidden;
+            justify-content: flex-start; /* 상단부터 배치하되 중앙 정렬 유지 */
+            overflow-x: hidden; 
+            overflow-y: auto;
         }
 
+        /* 모든 콘텐츠를 감싸는 컨테이너 (가운데 정렬 핵심) */
         .wrapper {
             width: 100%;
             max-width: 600px;
@@ -45,13 +48,16 @@
             text-align: center;
         }
 
+        /* RPG 텍스트 박스 */
         #rpg-textbox {
             width: 90%;
             max-width: 450px;
+            background: white;
             border: 4px solid var(--rpg-border);
             border-radius: 8px;
             padding: 15px;
-            margin: 20px auto;
+            margin: 20px auto; /* 가로 중앙 정렬 */
+            box-sizing: border-box;
             position: relative;
         }
 
@@ -59,242 +65,253 @@
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--text-gray-70);
+            line-height: 1.4;
             min-height: 1.5rem;
+            word-break: keep-all;
         }
 
         #rpg-textbox::after {
             content: '▼';
-            position: absolute;
-            bottom: 5px;
-            right: 10px;
+            position: absolute; bottom: 5px; right: 10px;
+            font-size: 0.8rem; color: var(--rpg-border);
             animation: bounce 0.8s infinite;
         }
 
-        @keyframes bounce {
-            50% { transform: translateY(3px); }
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
+        /* 헤더 스타일 */
         header {
-            padding: 40px 0 10px;
-            cursor: pointer;
+            padding: 40px 0 10px; cursor: pointer;
+            width: 100%; display: flex; flex-direction: column; align-items: center;
         }
+        .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
+        .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
+        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; transition: 0.3s; }
 
-        .title-coffee {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 3.2rem;
+        main { width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+        .option-group { margin: 20px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
+        select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid #000; border-radius: 10px; margin-left: 10px; background: white; }
+
+        .btn-main { padding: 18px 60px; font-size: 1.3rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; }
+        .btn-main:active { transform: scale(0.95); }
+
+        /* 손 이미지 영역 가운데 정렬 */
+        #hand-display { 
+            display: flex; flex-wrap: wrap; justify-content: center; 
+            gap: 15px; padding: 20px; width: 100%; max-width: 450px; 
+            margin: 0 auto; box-sizing: border-box; 
         }
+        .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(25% - 15px); min-width: 75px; position: relative; }
 
-        .title-game {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-left: -5px;
-        }
+        .info-container { height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; margin-bottom: 5px; }
+        .result-item { font-size: 28px; opacity: 0; transition: 0.4s; transform: translateY(5px); }
+        .show-item { opacity: 1 !important; transform: translateY(0); }
 
-        .title-image {
-            width: 33vw;
-            max-width: 150px;
-            border-radius: 15px;
-            margin-top: 10px;
-        }
+        .hand { font-size: 55px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .hand-number { font-size: 0.8rem; font-weight: 800; color: var(--text-gray-70); margin-top: 5px; }
 
-        .btn-main {
-            padding: 18px 60px;
-            font-size: 1.3rem;
-            font-weight: 800;
-            background: black;
-            color: white;
-            border-radius: 15px;
-            border: none;
-            cursor: pointer;
-        }
+        .hand.winner { filter: drop-shadow(0 0 10px var(--winner-red)) sepia(1) hue-rotate(-50deg) saturate(5); animation: shake 0.1s infinite; }
+        .hand.clapping { animation: clap 0.4s infinite alternate; }
 
-        #hand-display {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            max-width: 450px;
-        }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 100% { transform: translate(-1px, 2px) rotate(-1deg); } }
+        @keyframes clap { from { transform: scale(1); } to { transform: scale(1.15); } }
 
-        /* ✅ 손 + 돈다발 겹침을 위한 핵심 */
-        .hand-wrapper {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 75px;
-        }
+        #result-area { text-align: center; margin: 20px 0; width: 100%; }
+        .coffee-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 15px 0; font-size: 1.5rem; }
 
-        .info-container {
-            height: 40px;
-            position: relative;
-        }
+        .footer { width: 100%; text-align: center; padding: 30px 0; font-size: 0.7rem; color: var(--text-gray-70); }
+        .hidden { display: none !important; }
 
-        .result-item {
-            position: absolute;
-            top: -18px;
-            font-size: 32px;
-            opacity: 0;
-            transition: 0.4s;
-            pointer-events: none;
-        }
-
-        .show-item {
-            opacity: 1;
-        }
-
-        .hand {
-            font-size: 55px;
-            cursor: pointer;
-        }
-
-        .hand-number {
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: var(--text-gray-70);
-        }
-
-        .hand.winner {
-            filter: drop-shadow(0 0 10px var(--winner-red));
-            animation: shake 0.1s infinite;
-        }
-
-        .hand.clapping {
-            animation: clap 0.4s infinite alternate;
-        }
-
-        @keyframes shake {
-            from { transform: translate(1px,1px); }
-            to { transform: translate(-1px,2px); }
-        }
-
-        @keyframes clap {
-            to { transform: scale(1.15); }
-        }
-
-        .hidden { display: none; }
-
+        /* 스플래시 화면 */
         #splash-screen {
-            position: fixed;
-            inset: 0;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease-out;
         }
+        .splash-logo { width: 120px; margin-bottom: 20px; animation: pulse 1.5s infinite; }
     </style>
 </head>
-
 <body>
 
-<div id="splash-screen">
-    <div>Ready for Coffee?</div>
-</div>
-
-<div class="wrapper">
-    <header onclick="resetGame()">
-        <span class="title-coffee">coffee</span>
-        <span class="title-game">game</span>
-        <img id="main-img" src="coffee.png" class="title-image">
-    </header>
-
-    <div id="rpg-textbox">
-        <div id="rpg-content">How many people are here?</div>
+    <div id="splash-screen">
+        <img src="coffee.png" alt="Logo" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/924/924514.png'">
+        <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem;">Ready for Coffee?</div>
     </div>
 
-    <div id="setup-view">
-        Members:
-        <select id="member-select">
-            <option>2</option><option selected>3</option><option>4</option>
-            <option>5</option><option>6</option>
-        </select>
-        <br><br>
-        <button class="btn-main" onclick="startGame()">start</button>
+    <div class="wrapper">
+        <header onclick="resetGame()">
+            <div class="title-container">
+                <span class="title-coffee">coffee</span>
+                <span class="title-game">game</span>
+            </div>
+            <img src="coffee.png" alt="Coffee" id="main-img" class="title-image" onerror="this.style.display='none'">
+        </header>
+
+        <main id="main-content">
+            <div id="rpg-textbox">
+                <div id="rpg-content">How many people are here?</div>
+            </div>
+
+            <div id="setup-view">
+                <div class="option-group">
+                    Members:
+                    <select id="member-select">
+                        <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
+                        <option value="5">5</option><option value="6">6</option><option value="7">7</option>
+                        <option value="8">8</option><option value="9">9</option><option value="10">10</option>
+                    </select>
+                </div>
+                <button class="btn-main" onclick="startGame()">start</button>
+            </div>
+
+            <div id="game-view" class="hidden">
+                <div id="hand-display"></div>
+                <div id="result-area" class="hidden">
+                    <div class="coffee-list" id="coffee-list"></div>
+                    <button class="btn-main" onclick="resetGame()">game over</button>
+                </div>
+            </div>
+        </main>
+
+        <div class="footer">designed by gony</div>
     </div>
 
-    <div id="game-view" class="hidden">
-        <div id="hand-display"></div>
-    </div>
-</div>
+    <script>
+        window.onload = () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => splash.classList.add('hidden'), 800);
+            }, 1000);
+        };
 
-<script>
-let winnerIndex = -1;
-let isGameOver = false;
+        let isGameOver = false;
+        let winnerIndex = -1;
+        const safeMsgs = ["Safe!", "Phew...", "Lucky me!", "Not me!", "Survived!"];
 
-function updateText(t) {
-    document.getElementById('rpg-content').innerText = t;
-}
-
-function startGame() {
-    const count = Number(member-select.value);
-    winnerIndex = Math.floor(Math.random() * count);
-    isGameOver = false;
-
-    setup-view.classList.add('hidden');
-    game-view.classList.remove('hidden');
-    hand-display.innerHTML = '';
-    updateText("Make a lucky choice...");
-
-    for (let i = 0; i < count; i++) {
-        const w = document.createElement('div');
-        w.className = 'hand-wrapper';
-
-        const info = document.createElement('div');
-        info.className = 'info-container';
-
-        const item = document.createElement('div');
-        item.className = 'result-item';
-        item.id = `item-${i}`;
-        item.innerText = '💵';   // ✅ 돈다발
-
-        info.appendChild(item);
-
-        const hand = document.createElement('div');
-        hand.className = 'hand';
-        hand.id = `hand-${i}`;
-        hand.innerText = '✊';
-        hand.onclick = () => openHand(i, count);
-
-        const num = document.createElement('div');
-        num.className = 'hand-number';
-        num.innerText = i + 1;
-
-        w.append(info, hand, num);
-        hand-display.appendChild(w);
-    }
-}
-
-function openHand(i, total) {
-    if (isGameOver) return;
-
-    const hand = document.getElementById(`hand-${i}`);
-    const item = document.getElementById(`item-${i}`);
-
-    if (i === winnerIndex) {
-        isGameOver = true;
-        hand.classList.add('winner');
-        item.classList.add('show-item'); // ✅ 손 위 돈다발 표시
-        updateText("Congratulations.");
-        for (let j = 0; j < total; j++) {
-            if (j !== i) {
-                document.getElementById(`hand-${j}`).innerText = '👏';
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            if(type === 'tap') {
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if(type === 'win') {
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
             }
         }
-    }
-}
 
-function resetGame() {
-    setup-view.classList.remove('hidden');
-    game-view.classList.add('hidden');
-    updateText("How many people are here?");
-}
+        function updateText(msg) {
+            document.getElementById('rpg-content').innerText = msg;
+        }
 
-setTimeout(() => splash-screen.remove(), 1000);
-</script>
+        function startGame() {
+            const count = parseInt(document.getElementById('member-select').value);
+            winnerIndex = Math.floor(Math.random() * count);
+            isGameOver = false;
 
+            document.getElementById('setup-view').classList.add('hidden');
+            document.getElementById('game-view').classList.remove('hidden');
+            document.getElementById('result-area').classList.add('hidden');
+            
+            updateText("Make a lucky choice...");
+            document.getElementById('main-img').src = 'coffee.png';
+            
+            const display = document.getElementById('hand-display');
+            display.innerHTML = ''; 
+
+            for (let i = 0; i < count; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'hand-wrapper';
+                const infoContainer = document.createElement('div');
+                infoContainer.className = 'info-container';
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.id = `item-${i}`;
+                item.innerText = '🪙';
+                infoContainer.appendChild(item);
+
+                const hand = document.createElement('div');
+                hand.className = 'hand';
+                hand.id = `hand-${i}`;
+                hand.innerText = '✊';
+                hand.onclick = () => openHand(i, count);
+
+                const num = document.createElement('div');
+                num.className = 'hand-number';
+                num.innerText = i + 1;
+
+                wrapper.appendChild(infoContainer);
+                wrapper.appendChild(hand);
+                wrapper.appendChild(num);
+                display.appendChild(wrapper);
+            }
+        }
+
+        function openHand(index, total) {
+            if (isGameOver) return;
+            const handEl = document.getElementById(`hand-${index}`);
+            const itemEl = document.getElementById(`item-${index}`);
+            if (handEl.classList.contains('open')) return;
+
+            handEl.classList.add('open');
+            handEl.innerText = '🖐️';
+            
+            if (index === winnerIndex) {
+                isGameOver = true;
+                playSound('win');
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+                handEl.classList.add('winner');
+                itemEl.classList.add('show-item'); 
+                
+                updateText("Congratulations.");
+                document.getElementById('main-img').src = 'coffee_broken.png';
+                
+                for (let i = 0; i < total; i++) {
+                    if (i !== winnerIndex) {
+                        const otherHand = document.getElementById(`hand-${i}`);
+                        otherHand.innerText = '👏';
+                        otherHand.classList.add('clapping');
+                    }
+                }
+                showFinish(total);
+            } else {
+                playSound('tap');
+                if (navigator.vibrate) navigator.vibrate(20);
+                updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
+                setTimeout(() => { if(!isGameOver) updateText("Make a lucky choice..."); }, 1000);
+            }
+        }
+
+        function showFinish(total) {
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            setTimeout(() => {
+                document.getElementById('result-area').classList.remove('hidden');
+                const list = document.getElementById('coffee-list');
+                list.innerHTML = '';
+                for (let i = 0; i < total; i++) {
+                    const span = document.createElement('span');
+                    span.innerText = '☕';
+                    list.appendChild(span);
+                }
+            }, 800);
+        }
+
+        function resetGame() {
+            document.getElementById('setup-view').classList.remove('hidden');
+            document.getElementById('game-view').classList.add('hidden');
+            isGameOver = false;
+            document.getElementById('main-img').src = 'coffee.png';
+            updateText("How many people are here?");
+        }
+    </script>
 </body>
 </html>

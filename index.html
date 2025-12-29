@@ -26,14 +26,14 @@
         }
 
         header {
-            padding: 40px 0 10px;
+            padding: 30px 0 10px;
             cursor: pointer;
             z-index: 10;
             text-align: center;
         }
 
         h1 {
-            font-size: 3.8rem;
+            font-size: 3.5rem;
             font-weight: 900;
             margin: 0;
             letter-spacing: -3px;
@@ -41,9 +41,8 @@
             text-shadow: 4px 4px 0px rgba(0,0,0,0.1);
         }
 
-        /* 추가된 이미지 스타일 */
         .title-image {
-            width: 120px; /* 적절한 크기로 조정 가능 */
+            width: 100px;
             height: auto;
             margin-top: 10px;
             border-radius: 15px;
@@ -54,7 +53,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center; /* 가로 중앙 정렬 */
+            align-items: center;
             overflow-y: auto;
             padding-bottom: 120px;
         }
@@ -82,8 +81,8 @@
         }
 
         .btn-main {
-            padding: 20px 80px;
-            font-size: 1.5rem;
+            padding: 18px 60px;
+            font-size: 1.4rem;
             font-weight: 900;
             background-color: var(--primary-color);
             color: white;
@@ -98,42 +97,45 @@
             box-shadow: 0 2px 0 #333;
         }
 
-        /* 손 선택 화면 중앙 정렬 수정 */
+        /* --- 손 배치 레이아웃 핵심 수정 --- */
         #hand-display {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            display: flex;
+            flex-wrap: wrap; /* 자동 줄바꿈 */
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-content: flex-start;
+            gap: 15px;
             padding: 20px;
-            width: 90%; /* 화면 너비에 맞춤 */
-            max-width: 400px;
-            margin: 0 auto; /* 좌우 자동 마진으로 중앙 정렬 */
-            justify-items: center; /* 그리드 내부 아이템 중앙 정렬 */
+            width: 100%;
+            max-width: 500px; /* 4개 배치 시 적절한 너비 */
+            margin: 0 auto;
+            box-sizing: border-box;
         }
 
         .hand-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
+            /* 4개 배치를 위해 너비 계산 (gap 고려) */
+            flex: 0 0 calc(25% - 15px); 
+            min-width: 70px; /* 모바일 최소 가독성 확보 */
         }
 
         .hand {
-            font-size: 65px;
+            font-size: 50px; /* 4개 배치를 위해 크기 소폭 조정 */
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             user-select: none;
         }
 
         .result-item {
-            font-size: 35px;
-            height: 40px;
+            font-size: 30px;
+            height: 35px;
             margin-bottom: 5px;
             opacity: 0;
             transform: translateY(10px);
             transition: all 0.4s ease-out;
         }
 
-        /* 당첨 효과 */
         .hand.winner {
             filter: drop-shadow(0 0 10px var(--winner-red)) sepia(1) hue-rotate(-50deg) saturate(5);
             animation: shake 0.1s infinite;
@@ -157,7 +159,7 @@
             justify-content: center;
             gap: 8px;
             margin: 20px 0;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
         }
 
         .footer {
@@ -223,9 +225,6 @@
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
-            
-            // 인원수가 7명 이상일 때 3열, 그 미만은 2열로 정렬하며 가로 중앙 집중
-            display.style.gridTemplateColumns = count > 6 ? "repeat(3, 1fr)" : "repeat(2, 1fr)";
 
             for (let i = 0; i < count; i++) {
                 const wrapper = document.createElement('div');

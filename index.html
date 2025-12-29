@@ -84,7 +84,6 @@
         .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; }
         .btn-main:active { transform: scale(0.95); }
 
-        /* 모바일 3개씩 배치를 위한 그리드 조정 */
         #hand-display { 
             display: flex; 
             flex-wrap: wrap; 
@@ -99,14 +98,14 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            flex: 0 0 calc(33.33% - 15px); /* 모바일 기준 한 줄에 3개 */
+            flex: 0 0 calc(33.33% - 15px);
             min-width: 100px; 
             position: relative; 
         }
 
         .hand-img { 
             width: 100%;
-            max-width: 180px; /* 기존보다 아주 약간 줄여 3개 배치 확보 */
+            max-width: 180px;
             height: auto; 
             aspect-ratio: 1 / 1;
             object-fit: contain; 
@@ -156,7 +155,7 @@
 
         <main id="main-content">
             <div id="rpg-textbox">
-                <div id="rpg-content">How about coffee?</div>
+                <div id="rpg-content">Welcome to our coffee shop</div>
             </div>
 
             <div id="setup-view">
@@ -227,7 +226,7 @@
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
             
-            updateText("Make a lucky choice...");
+            updateText("Please pay for it");
             document.getElementById('main-img').src = 'coffee.png';
             
             const display = document.getElementById('hand-display');
@@ -266,7 +265,7 @@
                 handImg.src = 'hand_money.png';
                 handImg.classList.add('winner');
                 
-                updateText("Congratulations!");
+                updateText("Thank you for the drink");
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 
                 for (let i = 0; i < total; i++) {
@@ -281,11 +280,12 @@
                 playSound('tap');
                 if (navigator.vibrate) navigator.vibrate(20);
                 
-                handImg.style.opacity = "0.3";
+                // 꽝일 때: hand_open.png로 변경, 투명도 변화 없음
+                handImg.src = 'hand_open.png';
                 handImg.dataset.opened = "true";
                 
                 updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
-                setTimeout(() => { if(!isGameOver) updateText("Make a lucky choice..."); }, 1000);
+                setTimeout(() => { if(!isGameOver) updateText("Please pay for it"); }, 1000);
             }
         }
 
@@ -293,8 +293,6 @@
             confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             setTimeout(() => {
                 document.getElementById('result-area').classList.remove('hidden');
-                
-                // 버튼 멘트 수정: 'N cups, please'
                 document.getElementById('btn-restart').innerText = `${total} cups, please`;
                 
                 const list = document.getElementById('coffee-list');
@@ -312,7 +310,7 @@
             document.getElementById('game-view').classList.add('hidden');
             isGameOver = false;
             document.getElementById('main-img').src = 'coffee.png';
-            updateText("How about coffee?");
+            updateText("Welcome to our coffee shop");
         }
     </script>
 </body>

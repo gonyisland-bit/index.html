@@ -6,7 +6,7 @@
     <title>coffee game</title>
     <link rel="icon" type="image/png" href="coffeegame_icon.png">
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
@@ -100,7 +100,6 @@
             align-items: center; 
             flex: 0 0 calc(33.33% - 15px);
             min-width: 100px; 
-            position: relative; 
         }
 
         .hand-img { 
@@ -115,15 +114,51 @@
         }
 
         .hand-number { font-size: 1rem; font-weight: 800; color: var(--text-gray-70); margin-top: 5px; }
-
         .hand-img.winner { animation: shake 0.1s infinite; }
         .hand-img.clapping { animation: clap 0.4s infinite alternate; }
 
         @keyframes shake { 0% { transform: translate(3px, 3px) rotate(0deg); } 100% { transform: translate(-3px, -3px) rotate(-1deg); } }
         @keyframes clap { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-        #result-area { text-align: center; margin: 30px 0; width: 100%; }
-        .coffee-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 15px 0; font-size: 1.8rem; }
+        /* 영수증 스타일 추가 */
+        #result-area { 
+            margin: 30px 0; 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .receipt {
+            background: #fdfdfd;
+            color: #333;
+            width: 280px;
+            padding: 20px;
+            font-family: 'Courier Prime', monospace;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 2px;
+            position: relative;
+            transform: translateY(-20px);
+            animation: slideDown 0.6s forwards;
+            text-align: left;
+        }
+
+        .receipt::after {
+            content: "";
+            position: absolute;
+            bottom: -10px; left: 0; right: 0;
+            height: 10px;
+            background: linear-gradient(-45deg, transparent 5px, #fdfdfd 0), linear-gradient(45deg, transparent 5px, #fdfdfd 0);
+            background-size: 10px 10px;
+        }
+
+        @keyframes slideDown { to { transform: translateY(0); opacity: 1; } }
+
+        .receipt-line { border-top: 1px dashed #ccc; margin: 10px 0; }
+        .receipt-header { text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 15px; }
+        .receipt-item { display: flex; justify-content: space-between; font-size: 0.9rem; margin: 5px 0; }
+        .receipt-total { display: flex; justify-content: space-between; font-weight: bold; margin-top: 10px; font-size: 1.1rem; }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
@@ -174,8 +209,18 @@
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
                 <div id="result-area" class="hidden">
-                    <div class="coffee-list" id="coffee-list"></div>
-                    <button class="btn-main" id="btn-restart" onclick="resetGame()"></button>
+                    <div class="receipt" id="receipt">
+                        <div class="receipt-header">COFFEE ORDER</div>
+                        <div class="receipt-item"><span id="receipt-date"></span><span>No. 0001</span></div>
+                        <div class="receipt-line"></div>
+                        <div class="receipt-item"><span>Coffee Cups</span><span id="receipt-qty"></span></div>
+                        <div class="receipt-item"><span>Price per cup</span><span>$ 4.50</span></div>
+                        <div class="receipt-line"></div>
+                        <div class="receipt-total"><span>WHO PAYS?</span><span id="receipt-payer"></span></div>
+                        <div class="receipt-line"></div>
+                        <p style="font-size: 0.7rem; text-align: center;">THANK YOU FOR THE DRINK!</p>
+                    </div>
+                    <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 20px;"></button>
                 </div>
             </div>
         </main>
@@ -197,19 +242,29 @@
         const safeMsgs = ["Safe!", "Phew...", "Lucky me!", "Not me!", "Survived!"];
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // 사운드 디테일 강화
         function playSound(type) {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
-            if(type === 'tap') {
-                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            
+            if(type === 'tap') { // 꽝: 가벼운 팝
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-            } else if(type === 'win') {
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+            } else if(type === 'win') { // 당첨: 짤랑짤랑 소리
+                const now = audioCtx.currentTime;
+                [523, 659, 783, 1046].forEach((f, i) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g); g.connect(audioCtx.destination);
+                    o.frequency.setValueAtTime(f, now + (i * 0.05));
+                    g.gain.setValueAtTime(0.1, now + (i * 0.05));
+                    g.gain.exponentialRampToValueAtTime(0.01, now + 0.3 + (i * 0.05));
+                    o.start(now + (i * 0.05)); o.stop(now + 0.4 + (i * 0.05));
+                });
             }
         }
 
@@ -260,7 +315,7 @@
             if (index === winnerIndex) {
                 isGameOver = true;
                 playSound('win');
-                if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
 
                 handImg.src = 'hand_money.png';
                 handImg.classList.add('winner');
@@ -275,12 +330,11 @@
                         otherHand.classList.add('clapping');
                     }
                 }
-                showFinish(total);
+                showFinish(total, index + 1);
             } else {
                 playSound('tap');
-                if (navigator.vibrate) navigator.vibrate(20);
+                if (navigator.vibrate) navigator.vibrate(10);
                 
-                // 꽝일 때: hand_open.png로 변경, 투명도 변화 없음
                 handImg.src = 'hand_open.png';
                 handImg.dataset.opened = "true";
                 
@@ -289,19 +343,18 @@
             }
         }
 
-        function showFinish(total) {
+        function showFinish(total, payerNum) {
             confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            
+            // 영수증 데이터 입력
+            const now = new Date();
+            document.getElementById('receipt-date').innerText = now.toLocaleDateString();
+            document.getElementById('receipt-qty').innerText = total + " EA";
+            document.getElementById('receipt-payer').innerText = "NO. " + payerNum;
+            document.getElementById('btn-restart').innerText = `${total} cups, please`;
+
             setTimeout(() => {
                 document.getElementById('result-area').classList.remove('hidden');
-                document.getElementById('btn-restart').innerText = `${total} cups, please`;
-                
-                const list = document.getElementById('coffee-list');
-                list.innerHTML = '';
-                for (let i = 0; i < total; i++) {
-                    const span = document.createElement('span');
-                    span.innerText = '☕';
-                    list.appendChild(span);
-                }
             }, 800);
         }
 

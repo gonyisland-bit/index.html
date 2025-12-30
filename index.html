@@ -56,7 +56,6 @@
         .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
-        /* 영수증 스타일 및 애니메이션 */
         .receipt {
             background: white; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -64,8 +63,9 @@
             opacity: 0; transform: translateY(20px);
         }
         
+        /* 영수증 애니메이션 속도 1초로 수정 */
         .receipt.show {
-            animation: slideUpReceipt 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation: slideUpReceipt 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
 
         @keyframes slideUpReceipt { 
@@ -90,7 +90,7 @@
 </head>
 <body>
 
-    <div id="splash-screen" onclick="hideSplash()">
+    <div id="splash-screen">
         <img src="coffee.png" alt="Logo" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/924/924514.png'">
         <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem;">Ready for Coffee?</div>
     </div>
@@ -112,6 +112,7 @@
                         <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
                         <option value="5">5</option><option value="6">6</option><option value="7">7</option>
                         <option value="8">8</option><option value="9">9</option><option value="10">10</option>
+                        <option value="11">11</option><option value="12">12</option>
                     </select>
                 </div>
                 <button class="btn-main" onclick="startGame()">start</button>
@@ -147,7 +148,6 @@
     </div>
 
     <script>
-        // --- [사운드 엔진] ---
         const AudioEngine = {
             ctx: null,
             init() {
@@ -177,52 +177,33 @@
             }
         };
 
-        // --- [핵심 수정: 선명한 캡처 로직] ---
         async function shareAsImage() {
             const btn = document.getElementById('share-btn');
             const target = document.getElementById('capture-area');
-            
             btn.innerText = "Capturing...";
             btn.disabled = true;
-
-            // 애니메이션이 확실히 끝난 뒤(또는 투명도가 1인 상태) 캡처하기 위해 50ms 대기
-            await new Promise(r => setTimeout(r, 50));
-
+            await new Promise(r => setTimeout(r, 100)); // 캡처 전 대기
             try {
-                const canvas = await html2canvas(target, {
-                    backgroundColor: "#ffffff",
-                    scale: 3, // 선명도를 위해 스케일 업
-                    logging: false,
-                    useCORS: true
-                });
-
+                const canvas = await html2canvas(target, { backgroundColor: "#ffffff", scale: 3, logging: false, useCORS: true });
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], "coffee_receipt.png", { type: "image/png" });
-                    
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        await navigator.share({
-                            files: [file],
-                            title: 'Coffee Game Receipt',
-                            text: 'Guess who paid for coffee!'
-                        });
+                        await navigator.share({ files: [file], title: 'Coffee Game Receipt' });
                     } else {
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(blob);
                         link.download = 'coffee_receipt.png';
                         link.click();
-                        alert("Image saved to your gallery!");
                     }
                     btn.innerText = "Share Receipt Image";
                     btn.disabled = false;
                 }, 'image/png');
             } catch (err) {
-                alert("Capture failed. Please try again.");
                 btn.innerText = "Share Receipt Image";
                 btn.disabled = false;
             }
         }
 
-        // --- [게임 로직] ---
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
@@ -235,6 +216,9 @@
                 }, 600);
             }
         }
+
+        // 자동으로 넘어가도록 설정
+        window.onload = () => { setTimeout(hideSplash, 1500); };
 
         const menuData = [{ name: "Americano", price: 4.50 }, { name: "Cafe Latte", price: 5.50 }, { name: "Specialty Coffee", price: 8.00 }];
         let typingTimer = null, isGameOver = false, winnerIndex = -1;
@@ -258,8 +242,7 @@
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
-            document.getElementById('receipt').classList.remove('show'); // 영수증 초기화
-            
+            document.getElementById('receipt').classList.remove('show');
             updateText("Please pay for it");
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'coffee.png'; mainImg.classList.remove('large');
@@ -307,10 +290,9 @@
             document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
             document.getElementById('btn-restart').innerText = `${total} cups, please`;
-            
             setTimeout(() => { 
                 document.getElementById('result-area').classList.remove('hidden'); 
-                document.getElementById('receipt').classList.add('show'); // 영수증 애니메이션 시작
+                document.getElementById('receipt').classList.add('show');
             }, 600);
         }
 

@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>coffee game</title>
-    <link rel="icon" type="image/png" href="coffeegame_icon.png">
-    <link rel="apple-touch-icon" href="coffeegame_icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -22,154 +20,117 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color); color: var(--primary-color);
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            overflow-x: hidden; overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%; }
 
+        /* 타이틀 화면 스타일 */
+        #title-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 1000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+        }
+        .coffee-steam { font-size: 3rem; animation: steam 2s infinite; display: inline-block; }
+        @keyframes steam {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
+        }
+        .slogan { font-family: 'Playfair Display'; font-style: italic; color: #888; margin-top: 10px; font-size: 0.9rem; min-height: 1.2rem; }
+
+        /* 공통 헤더 */
+        header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
+        .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
+        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
+        .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
+
+        /* RPG 텍스트 박스 */
         #rpg-textbox {
             width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
             border-radius: 8px; padding: 15px; margin: 20px auto; box-sizing: border-box; position: relative;
         }
-        #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
-        #rpg-textbox::after { content: '▼'; position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: var(--rpg-border); animation: bounce 0.8s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+        #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; text-align: left; }
 
-        header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
-        .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
-        
-        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
-        .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
-        .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
+        /* 입력 및 선택 섹션 */
+        #name-input-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 90%; max-width: 400px; margin: 15px auto; }
+        .name-input { padding: 8px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; text-align: center; width: 100%; box-sizing: border-box; }
+        .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; margin: 10px 0; width: 85%; max-width: 300px; text-transform: uppercase; }
+        .btn-secondary { background: none; border: 1px solid #ccc; color: #999; font-size: 0.7rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
 
-        .name-mgmt-bar { width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px; gap: 5px; }
-        .btn-clear { background: none; border: 1px solid #ccc; color: #999; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
-        .btn-random { background: #f0f0f0; border: 1px solid #ccc; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
-
-        #name-input-container {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 90%; max-width: 400px; margin: 0 auto 15px; justify-items: center;
-        }
-        .name-input { padding: 8px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; }
-        .name-input:focus { border-color: #000; }
-
-        .option-group { margin: 10px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
-        select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid #000; border-radius: 10px; margin-left: 10px; background: white; }
-
-        .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; width: 85%; max-width: 300px;}
-        .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
-        
+        /* 게임 영역 */
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 100px; }
-        .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .member-name { font-size: 0.9rem; font-weight: 800; margin-top: 5px; color: #333; }
+        .hand-img { width: 100%; max-width: 180px; height: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        
+        .tension-shake { animation: tension-animation 0.1s infinite; }
+        @keyframes tension-animation { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } 100% { transform: translate(1px, -1px); } }
 
-        /* 긴장감 Shake 효과 */
-        .tension-shake { animation: tension-animation 0.1s infinite; filter: grayscale(0.5); }
-        @keyframes tension-animation { 0% { transform: translate(1px, 1px) rotate(0deg); } 50% { transform: translate(-1px, -1px) rotate(1deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
-
-        .shake { animation: shake-animation 0.15s infinite; }
-        @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
-
-        .receipt { background: white; color: #333; width: 280px; padding: 25px 20px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto; }
+        /* 영수증 스타일 */
+        .receipt { background: white; color: #333; width: 280px; padding: 25px 20px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; text-align: left; margin: 0 auto; opacity: 0; }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .badge-stamp { display: inline-block; border: 2px solid #e63946; color: #e63946; padding: 2px 5px; font-weight: bold; transform: rotate(-15deg); font-size: 0.8rem; margin-top: 10px; }
 
-        .receipt-item { display: flex; justify-content: space-between; margin: 5px 0; }
-        .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
-        .receipt-total { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; margin-top: 15px; border-top: 2px solid #333; padding-top: 10px; }
-        .label-customer { font-size: 0.8rem; color: #666; }
-        .value-customer { color: #e63946; font-size: 1.3rem; }
-        .fortune-area { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; text-align: center; font-size: 0.85rem; color: #555; line-height: 1.4; }
-
-        .stats-container { margin-top: 30px; width: 90%; max-width: 400px; background: #f8f8f8; padding: 15px; border-radius: 12px; font-size: 0.85rem; }
-        .stats-title { font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .stats-list { text-align: left; border-top: 1px solid #ddd; padding-top: 8px; }
-        .stats-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .btn-reset-stats { font-size: 0.6rem; color: #bbb; border: none; background: none; cursor: pointer; text-decoration: underline; }
-
-        .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
-
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
-        .splash-logo { width: 120px; margin-bottom: 20px; }
+        .footer { padding: 40px 0; font-size: 0.8rem; color: #888; }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen" onclick="hideSplash()">
-        <img src="coffee.png" alt="Logo" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/924/924514.png'">
-        <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem;">Ready for Coffee?</div>
+    <div id="title-screen">
+        <div class="coffee-steam">♨</div>
+        <div class="title-coffee" style="font-size: 2.5rem;">coffee game</div>
+        <div id="random-slogan" class="slogan"></div>
+        <button class="btn-main" onclick="enterApp()" style="margin-top: 30px;">Open Shop</button>
     </div>
 
     <div class="wrapper">
         <header onclick="resetGame()">
-            <div class="title-container">
-                <span class="title-coffee">coffee</span>
-                <span class="title-game">game</span>
-            </div>
+            <div><span class="title-coffee">coffee</span><span class="title-game">game</span></div>
             <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image large" onerror="this.style.display='none'">
         </header>
 
         <main id="main-content">
-            <div id="rpg-textbox">
-                <div id="rpg-content"></div>
-            </div>
+            <div id="rpg-textbox"><div id="rpg-content"></div></div>
 
             <div id="setup-view">
-                <div class="option-group">
-                    Members:
-                    <select id="member-select" onchange="generateNameInputs()">
+                <div style="margin-bottom: 10px;">
+                    Members: 
+                    <select id="member-select" onchange="generateNameInputs()" style="padding: 5px; font-size: 1rem;">
                         <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
-                        <option value="5">5</option><option value="6">6</option><option value="7">7</option>
-                        <option value="8">8</option><option value="9">9</option>
+                        <option value="5">5</option><option value="6">6</option>
                     </select>
                 </div>
-                <div class="name-mgmt-bar">
-                    <button class="btn-random" onclick="fillRandomNames()">🎲 Random</button>
-                    <button class="btn-clear" onclick="clearNames()">Clear all</button>
+                <div style="width: 90%; max-width: 400px; display: flex; justify-content: flex-end; gap: 5px; margin: 0 auto;">
+                    <button class="btn-secondary" onclick="fillRandomNames()">🎲 Random</button>
+                    <button class="btn-secondary" onclick="clearNames()">Clear</button>
                 </div>
                 <div id="name-input-container"></div>
-                <button class="btn-main" onclick="startGame()">start</button>
-
-                <div id="stats-dashboard" class="stats-container hidden">
-                    <div class="stats-title">
-                        🏆 Hall of Fame
-                        <button class="btn-reset-stats" onclick="resetStats()">Reset Stats</button>
-                    </div>
-                    <div id="stats-list" class="stats-list"></div>
-                </div>
+                <button class="btn-main" onclick="startGame()">Start Game</button>
             </div>
 
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
                 <div id="lucky-area" class="hidden">
-                    <button class="btn-main" onclick="resetGame()" style="margin-top: 25px;">Lucky Round! Restart</button>
+                    <div class="badge-stamp" style="font-size: 1.2rem; margin-bottom: 20px;">[0.1%의 기적]</div>
+                    <button class="btn-main" onclick="resetGame()">Lucky! Restart</button>
                 </div>
                 <div id="result-area" class="hidden">
-                    <div id="capture-area" style="padding: 20px; background: #ffffff;">
+                    <div id="capture-area" style="background: white; padding: 20px;">
                         <div class="receipt" id="receipt">
-                            <div class="receipt-header">RECEIPT</div>
-                            <div class="receipt-subheader" style="text-align: center; font-size: 0.8rem; margin-bottom: 10px;">GONY'S COFFEE SHOP</div>
-                            <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
-                            <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                            <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
-                            <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
-                            <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                            <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
-                            <div class="receipt-total">
-                                <span class="label-customer">CUSTOMER</span>
-                                <span id="receipt-payer" class="value-customer"></span>
+                            <div style="text-align: center; font-weight: bold; border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 10px;">GONY'S COFFEE RECEIPT</div>
+                            <div id="receipt-date" style="font-size: 0.8rem;"></div>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 5px;">
+                                <span>TOTAL</span><span id="receipt-payer" style="color: #e63946;"></span>
                             </div>
-                            <div class="fortune-area" id="receipt-fortune"></div>
-                            <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
+                            <div id="receipt-badge" class="badge-stamp"></div>
+                            <div id="receipt-fortune" style="font-size: 0.75rem; margin-top: 15px; color: #666; font-style: italic;"></div>
                         </div>
                     </div>
-                    <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                        <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;">Next Round</button>
-                        <button class="btn-secondary" id="id-share-btn" onclick="shareAsImage()">Share Receipt Image</button>
-                    </div>
+                    <button class="btn-main" onclick="resetGame()">Next Round</button>
+                    <button class="btn-secondary" onclick="shareAsImage()" style="margin-bottom: 20px;">Share Receipt</button>
                 </div>
             </div>
         </main>
@@ -177,220 +138,169 @@
     </div>
 
     <script>
-        const fortunes = ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"];
-        const randomMenus = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"];
-        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread"];
+        const slogans = ["오늘은 누가 천사가 될까요?", "지갑 조심! 카페인이 다가옵니다.", "공짜 커피는 언제나 옳다.", "가장 공정한 결제의 순간.", "당신의 운을 믿어보세요."];
+        const nicknames = ["Coffee Lover", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Bean Hunter"];
         
         let memberNames = [];
-        let typeTimeout;
-        let isGameOver = false; 
+        let isGameOver = false;
         let winnerIndex = -1;
         let isLuckyRound = false;
 
+        // 타이틀 진입
+        function enterApp() {
+            document.getElementById('title-screen').style.display = 'none';
+            updateText("Welcome to Gony's Coffee Shop");
+            generateNameInputs();
+        }
+
         function updateText(msg) {
-            clearTimeout(typeTimeout);
             const content = document.getElementById('rpg-content');
-            content.innerText = '';
-            let i = 0;
-            function typing() {
-                if (i < msg.length) {
-                    content.innerText += msg.charAt(i);
-                    i++;
-                    typeTimeout = setTimeout(typing, 50);
-                }
-            }
-            typing();
+            content.innerText = msg;
         }
-
-        function fillRandomNames() {
-            const inputs = document.querySelectorAll('.name-input');
-            const used = [];
-            inputs.forEach(input => {
-                let r;
-                do { r = randomNicknames[Math.floor(Math.random() * randomNicknames.length)]; } while (used.includes(r));
-                input.value = r;
-                used.push(r);
-            });
-        }
-
-        function updateStats(name) {
-            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            stats[name] = (stats[name] || 0) + 1;
-            localStorage.setItem('coffeeStats', JSON.stringify(stats));
-        }
-
-        function showStats() {
-            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            const dashboard = document.getElementById('stats-dashboard');
-            const list = document.getElementById('stats-list');
-            const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
-            if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
-            dashboard.classList.remove('hidden');
-            list.innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times ☕</span></div>`).join('');
-        }
-
-        function resetStats() { if(confirm("기부 통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
-        function clearNames() { localStorage.removeItem('savedCoffeeNames'); generateNameInputs(); }
 
         function generateNameInputs() {
             const count = parseInt(document.getElementById('member-select').value);
             const container = document.getElementById('name-input-container');
             container.innerHTML = '';
-            const savedNames = JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]');
+            const saved = JSON.parse(localStorage.getItem('savedNames') || '[]');
             for (let i = 0; i < count; i++) {
                 const input = document.createElement('input');
-                input.type = 'text'; input.className = 'name-input';
-                input.placeholder = `Name ${i+1}`; input.id = `input-name-${i}`;
-                if (savedNames[i]) input.value = savedNames[i];
+                input.className = 'name-input'; input.placeholder = `Name ${i+1}`;
+                input.id = `in-${i}`; if (saved[i]) input.value = saved[i];
                 container.appendChild(input);
             }
-            showStats();
         }
+
+        function fillRandomNames() {
+            document.querySelectorAll('.name-input').forEach((el, i) => el.value = nicknames[i % nicknames.length]);
+        }
+
+        function clearNames() { localStorage.removeItem('savedNames'); generateNameInputs(); }
 
         const AudioEngine = {
             ctx: null,
-            init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
-            play(type) {
-                this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
-                osc.connect(gain); gain.connect(this.ctx.destination);
-                if (type === 'start') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.3); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.3); }
-                else if (type === 'safe') { osc.frequency.setValueAtTime(880, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.1); }
-                else if (type === 'fail') { osc.frequency.setValueAtTime(349.23, now); osc.frequency.linearRampToValueAtTime(110, now + 0.6); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
-                else if (type === 'lucky') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now+0.1); osc.frequency.setValueAtTime(783.99, now+0.2); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.4); }
-                else if (type === 'tension') { osc.frequency.setValueAtTime(220, now); osc.frequency.exponentialRampToValueAtTime(440, now + 0.6); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.6); }
+            init() { if(!this.ctx) this.ctx = new AudioContext(); },
+            play(freq, type = 'sine', duration = 0.2) {
+                this.init(); const osc = this.ctx.createOscillator(); const g = this.ctx.createGain();
+                osc.type = type; osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                g.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                osc.connect(g); g.connect(this.ctx.destination);
+                osc.start(); osc.stop(this.ctx.currentTime + duration);
             }
         };
 
         function startGame() {
-            const count = parseInt(document.getElementById('member-select').value);
-            memberNames = []; const namesToSave = [];
-            for (let i = 0; i < count; i++) {
-                const val = document.getElementById(`input-name-${i}`).value.trim();
-                memberNames.push(val || `Member ${i+1}`);
-                namesToSave.push(val);
-            }
-            localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
-            AudioEngine.play('start'); 
-            
-            winnerIndex = Math.floor(Math.random() * count);
-            isLuckyRound = Math.random() < 0.1; 
+            const inputs = document.querySelectorAll('.name-input');
+            memberNames = Array.from(inputs).map((el, i) => el.value.trim() || `Member ${i+1}`);
+            localStorage.setItem('savedNames', JSON.stringify(memberNames));
+
+            winnerIndex = Math.floor(Math.random() * memberNames.length);
+            isLuckyRound = Math.random() < 0.1;
             isGameOver = false;
 
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
             document.getElementById('lucky-area').classList.add('hidden');
-            document.getElementById('receipt').classList.remove('show');
-            updateText("Who will pay? Pick a hand!");
-            document.getElementById('main-img').src = 'coffee.png'; document.getElementById('main-img').classList.remove('large');
-            
+            document.getElementById('main-img').src = 'coffee.png';
+            updateText("누가 결제할까요? 손을 골라주세요!");
+
             const display = document.getElementById('hand-display');
-            display.innerHTML = ''; 
-            for (let i = 0; i < count; i++) {
-                const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
-                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png';
-                handImg.className = 'hand-img'; 
-                handImg.onclick = () => handleHandClick(i, count);
-                const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
-                wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
-            }
+            display.innerHTML = '';
+            memberNames.forEach((name, i) => {
+                const wrap = document.createElement('div'); wrap.className = 'hand-wrapper';
+                wrap.innerHTML = `<img src="hand_nothing.png" class="hand-img" onclick="tapHand(${i})"><div>${name}</div>`;
+                display.appendChild(wrap);
+            });
         }
 
-        // 클릭 시 긴장감 연출 후 실제 결과 공개
-        function handleHandClick(index, total) {
+        function tapHand(index) {
             if (isGameOver) return;
-            const hands = document.getElementsByClassName('hand-img');
-            const handImg = hands[index];
-            if (handImg.dataset.opened === "true" || handImg.classList.contains('tension-shake')) return;
+            const hand = document.querySelectorAll('.hand-img')[index];
+            if (hand.classList.contains('tension-shake')) return;
 
-            // 1. 긴장감 연출 (0.6초간 떨림)
-            handImg.classList.add('tension-shake');
-            AudioEngine.play('tension');
-            updateText("Wait... Checking...");
+            hand.classList.add('tension-shake');
+            AudioEngine.play(200, 'triangle', 0.5);
+            updateText("확인 중... 과연 결과는?");
 
             setTimeout(() => {
-                handImg.classList.remove('tension-shake');
-                openHand(index, total);
+                hand.classList.remove('tension-shake');
+                revealResult(index);
             }, 600);
         }
 
-        function openHand(index, total) {
-            const hands = document.getElementsByClassName('hand-img');
-            const handImg = hands[index];
+        function revealResult(index) {
+            const hands = document.querySelectorAll('.hand-img');
+            const hand = hands[index];
 
             if (isLuckyRound) {
-                isGameOver = true; AudioEngine.play('lucky');
-                handImg.src = 'hand_open.png';
-                confetti({ particleCount: 200, spread: 100, colors: ['#FFD700', '#FFA500'] });
-                updateText("LUCKY! Everyone is SAFE today! 🌟");
+                isGameOver = true; AudioEngine.play(600, 'sine', 0.5);
+                updateText("대박! 오늘은 모두가 세이프입니다! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden');
+                confetti({ particleCount: 150, spread: 70 });
                 return;
             }
 
             if (index === winnerIndex) {
-                isGameOver = true; AudioEngine.play('fail');
-                handImg.src = 'hand_money.png'; handImg.classList.add('shake');
-                for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
-                updateText(`Oh! ${memberNames[index]} will pay!`);
+                isGameOver = true; AudioEngine.play(150, 'sawtooth', 0.6);
+                hand.src = 'hand_money.png';
+                updateText(`앗! ${memberNames[index]}님이 당첨되었습니다!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
-                updateStats(memberNames[index]);
-                showFinish(total, memberNames[index]);
+                saveWin(memberNames[index]);
+                showReceipt(memberNames[index]);
             } else {
-                AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
-                updateText(`${memberNames[index]} is Safe!`);
+                AudioEngine.play(800, 'sine', 0.1);
+                hand.src = 'hand_open.png';
+                updateText(`${memberNames[index]}님은 세이프!`);
             }
         }
 
-        function showFinish(total, payerName) {
-            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-            const now = new Date();
-            document.getElementById('receipt-date').innerText = now.toLocaleDateString();
-            document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('receipt-qty').innerText = "x" + total;
-            document.getElementById('receipt-price').innerText = "$4.50";
-            document.getElementById('receipt-subtotal').innerText = "$" + (4.5 * total).toFixed(2);
-            document.getElementById('receipt-payer').innerText = payerName;
-            document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
-            document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
-            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); }, 600);
+        function saveWin(name) {
+            const history = JSON.parse(localStorage.getItem('winHistory') || '[]');
+            history.push({ name, date: new Date().toISOString() });
+            localStorage.setItem('winHistory', JSON.stringify(history));
+        }
+
+        function getBadge(name) {
+            const history = JSON.parse(localStorage.getItem('winHistory') || '[]');
+            const currentMonth = new Date().getMonth();
+            const monthWins = history.filter(h => h.name === name && new Date(h.date).getMonth() === currentMonth).length;
+            
+            if (monthWins >= 3) return "[연쇄 기부마]";
+            if (memberNames.length >= 5) return "[생존 전문가]"; // 당첨 안된 사람은 따로 처리 필요하나 여기선 당첨자 기준
+            return "[오늘의 천사]";
+        }
+
+        function showReceipt(name) {
+            const receipt = document.getElementById('receipt');
+            document.getElementById('receipt-date').innerText = new Date().toLocaleString();
+            document.getElementById('receipt-payer').innerText = name;
+            document.getElementById('receipt-badge').innerText = getBadge(name);
+            document.getElementById('receipt-fortune').innerText = "베푸는 마음이 당신에게 행운으로 돌아옵니다.";
+            
+            setTimeout(() => {
+                document.getElementById('result-area').classList.remove('hidden');
+                receipt.classList.add('show');
+                confetti({ particleCount: 100, origin: { y: 0.8 } });
+            }, 500);
         }
 
         function resetGame() {
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
-            document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
-            updateText("Welcome to Gony's Coffee");
-            generateNameInputs();
-        }
-
-        function hideSplash() {
-            const splash = document.getElementById('splash-screen');
-            if (splash && !splash.classList.contains('hidden')) {
-                splash.style.opacity = '0'; splash.style.pointerEvents = 'none';
-                setTimeout(() => { splash.classList.add('hidden'); document.getElementById('main-img').classList.add('reveal-effect'); updateText("Welcome to Gony's Coffee"); }, 600);
-            }
+            document.getElementById('main-img').src = 'cafe_counter.png';
+            updateText("Welcome back!");
         }
 
         async function shareAsImage() {
-            const captureArea = document.getElementById('capture-area');
-            const receipt = document.getElementById('receipt');
-            const shareBtn = document.getElementById('id-share-btn');
-            shareBtn.innerText = "Generating..."; shareBtn.disabled = true;
-            const originalStyle = receipt.getAttribute('style') || "";
-            receipt.style.animation = "none"; receipt.style.opacity = "1"; receipt.style.transform = "none";
-            try {
-                await new Promise(r => setTimeout(r, 200));
-                const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", scale: 3, useCORS: true });
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], "receipt.png", { type: "image/png" });
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); }
-                    else { const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'receipt.png'; link.click(); }
-                    receipt.setAttribute('style', originalStyle); shareBtn.innerText = "Share Receipt Image"; shareBtn.disabled = false;
-                });
-            } catch (error) { shareBtn.disabled = false; }
+            const canvas = await html2canvas(document.getElementById('capture-area'));
+            const link = document.createElement('a');
+            link.download = 'receipt.png'; link.href = canvas.toDataURL(); link.click();
         }
 
-        window.onload = () => { generateNameInputs(); setTimeout(hideSplash, 1500); };
+        window.onload = () => {
+            document.getElementById('random-slogan').innerText = slogans[Math.floor(Math.random() * slogans.length)];
+        };
     </script>
 </body>
 </html>

@@ -285,22 +285,34 @@
             }
         }
 
-        // --- 수정된 updateText 함수 (타이핑 효과) ---
+       // --- 수정된 updateText 함수 (띄어쓰기 반영 및 자연스러운 타이핑) ---
         function updateText(msg) {
             const container = document.getElementById('rpg-content');
             if (typingTimer) clearInterval(typingTimer);
 
             container.innerText = '';
             let i = 0;
-            typingTimer = setInterval(() => {
+
+            function type() {
                 if (i < msg.length) {
-                    container.innerText += msg.charAt(i);
+                    const char = msg.charAt(i);
+                    container.innerText += char;
                     i++;
+
+                    // 다음 글자가 공백이면 지연 시간 없이 즉시 다음 실행
+                    if (msg.charAt(i) === ' ') {
+                        type(); 
+                        return;
+                    }
+                    
+                    // 일반 글자는 설정된 속도(50ms)로 반복
+                    typingTimer = setTimeout(type, 50);
                 } else {
-                    clearInterval(typingTimer);
                     typingTimer = null;
                 }
-            }, 50); 
+            }
+            
+            type();
         }
 
         function startGame() {
@@ -424,3 +436,4 @@
     </script>
 </body>
 </html>
+

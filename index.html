@@ -83,11 +83,10 @@
             height: auto; 
             border-radius: 15px; 
             margin-top: 10px; 
-            /* 줌/애니메이션 제거 */
         }
 
         .title-image.large {
-            width: 70vw; /* scale 대신 크기 직접 조정 */
+            width: 70vw;
             max-width: 330px;
             margin: 20px 0;
         }
@@ -103,13 +102,24 @@
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 100px; }
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
-        /* 영수증 중앙 정렬 수정 */
+        /* 당첨 시 손 떨림 애니메이션 복구 */
+        .shake {
+            animation: shake-animation 0.15s infinite;
+        }
+        @keyframes shake-animation {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(2px, 2px); }
+            50% { transform: translate(0, 0); }
+            75% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0, 0); }
+        }
+
         .receipt {
             background: #fdfdfd; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             border-radius: 2px; position: relative; opacity: 0;
             animation: slideUpReceipt 0.6s forwards; text-align: left;
-            margin: 0 auto; /* 중앙 정렬 */
+            margin: 0 auto;
         }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -203,7 +213,6 @@
             }
         }
 
-        // 초기 로드 시 1.5초 후 자동 진입
         window.onload = () => {
             setTimeout(hideSplash, 1500);
         };
@@ -278,7 +287,19 @@
 
             if (index === winnerIndex) {
                 isGameOver = true;
+                
+                // 1. 당첨자: 손 이미지 교체 + 떨림 애니메이션 추가
                 handImg.src = 'hand_money.png';
+                handImg.classList.add('shake');
+                
+                // 2. 나머지 인원: 박수치는 손으로 변경
+                for (let i = 0; i < total; i++) {
+                    if (i !== winnerIndex) {
+                        const otherHand = document.getElementById(`hand-${i}`);
+                        otherHand.src = 'hand_clap.gif'; // 박수치는 이미지/GIF로 변경
+                    }
+                }
+
                 updateText("Thank you for the drink");
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 showFinish(total, index + 1);

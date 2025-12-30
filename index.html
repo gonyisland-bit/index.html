@@ -15,6 +15,7 @@
             --primary-color: #000000;
             --text-gray-70: #4d4d4d;
             --rpg-border: #4d4d4d;
+            --card-bg: #f9f9f9;
         }
 
         html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
@@ -48,24 +49,30 @@
         .team-presets { 
             width: 90%; max-width: 450px; 
             display: flex; flex-wrap: wrap; 
-            justify-content: center; /* 가운데 정렬 */
+            justify-content: center;
             gap: 8px; margin-bottom: 20px; padding: 5px;
         }
-        .preset-btn { background: #f8f8f8; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
-        .preset-btn.active { background: #000; color: #fff; border-color: #000; }
+        .preset-btn { background: #f0f0f0; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; color: #666; }
+        .preset-btn.active { background: #000; color: #fff; }
 
-        .name-mgmt-bar { width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px; gap: 5px; }
-        .btn-clear { background: none; border: 1px solid #ccc; color: #999; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
-        .btn-random { background: #f0f0f0; border: 1px solid #ccc; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+        /* [수정] 설정 영역을 하나로 묶음 */
+        .setup-card {
+            width: 90%; max-width: 420px; background: var(--card-bg); 
+            border-radius: 20px; padding: 20px; box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
+        }
+
+        .option-group { margin-bottom: 15px; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); display: flex; align-items: center; justify-content: center; }
+        select { padding: 6px 12px; font-size: 1rem; border: 1.5px solid #ddd; border-radius: 8px; margin-left: 10px; background: white; outline: none;}
+
+        .name-mgmt-bar { width: 100%; display: flex; justify-content: flex-end; margin-bottom: 10px; gap: 5px; }
+        .btn-small { background: white; border: 1px solid #eee; color: #999; font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; cursor: pointer; }
 
         #name-input-container {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 90%; max-width: 400px; margin: 0 auto 15px; justify-items: center;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin: 15px 0;
         }
-        .name-input { padding: 8px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; }
-        .name-input:focus { border-color: #000; }
-
-        .option-group { margin: 10px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
-        select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid #000; border-radius: 10px; margin-left: 10px; background: white; }
+        .name-input { padding: 10px 5px; border: 1.5px solid #eee; border-radius: 8px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; background: white; transition: 0.2s; }
+        .name-input:focus { border-color: #000; background: #fff; }
 
         .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; width: 85%; max-width: 300px;}
         .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
@@ -81,18 +88,6 @@
         .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
-        /* [수정] 쿠폰 도장 5개씩 줄바꿈 */
-        .coupon-board { 
-            width: 80%; max-width: 250px; /* 폭을 줄여서 자연스럽게 5개씩 배치 */
-            background: #fffbe6; border: 2px dashed #d4a373; border-radius: 10px; 
-            padding: 15px; margin: 20px auto; 
-            display: grid; grid-template-columns: repeat(5, 1fr); /* 5열 고정 */
-            gap: 10px; justify-items: center;
-        }
-        .stamp-slot { width: 35px; height: 35px; border: 2px solid #e9edc9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #e9edc9; }
-        .stamp-slot.active { background: #d4a373; border-color: #d4a373; color: white; animation: stamp-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes stamp-pop { from { transform: scale(2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
         .receipt { background: white; color: #333; width: 280px; padding: 25px 20px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto; }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -104,11 +99,11 @@
         .value-customer { color: #e63946; font-size: 1.3rem; }
         .fortune-area { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; text-align: center; font-size: 0.85rem; color: #555; line-height: 1.4; }
 
-        .stats-container { margin-top: 30px; width: 90%; max-width: 400px; background: #f8f8f8; padding: 15px; border-radius: 12px; font-size: 0.85rem; }
-        .stats-title { font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .stats-list { text-align: left; border-top: 1px solid #ddd; padding-top: 8px; }
-        .stats-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .btn-reset-stats { font-size: 0.6rem; color: #bbb; border: none; background: none; cursor: pointer; text-decoration: underline; }
+        .stats-container { margin-top: 10px; width: 100%; background: white; padding: 12px; border-radius: 12px; font-size: 0.8rem; border: 1px solid #eee; }
+        .stats-title { font-weight: 800; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; color: #aaa; }
+        .stats-list { text-align: left; border-top: 1px solid #f5f5f5; padding-top: 8px; }
+        .stats-row { display: flex; justify-content: space-between; margin-bottom: 4px; color: #888; }
+        .btn-reset-stats { font-size: 0.6rem; color: #ccc; border: none; background: none; cursor: pointer; text-decoration: underline; }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
@@ -139,33 +134,35 @@
             </div>
 
             <div id="setup-view">
-                <div class="team-presets" id="team-presets">
+                <div class="team-presets" id="team-presets"></div>
+
+                <div class="setup-card">
+                    <div class="option-group">
+                        Members
+                        <select id="member-select" onchange="generateNameInputs()">
+                            <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
+                            <option value="5">5</option><option value="6">6</option><option value="7">7</option>
+                            <option value="8">8</option><option value="9">9</option>
+                        </select>
                     </div>
 
-                <div class="option-group">
-                    Members:
-                    <select id="member-select" onchange="generateNameInputs()">
-                        <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
-                        <option value="5">5</option><option value="6">6</option><option value="7">7</option>
-                        <option value="8">8</option><option value="9">9</option>
-                    </select>
-                </div>
-                <div class="name-mgmt-bar">
-                    <button class="btn-random" onclick="fillRandomNames()">🎲 Random</button>
-                    <button class="btn-clear" onclick="clearNames()">Clear all</button>
-                </div>
-                <div id="name-input-container"></div>
-                <button class="btn-main" onclick="startGame()">start</button>
-
-                <div class="coupon-board" id="coupon-board"></div>
-
-                <div id="stats-dashboard" class="stats-container hidden">
-                    <div class="stats-title">
-                        🏆 Hall of Fame
-                        <button class="btn-reset-stats" onclick="resetStats()">Reset Stats</button>
+                    <div class="name-mgmt-bar">
+                        <button class="btn-small" onclick="fillRandomNames()">🎲 Random</button>
+                        <button class="btn-small" onclick="clearNames()">Clear</button>
                     </div>
-                    <div id="stats-list" class="stats-list"></div>
+
+                    <div id="name-input-container"></div>
+
+                    <div id="stats-dashboard" class="stats-container hidden">
+                        <div class="stats-title">
+                            🏆 Stats
+                            <button class="btn-reset-stats" onclick="resetStats()">Reset</button>
+                        </div>
+                        <div id="stats-list" class="stats-list"></div>
+                    </div>
                 </div>
+
+                <button class="btn-main" onclick="startGame()">start game</button>
             </div>
 
             <div id="game-view" class="hidden">
@@ -253,30 +250,6 @@
             renderTeamTabs();
         }
 
-        function updateCoupon() {
-            let count = parseInt(localStorage.getItem('gameCount') || '0');
-            count++;
-            localStorage.setItem('gameCount', count);
-            renderCoupon();
-            if (count % 10 === 0) {
-                setTimeout(() => alert("🎉 Wow! You've played 10 games! You are a coffee lover!"), 500);
-            }
-        }
-
-        function renderCoupon() {
-            const board = document.getElementById('coupon-board');
-            let count = parseInt(localStorage.getItem('gameCount') || '0') % 10;
-            if (count === 0 && parseInt(localStorage.getItem('gameCount') || '0') > 0) count = 10;
-            
-            board.innerHTML = '';
-            for (let i = 1; i <= 10; i++) {
-                const slot = document.createElement('div');
-                slot.className = `stamp-slot ${i <= count ? 'active' : ''}`;
-                slot.innerText = i <= count ? '☕' : i;
-                board.appendChild(slot);
-            }
-        }
-
         function fillRandomNames() {
             const inputs = document.querySelectorAll('.name-input');
             const used = [];
@@ -301,10 +274,10 @@
             const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
             if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
             dashboard.classList.remove('hidden');
-            list.innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times ☕</span></div>`).join('');
+            list.innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} 회</span></div>`).join('');
         }
 
-        function resetStats() { if(confirm("기부 통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
+        function resetStats() { if(confirm("통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
         function clearNames() { localStorage.removeItem('savedCoffeeNames'); generateNameInputs(); }
 
         function generateNameInputs(providedNames = null) {
@@ -398,7 +371,6 @@
                 confetti({ particleCount: 200, spread: 100, colors: ['#FFD700', '#FFA500'] });
                 updateText("LUCKY! Everyone is SAFE today! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden');
-                updateCoupon();
                 return;
             }
 
@@ -409,7 +381,6 @@
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 updateStats(memberNames[index]);
-                updateCoupon();
                 showFinish(total, memberNames[index]);
             } else {
                 AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
@@ -437,7 +408,6 @@
             document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
             updateText("Welcome to Gony's Coffee");
             generateNameInputs();
-            renderCoupon();
             renderTeamTabs();
         }
 
@@ -449,7 +419,6 @@
                     splash.classList.add('hidden'); 
                     document.getElementById('main-img').classList.add('reveal-effect'); 
                     updateText("Welcome to Gony's Coffee");
-                    renderCoupon();
                     renderTeamTabs();
                 }, 600);
             }
@@ -462,7 +431,7 @@
             Object.keys(teams).forEach(t => {
                 container.innerHTML += `<button class="preset-btn ${currentTeamName===t?'active':''}" onclick="loadTeam('${t}')">${t}</button>`;
             });
-            container.innerHTML += `<button class="preset-btn" onclick="saveCurrentTeam()">+ Save Current</button>`;
+            container.innerHTML += `<button class="preset-btn" onclick="saveCurrentTeam()">+ Save</button>`;
         }
 
         async function shareAsImage() {

@@ -6,7 +6,7 @@
     <title>coffee game</title>
     <link rel="icon" type="image/png" href="coffeegame_icon.png">
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&family=Nanum+Brush+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
@@ -15,99 +15,146 @@
             --primary-color: #000000;
             --text-gray-70: #4d4d4d;
             --rpg-border: #4d4d4d;
-            --receipt-bg: #ffffff;
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        /* 레트로 테마 스타일 */
-        body.retro-mode {
-            --bg-color: #f3e5ab; /* 빛바랜 종이색 */
-            --primary-color: #8b4513; /* 초콜릿 브라운 */
-            --text-gray-70: #5d2e0a;
-            --rpg-border: #8b4513;
-            --receipt-bg: #fff9e6;
         }
 
         html, body { 
             height: 100%; margin: 0; padding: 0; 
             touch-action: pan-x pan-y;
             -webkit-text-size-adjust: none;
-            background-color: var(--bg-color);
-            transition: background-color 0.5s ease;
         }
 
         body {
-            font-family: var(--font-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
             color: var(--primary-color);
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            overflow-x: hidden; overflow-y: auto;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: hidden; 
+            overflow-y: auto;
         }
 
-        .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-
-        /* 테마 변경 버튼 안내 */
-        .theme-tip { font-size: 0.7rem; opacity: 0.5; margin-bottom: -30px; margin-top: 10px; }
+        .wrapper {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
 
         #rpg-textbox {
-            width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
-            border-radius: 8px; padding: 15px; margin: 20px auto; box-sizing: border-box; position: relative;
+            width: 90%;
+            max-width: 450px;
+            background: white;
+            border: 4px solid var(--rpg-border);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px auto;
+            box-sizing: border-box;
+            position: relative;
         }
-        .retro-mode #rpg-textbox { background: #fff9e6; font-family: 'Nanum Brush Script', cursive; font-size: 1.4rem; }
 
-        #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; }
+        #rpg-content {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-gray-70);
+            min-height: 1.5rem;
+            word-break: keep-all;
+            white-space: pre-wrap; 
+        }
 
-        #rpg-textbox::after { content: '▼'; position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: var(--rpg-border); animation: bounce 0.8s infinite; }
+        #rpg-textbox::after {
+            content: '▼';
+            position: absolute; bottom: 5px; right: 10px;
+            font-size: 0.8rem; color: var(--rpg-border);
+            animation: bounce 0.8s infinite;
+        }
+
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
-        header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; transition: transform 0.2s; }
-        header:active { transform: scale(0.95); }
+        header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         
-        .retro-mode .title-coffee, .retro-mode .title-game { color: #8b4513; font-family: 'Nanum Brush Script', cursive; letter-spacing: 2px; }
+        .title-image { 
+            width: 33vw; 
+            max-width: 150px; 
+            height: auto; 
+            border-radius: 15px; 
+            margin-top: 10px; 
+        }
 
-        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
-        .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
+        .title-image.large {
+            width: 70vw;
+            max-width: 330px;
+            margin: 20px 0;
+        }
 
-        @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
-        .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes reveal-image {
+            from { clip-path: inset(0 50% 0 50%); }
+            to { clip-path: inset(0 0% 0 0%); }
+        }
+        .reveal-effect {
+            animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
 
         main { width: 100%; display: flex; flex-direction: column; align-items: center; }
         .option-group { margin: 20px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
-        select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid var(--primary-color); border-radius: 10px; margin-left: 10px; background: white; color: var(--primary-color); }
+        select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid #000; border-radius: 10px; margin-left: 10px; background: white; }
 
         .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; width: 85%; max-width: 300px;}
-        .btn-secondary { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
+        .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
         
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 100px; }
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
         .shake { animation: shake-animation 0.15s infinite; }
-        @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
+        @keyframes shake-animation {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(2px, 2px); }
+            50% { transform: translate(0, 0); }
+            75% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0, 0); }
+        }
 
         .receipt {
-            background: var(--receipt-bg); color: #333; width: 280px; padding: 25px 20px;
+            background: white; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto;
-            transition: background-color 0.5s;
+            border-radius: 2px; position: relative; opacity: 0;
+            text-align: left; margin: 0 auto;
         }
-        .receipt.show { animation: slideUpReceipt 0.6s forwards; }
+        
+        .receipt.show {
+            animation: slideUpReceipt 0.6s forwards;
+        }
+
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .receipt-item { display: flex; justify-content: space-between; margin: 5px 0; }
         .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
         .receipt-subheader { text-align: center; font-size: 0.8rem; margin-bottom: 10px; }
 
-        /* 포춘 점괘 스타일 */
-        .fortune-box { margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; font-style: italic; font-size: 0.85rem; color: #666; text-align: center; line-height: 1.4; }
+        /* 점괘 영역 스타일 */
+        .fortune-area {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.4;
+        }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: white; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.6s ease-out;
         }
         .splash-logo { width: 120px; margin-bottom: 20px; }
@@ -121,8 +168,7 @@
     </div>
 
     <div class="wrapper">
-        <div class="theme-tip">Click title to change theme</div>
-        <header onclick="toggleTheme()">
+        <header onclick="resetGame()">
             <div class="title-container">
                 <span class="title-coffee">coffee</span>
                 <span class="title-game">game</span>
@@ -151,10 +197,10 @@
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
                 <div id="result-area" class="hidden">
-                    <div id="capture-area" style="padding: 20px; background: transparent;">
+                    <div id="capture-area" style="padding: 20px; background: #ffffff;">
                         <div class="receipt" id="receipt">
                             <div class="receipt-header">RECEIPT</div>
-                            <div class="receipt-subheader" id="receipt-shop-name">GONY'S COFFEE SHOP</div>
+                            <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
                             <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                             <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
@@ -164,7 +210,7 @@
                             <div class="receipt-total" style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;">
                                 <span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span>
                             </div>
-                            <div class="fortune-box" id="receipt-fortune"></div>
+                            <div class="fortune-area" id="receipt-fortune"></div>
                             <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
                         </div>
                     </div>
@@ -180,21 +226,14 @@
 
     <script>
         const fortunes = [
-            "오늘 커피를 산 당신, 오후엔 대박 행운이!",
-            "지갑은 가벼워졌지만 인심은 두둑해졌네요.",
-            "오늘의 운세: 주변 사람들에게 칭찬을 듣게 됩니다.",
-            "커피 향처럼 은은한 행운이 찾아올 거예요.",
-            "계산하는 당신의 뒷모습이 가장 아름답습니다.",
-            "오늘 마시는 커피는 인생에서 가장 달콤할 겁니다.",
-            "당신의 친절함이 복이 되어 돌아올 거예요."
+            "Today's Luck: Good things will happen in the afternoon!",
+            "Your kindness will return to you as a blessing.",
+            "Today's Fortune: You'll hear a compliment from someone.",
+            "Lucky Day: This coffee will give you great ideas!",
+            "The person paying looks amazing today.",
+            "Your wallet might be light, but your heart is full.",
+            "Tip: Say 'Thank you' to the payer for more luck!"
         ];
-
-        function toggleTheme() {
-            document.body.classList.toggle('retro-mode');
-            const isRetro = document.body.classList.contains('retro-mode');
-            document.getElementById('receipt-shop-name').innerText = isRetro ? "고니네 다방 (SINCE 1988)" : "GONY'S COFFEE SHOP";
-            updateText(isRetro ? "어서오세양, 고니네 다방입니당" : "Welcome to our coffee shop");
-        }
 
         const AudioEngine = {
             ctx: null,
@@ -230,6 +269,7 @@
             const captureArea = document.getElementById('capture-area');
             const receipt = document.getElementById('receipt');
             const shareBtn = document.getElementById('id-share-btn');
+            
             shareBtn.innerText = "Generating...";
             shareBtn.disabled = true;
 
@@ -240,8 +280,9 @@
 
             try {
                 await new Promise(r => setTimeout(r, 200));
+
                 const canvas = await html2canvas(captureArea, {
-                    backgroundColor: null,
+                    backgroundColor: "#ffffff",
                     scale: 3,
                     useCORS: true,
                     logging: false,
@@ -255,18 +296,26 @@
 
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], "coffee_receipt.png", { type: "image/png" });
+                    
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try { await navigator.share({ files: [file], title: 'Coffee Game Result' }); } catch (err) { }
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Coffee Game Result'
+                            });
+                        } catch (err) { }
                     } else {
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(blob);
                         link.download = 'coffee_receipt.png';
                         link.click();
                     }
+                    
                     receipt.setAttribute('style', originalStyle);
                     shareBtn.innerText = "Share Receipt Image";
                     shareBtn.disabled = false;
                 }, 'image/png');
+
             } catch (error) {
                 receipt.setAttribute('style', originalStyle);
                 shareBtn.innerText = "Share Receipt Image";
@@ -280,7 +329,8 @@
                 splash.style.opacity = '0'; splash.style.pointerEvents = 'none';
                 setTimeout(() => {
                     splash.classList.add('hidden');
-                    document.getElementById('main-img').classList.add('reveal-effect');
+                    const mainImg = document.getElementById('main-img');
+                    mainImg.classList.add('reveal-effect');
                     updateText("Welcome to our coffee shop");
                 }, 600);
             }
@@ -315,8 +365,8 @@
             document.getElementById('result-area').classList.add('hidden');
             document.getElementById('receipt').classList.remove('show');
             updateText("Please pay for it");
-            document.getElementById('main-img').src = 'coffee.png';
-            document.getElementById('main-img').classList.remove('large');
+            const mainImg = document.getElementById('main-img');
+            mainImg.src = 'coffee.png'; mainImg.classList.remove('large');
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
             for (let i = 0; i < memberCount; i++) {
@@ -360,7 +410,11 @@
             document.getElementById('receipt-price').innerText = "$" + selectedMenu.price.toFixed(2);
             document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
-            document.getElementById('receipt-fortune').innerText = "★ 오늘의 점괘 ★\n" + fortunes[Math.floor(Math.random() * fortunes.length)];
+            
+            // 점괘 무작위 생성
+            const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+            document.getElementById('receipt-fortune').innerText = randomFortune;
+
             document.getElementById('btn-restart').innerText = `${total} cups, please`;
             setTimeout(() => { 
                 document.getElementById('result-area').classList.remove('hidden'); 
@@ -372,10 +426,9 @@
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
             isGameOver = false;
-            document.getElementById('main-img').src = 'cafe_counter.png';
-            document.getElementById('main-img').classList.add('large');
-            const isRetro = document.body.classList.contains('retro-mode');
-            updateText(isRetro ? "고니네 다방에 다시 오신걸 환영해양" : "Welcome back to our coffee shop");
+            const mainImg = document.getElementById('main-img');
+            mainImg.src = 'cafe_counter.png'; mainImg.classList.add('large');
+            updateText("Welcome to our coffee shop");
         }
     </script>
 </body>

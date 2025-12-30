@@ -61,7 +61,6 @@
             color: var(--text-gray-70);
             min-height: 1.5rem;
             word-break: keep-all;
-            /* 추가: 공백과 줄바꿈을 있는 그대로 보존 */
             white-space: pre-wrap; 
         }
 
@@ -190,7 +189,7 @@
                 <span class="title-coffee">coffee</span>
                 <span class="title-game">game</span>
             </div>
-            <img src="coffee.png" alt="Coffee" id="main-img" class="title-image" onerror="this.style.display='none'">
+            <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image" onerror="this.style.display='none'">
         </header>
 
         <main id="main-content">
@@ -287,24 +286,18 @@
             }
         }
 
-        // --- 수정된 updateText 함수 (띄어쓰기 오류 수정) ---
         function updateText(msg) {
             const container = document.getElementById('rpg-content');
-            
             if (typingTimer) {
                 clearTimeout(typingTimer);
                 typingTimer = null;
             }
-
             container.innerText = ''; 
             let i = 0;
-
             function typeWriter() {
                 if (i < msg.length) {
-                    // 한 글자씩 정확하게 추가
                     container.innerText += msg.charAt(i);
                     i++;
-                    // 모든 글자(공백 포함)를 50ms 간격으로 출력하여 정확도 유지
                     typingTimer = setTimeout(typeWriter, 50);
                 } else {
                     typingTimer = null;
@@ -323,6 +316,7 @@
             document.getElementById('result-area').classList.add('hidden');
             
             updateText("Please pay for it");
+            // 게임 시작 시 이미지를 기존 coffee.png로 변경
             document.getElementById('main-img').src = 'coffee.png';
             
             const display = document.getElementById('hand-display');
@@ -414,7 +408,6 @@
                 text: `Today's Payer is Member No.${finalPayerNum}! ☕\nMenu: ${selectedMenu.name} x ${currentTotalMembers}\nTotal: $${(selectedMenu.price * currentTotalMembers).toFixed(2)}`,
                 url: window.location.href
             };
-
             try {
                 if (navigator.share) {
                     await navigator.share(shareData);
@@ -430,7 +423,8 @@
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
             isGameOver = false;
-            document.getElementById('main-img').src = 'coffee.png';
+            // 리셋 시 다시 카운터 이미지로 복구
+            document.getElementById('main-img').src = 'cafe_counter.png';
             updateText("Welcome to our coffee shop");
         }
     </script>

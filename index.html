@@ -17,37 +17,94 @@
             --rpg-border: #4d4d4d;
         }
 
-        html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
+        html, body { 
+            height: 100%; margin: 0; padding: 0; 
+            touch-action: pan-x pan-y;
+            -webkit-text-size-adjust: none;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color); color: var(--primary-color);
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            overflow-x: hidden; overflow-y: auto;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: hidden; 
+            overflow-y: auto;
         }
 
-        .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .wrapper {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
 
-        /* 공통 텍스트 박스 스타일 */
+        /* RPG 텍스트 박스: 위치와 크기 고정 */
         #rpg-textbox {
-            width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
-            border-radius: 8px; padding: 15px; margin: 20px auto; box-sizing: border-box; position: relative;
+            width: 90%;
+            max-width: 450px;
+            background: white;
+            border: 4px solid var(--rpg-border);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px auto;
+            box-sizing: border-box;
+            position: relative;
         }
 
-        #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; }
-        #rpg-textbox::after { content: '▼'; position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: var(--rpg-border); animation: bounce 0.8s infinite; }
+        #rpg-content {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-gray-70);
+            min-height: 1.5rem;
+            word-break: keep-all;
+            white-space: pre-wrap; 
+        }
+
+        #rpg-textbox::after {
+            content: '▼';
+            position: absolute; bottom: 5px; right: 10px;
+            font-size: 0.8rem; color: var(--rpg-border);
+            animation: bounce 0.8s infinite;
+        }
+
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
         header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         
-        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
-        .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
+        .title-image { 
+            width: 33vw; 
+            max-width: 150px; 
+            height: auto; 
+            border-radius: 15px; 
+            margin-top: 10px; 
+        }
 
-        @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
-        .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .title-image.large {
+            width: 70vw;
+            max-width: 330px;
+            margin: 20px 0;
+        }
 
-        /* 버튼 크기 통일 */
+        @keyframes reveal-image {
+            from { clip-path: inset(0 50% 0 50%); }
+            to { clip-path: inset(0 0% 0 0%); }
+        }
+        .reveal-effect {
+            animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        main { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .option-group { margin: 20px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
+        select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid #000; border-radius: 10px; margin-left: 10px; background: white; }
+
         .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; width: 85%; max-width: 300px;}
         .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
         
@@ -56,23 +113,27 @@
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
         .shake { animation: shake-animation 0.15s infinite; }
-        @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
+        @keyframes shake-animation {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(2px, 2px); }
+            50% { transform: translate(0, 0); }
+            75% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0, 0); }
+        }
 
         .receipt {
             background: white; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 2px; text-align: left; margin: 0 auto;
-            opacity: 0; transform: translateY(20px);
+            border-radius: 2px; position: relative; opacity: 0;
+            text-align: left; margin: 0 auto;
         }
         
+        /* 결과 화면이 보일 때 영수증 애니메이션 실행 */
         .receipt.show {
-            animation: slideUpReceipt 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation: slideUpReceipt 0.6s forwards;
         }
 
-        @keyframes slideUpReceipt { 
-            from { transform: translateY(20px); opacity: 0; } 
-            to { transform: translateY(0); opacity: 1; } 
-        }
+        @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .receipt-item { display: flex; justify-content: space-between; margin: 5px 0; }
         .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
@@ -83,19 +144,16 @@
 
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: white; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.6s ease-out;
         }
         .splash-logo { width: 120px; margin-bottom: 20px; }
-        
-        /* 멤버 선택 드롭다운 스타일 */
-        .option-group { margin: 15px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
-        select { padding: 5px 10px; font-size: 1rem; border-radius: 8px; border: 2px solid #000; }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
+    <div id="splash-screen" onclick="hideSplash()">
         <img src="coffee.png" alt="Logo" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/924/924514.png'">
         <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem;">Ready for Coffee?</div>
     </div>
@@ -103,16 +161,20 @@
     <div class="wrapper">
         <header onclick="resetGame()">
             <div class="title-container">
-                <span class="title-coffee">coffee</span><span class="title-game">game</span>
+                <span class="title-coffee">coffee</span>
+                <span class="title-game">game</span>
             </div>
             <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image large" onerror="this.style.display='none'">
         </header>
 
         <main id="main-content">
-            <div id="rpg-textbox"><div id="rpg-content"></div></div>
+            <div id="rpg-textbox">
+                <div id="rpg-content"></div>
+            </div>
 
             <div id="setup-view">
-                <div class="option-group">Members:
+                <div class="option-group">
+                    Members:
                     <select id="member-select">
                         <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
                         <option value="5">5</option><option value="6">6</option><option value="7">7</option>
@@ -126,13 +188,13 @@
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
                 <div id="result-area" class="hidden">
-                    <div id="capture-area" style="padding: 15px; background: #fff;">
+                    <div id="capture-area" style="padding: 10px; background: #fff;">
                         <div class="receipt" id="receipt">
                             <div class="receipt-header">RECEIPT</div>
                             <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
                             <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                            <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
+                            <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
                             <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                             <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
@@ -144,7 +206,7 @@
                     </div>
                     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
                         <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
-                        <button class="btn-secondary" id="share-btn" onclick="shareAsImage()">Share Receipt Image</button>
+                        <button class="btn-secondary" id="id-share-btn" onclick="shareAsImage()">Share Receipt Image</button>
                     </div>
                 </div>
             </div>
@@ -166,7 +228,8 @@
                 const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
                 if (type === 'start') {
-                    osc.frequency.setValueAtTime(392, now); osc.frequency.exponentialRampToValueAtTime(523, now + 0.1);
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(392, now);
+                    osc.frequency.exponentialRampToValueAtTime(523, now + 0.1);
                     gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                     osc.start(now); osc.stop(now + 0.3);
                 } else if (type === 'safe') {
@@ -183,29 +246,57 @@
         };
 
         async function shareAsImage() {
-            const btn = document.getElementById('share-btn');
-            const target = document.getElementById('capture-area');
-            btn.innerText = "Capturing...";
-            btn.disabled = true;
-            await new Promise(r => setTimeout(r, 100));
+            const captureArea = document.getElementById('capture-area');
+            const receipt = document.getElementById('receipt');
+            const shareBtn = document.getElementById('id-share-btn');
+            
+            shareBtn.innerText = "Generating...";
+            shareBtn.disabled = true;
+
+            // 캡처 전 스타일 보정: 애니메이션/투명도 무시하고 100% 보이게 설정
+            const originalOpacity = receipt.style.opacity;
+            const originalTransform = receipt.style.transform;
+            receipt.style.opacity = "1";
+            receipt.style.transform = "none";
+
             try {
-                const canvas = await html2canvas(target, { backgroundColor: "#ffffff", scale: 3, logging: false, useCORS: true });
+                await new Promise(r => setTimeout(r, 100));
+
+                const canvas = await html2canvas(captureArea, {
+                    backgroundColor: "#ffffff",
+                    scale: 3,
+                    useCORS: true,
+                    logging: false
+                });
+
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], "coffee_receipt.png", { type: "image/png" });
+                    
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        await navigator.share({ files: [file], title: 'Coffee Game Receipt' });
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Coffee Game Result'
+                            });
+                        } catch (err) { }
                     } else {
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(blob);
                         link.download = 'coffee_receipt.png';
                         link.click();
                     }
-                    btn.innerText = "Share Receipt Image";
-                    btn.disabled = false;
+                    
+                    receipt.style.opacity = originalOpacity;
+                    receipt.style.transform = originalTransform;
+                    shareBtn.innerText = "Share Receipt Image";
+                    shareBtn.disabled = false;
                 }, 'image/png');
-            } catch (err) {
-                btn.innerText = "Share Receipt Image";
-                btn.disabled = false;
+
+            } catch (error) {
+                receipt.style.opacity = originalOpacity;
+                receipt.style.transform = originalTransform;
+                shareBtn.innerText = "Share Receipt Image";
+                shareBtn.disabled = false;
             }
         }
 
@@ -224,8 +315,11 @@
 
         window.onload = () => { setTimeout(hideSplash, 1500); };
 
-        const menuData = [{ name: "Americano", price: 4.50 }, { name: "Cafe Latte", price: 5.50 }, { name: "Specialty Coffee", price: 8.00 }];
-        let typingTimer = null, isGameOver = false, winnerIndex = -1;
+        const menuData = [
+            { name: "Americano", price: 4.50 }, { name: "Cafe Latte", price: 5.50 }, { name: "Specialty Coffee", price: 8.00 }
+        ];
+
+        let typingTimer = null; let isGameOver = false; let winnerIndex = -1;
         const safeMsgs = ["Safe!", "Phew...", "Lucky me!", "Not me!", "Survived!"];
 
         function updateText(msg) {

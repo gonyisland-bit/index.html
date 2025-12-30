@@ -31,7 +31,7 @@
             width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
             border-radius: 8px; padding: 15px; margin: 20px auto; box-sizing: border-box; position: relative;
         }
-        #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; }
+        #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
         #rpg-textbox::after { content: '▼'; position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: var(--rpg-border); animation: bounce 0.8s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
@@ -44,28 +44,14 @@
         .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
 
-        /* 네임 입력 관리 바 */
-        .name-mgmt-bar {
-            width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px;
-        }
-        .btn-clear {
-            background: none; border: 1px solid #ccc; color: #999; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase;
-        }
+        .name-mgmt-bar { width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px; }
+        .btn-clear { background: none; border: 1px solid #ccc; color: #999; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
         .btn-clear:hover { background: #eee; color: #666; }
 
         #name-input-container {
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 8px; 
-            width: 90%; 
-            max-width: 400px; 
-            margin: 0 auto 15px;
-            justify-items: center;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 90%; max-width: 400px; margin: 0 auto 15px; justify-items: center;
         }
-        .name-input {
-            padding: 8px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; 
-            outline: none; text-align: center; width: 100%; box-sizing: border-box;
-        }
+        .name-input { padding: 8px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; }
         .name-input::placeholder { text-align: center; color: #aaa; }
         .name-input:focus { border-color: #000; }
 
@@ -83,31 +69,20 @@
         .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
-        .receipt {
-            background: white; color: #333; width: 280px; padding: 25px 20px;
-            font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto;
-        }
+        .receipt { background: white; color: #333; width: 280px; padding: 25px 20px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto; }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .receipt-item { display: flex; justify-content: space-between; margin: 5px 0; }
         .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
-        .receipt-subheader { text-align: center; font-size: 0.8rem; margin-bottom: 10px; }
-        
         .receipt-total { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; margin-top: 15px; border-top: 2px solid #333; padding-top: 10px; }
         .label-customer { font-size: 0.8rem; color: #666; }
         .value-customer { color: #e63946; font-size: 1.3rem; }
-
         .fortune-area { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; text-align: center; font-size: 0.85rem; color: #555; line-height: 1.4; }
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease-out;
-        }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
         .splash-logo { width: 120px; margin-bottom: 20px; }
     </style>
 </head>
@@ -141,9 +116,7 @@
                         <option value="8">8</option><option value="9">9</option>
                     </select>
                 </div>
-                <div class="name-mgmt-bar">
-                    <button class="btn-clear" onclick="clearNames()">Clear all</button>
-                </div>
+                <div class="name-mgmt-bar"><button class="btn-clear" onclick="clearNames()">Clear all</button></div>
                 <div id="name-input-container"></div>
                 <button class="btn-main" onclick="startGame()">start</button>
             </div>
@@ -154,7 +127,7 @@
                     <div id="capture-area" style="padding: 20px; background: #ffffff;">
                         <div class="receipt" id="receipt">
                             <div class="receipt-header">RECEIPT</div>
-                            <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
+                            <div class="receipt-subheader" style="text-align: center; font-size: 0.8rem; margin-bottom: 10px;">GONY'S COFFEE SHOP</div>
                             <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                             <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
@@ -180,39 +153,39 @@
     </div>
 
     <script>
-        const fortunes = [
-            "오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", 
-            "지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.",
-            "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"
-        ];
-
+        const fortunes = ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"];
         let memberNames = [];
-        
-        // 이름 초기화 함수
-        function clearNames() {
-            localStorage.removeItem('savedCoffeeNames');
-            const inputs = document.querySelectorAll('.name-input');
-            inputs.forEach(input => input.value = '');
+        let typeTimeout;
+
+        // 타자기 효과 함수
+        function updateText(msg) {
+            clearTimeout(typeTimeout);
+            const content = document.getElementById('rpg-content');
+            content.innerText = '';
+            let i = 0;
+            function typing() {
+                if (i < msg.length) {
+                    content.innerText += msg.charAt(i);
+                    i++;
+                    typeTimeout = setTimeout(typing, 50);
+                }
+            }
+            typing();
         }
+
+        function clearNames() { localStorage.removeItem('savedCoffeeNames'); generateNameInputs(); }
 
         function generateNameInputs() {
             const count = parseInt(document.getElementById('member-select').value);
             const container = document.getElementById('name-input-container');
             container.innerHTML = '';
-            
-            // 저장된 이름 불러오기
             const savedData = localStorage.getItem('savedCoffeeNames');
             const savedNames = savedData ? JSON.parse(savedData) : [];
-
             for (let i = 0; i < count; i++) {
                 const input = document.createElement('input');
                 input.type = 'text'; input.className = 'name-input';
-                input.placeholder = `Name ${i+1}`;
-                input.id = `input-name-${i}`;
-                // 저장된 이름이 있으면 넣어줌
-                if (savedNames[i]) {
-                    input.value = savedNames[i];
-                }
+                input.placeholder = `Name ${i+1}`; input.id = `input-name-${i}`;
+                if (savedNames[i]) input.value = savedNames[i];
                 container.appendChild(input);
             }
         }
@@ -259,25 +232,17 @@
         window.onload = () => { generateNameInputs(); setTimeout(hideSplash, 1500); };
 
         let isGameOver = false; let winnerIndex = -1;
-        function updateText(msg) { document.getElementById('rpg-content').innerText = msg; }
 
         function startGame() {
             const count = parseInt(document.getElementById('member-select').value);
-            memberNames = [];
-            const namesToSave = [];
-
+            memberNames = []; const namesToSave = [];
             for (let i = 0; i < count; i++) {
                 const val = document.getElementById(`input-name-${i}`).value.trim();
                 memberNames.push(val || `Member ${i+1}`);
-                namesToSave.push(val); // 빈 값도 위치 유지를 위해 저장
+                namesToSave.push(val);
             }
-
-            // 로컬 스토리지에 이름 저장
             localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
-
-            AudioEngine.play('start');
-            winnerIndex = Math.floor(Math.random() * count);
-            isGameOver = false;
+            AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * count); isGameOver = false;
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
@@ -297,11 +262,18 @@
 
         function openHand(index, total) {
             if (isGameOver) return;
-            const handImg = document.getElementsByClassName('hand-img')[index];
+            const hands = document.getElementsByClassName('hand-img');
+            const handImg = hands[index];
             if (handImg.dataset.opened === "true") return;
             if (index === winnerIndex) {
                 isGameOver = true; AudioEngine.play('fail');
                 handImg.src = 'hand_money.png'; handImg.classList.add('shake');
+                // 박수치는 GIF 적용 로직
+                for (let i = 0; i < hands.length; i++) {
+                    if (i !== winnerIndex) {
+                        hands[i].src = 'hand_clap.gif';
+                    }
+                }
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 showFinish(total, memberNames[index]);

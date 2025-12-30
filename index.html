@@ -91,6 +91,15 @@
             margin: 20px 0;
         }
 
+        /* 열리는 애니메이션 추가 */
+        @keyframes reveal-image {
+            from { clip-path: inset(0 50% 0 50%); }
+            to { clip-path: inset(0 0% 0 0%); }
+        }
+        .reveal-effect {
+            animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
         main { width: 100%; display: flex; flex-direction: column; align-items: center; }
         .option-group { margin: 20px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
         select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid #000; border-radius: 10px; margin-left: 10px; background: white; }
@@ -102,7 +111,6 @@
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 100px; }
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
-        /* 당첨 시 손 떨림 애니메이션 복구 */
         .shake {
             animation: shake-animation 0.15s infinite;
         }
@@ -208,6 +216,13 @@
                 splash.style.pointerEvents = 'none';
                 setTimeout(() => {
                     splash.classList.add('hidden');
+                    
+                    // 이미지 열림 효과 트리거
+                    const mainImg = document.getElementById('main-img');
+                    mainImg.classList.remove('reveal-effect');
+                    void mainImg.offsetWidth;
+                    mainImg.classList.add('reveal-effect');
+                    
                     updateText("Welcome to our coffee shop");
                 }, 600);
             }
@@ -257,6 +272,7 @@
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'coffee.png';
             mainImg.classList.remove('large'); 
+            mainImg.classList.remove('reveal-effect'); // 게임 중엔 효과 제거
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
@@ -287,16 +303,13 @@
 
             if (index === winnerIndex) {
                 isGameOver = true;
-                
-                // 1. 당첨자: 손 이미지 교체 + 떨림 애니메이션 추가
                 handImg.src = 'hand_money.png';
                 handImg.classList.add('shake');
                 
-                // 2. 나머지 인원: 박수치는 손으로 변경
                 for (let i = 0; i < total; i++) {
                     if (i !== winnerIndex) {
                         const otherHand = document.getElementById(`hand-${i}`);
-                        otherHand.src = 'hand_clap.gif'; // 박수치는 이미지/GIF로 변경
+                        otherHand.src = 'hand_clap.gif';
                     }
                 }
 
@@ -335,9 +348,16 @@
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
             isGameOver = false;
+            
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'cafe_counter.png';
             mainImg.classList.add('large'); 
+            
+            // 효과 트리거
+            mainImg.classList.remove('reveal-effect');
+            void mainImg.offsetWidth; 
+            mainImg.classList.add('reveal-effect');
+            
             updateText("Welcome to our coffee shop");
         }
     </script>

@@ -44,9 +44,14 @@
         .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
 
-        /* [추가] 팀 프리셋 스타일 */
-        .team-presets { width: 90%; max-width: 400px; display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .preset-btn { background: #f8f8f8; border: 1px solid #ddd; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
+        /* [수정] 팀 프리셋 가운데 정렬 */
+        .team-presets { 
+            width: 90%; max-width: 450px; 
+            display: flex; flex-wrap: wrap; 
+            justify-content: center; /* 가운데 정렬 */
+            gap: 8px; margin-bottom: 20px; padding: 5px;
+        }
+        .preset-btn { background: #f8f8f8; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
         .preset-btn.active { background: #000; color: #fff; border-color: #000; }
 
         .name-mgmt-bar { width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px; gap: 5px; }
@@ -76,8 +81,14 @@
         .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
-        /* [추가] 쿠폰 보드 스타일 */
-        .coupon-board { width: 90%; max-width: 400px; background: #fffbe6; border: 2px dashed #d4a373; border-radius: 10px; padding: 10px; margin: 20px auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+        /* [수정] 쿠폰 도장 5개씩 줄바꿈 */
+        .coupon-board { 
+            width: 80%; max-width: 250px; /* 폭을 줄여서 자연스럽게 5개씩 배치 */
+            background: #fffbe6; border: 2px dashed #d4a373; border-radius: 10px; 
+            padding: 15px; margin: 20px auto; 
+            display: grid; grid-template-columns: repeat(5, 1fr); /* 5열 고정 */
+            gap: 10px; justify-items: center;
+        }
         .stamp-slot { width: 35px; height: 35px; border: 2px solid #e9edc9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #e9edc9; }
         .stamp-slot.active { background: #d4a373; border-color: #d4a373; color: white; animation: stamp-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes stamp-pop { from { transform: scale(2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -129,11 +140,7 @@
 
             <div id="setup-view">
                 <div class="team-presets" id="team-presets">
-                    <button class="preset-btn active" onclick="loadTeam('Default')">Main</button>
-                    <button class="preset-btn" onclick="loadTeam('Team A')">Team A</button>
-                    <button class="preset-btn" onclick="loadTeam('Team B')">Team B</button>
-                    <button class="preset-btn" onclick="saveCurrentTeam()">+ Save Current</button>
-                </div>
+                    </div>
 
                 <div class="option-group">
                     Members:
@@ -222,20 +229,16 @@
             typing();
         }
 
-        // [추가] 팀 관리 기능
         function loadTeam(teamName) {
             currentTeamName = teamName;
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            const savedNames = teams[teamName] || [];
+            const savedNames = (teamName === 'Default') ? JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]') : teams[teamName];
             
-            if (savedNames.length > 0) {
+            if (savedNames && savedNames.length > 0) {
                 document.getElementById('member-select').value = savedNames.length;
                 generateNameInputs(savedNames);
             }
-            
-            document.querySelectorAll('.preset-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText === teamName);
-            });
+            renderTeamTabs();
         }
 
         function saveCurrentTeam() {
@@ -247,10 +250,9 @@
             let teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
             teams[name] = names;
             localStorage.setItem('coffeeTeams', JSON.stringify(teams));
-            location.reload(); // 버튼 갱신을 위해 리로드
+            renderTeamTabs();
         }
 
-        // [추가] 쿠폰 도장 시스템
         function updateCoupon() {
             let count = parseInt(localStorage.getItem('gameCount') || '0');
             count++;
@@ -342,9 +344,10 @@
                 memberNames.push(val || `Member ${i+1}`);
                 namesToSave.push(val);
             }
-            localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
+            if (currentTeamName === 'Default') {
+                localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
+            }
             AudioEngine.play('start'); 
-            
             winnerIndex = Math.floor(Math.random() * count);
             isLuckyRound = Math.random() < 0.1; 
             isGameOver = false;
@@ -395,7 +398,7 @@
                 confetti({ particleCount: 200, spread: 100, colors: ['#FFD700', '#FFA500'] });
                 updateText("LUCKY! Everyone is SAFE today! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden');
-                updateCoupon(); // 게임 카운트 증가
+                updateCoupon();
                 return;
             }
 
@@ -406,7 +409,7 @@
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 updateStats(memberNames[index]);
-                updateCoupon(); // 게임 카운트 증가
+                updateCoupon();
                 showFinish(total, memberNames[index]);
             } else {
                 AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
@@ -435,6 +438,7 @@
             updateText("Welcome to Gony's Coffee");
             generateNameInputs();
             renderCoupon();
+            renderTeamTabs();
         }
 
         function hideSplash() {

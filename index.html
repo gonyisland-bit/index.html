@@ -68,10 +68,6 @@
         .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
-        /* 황금손 효과 */
-        .golden-hand { filter: drop-shadow(0 0 10px gold) sepia(1) saturate(5) hue-rotate(10deg); animation: pulse-gold 1s infinite alternate; }
-        @keyframes pulse-gold { from { transform: scale(1); } to { transform: scale(1.05); } }
-
         .receipt { background: white; color: #333; width: 280px; padding: 25px 20px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto; }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -144,6 +140,9 @@
 
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
+                <div id="lucky-area" class="hidden">
+                    <button class="btn-main" onclick="resetGame()" style="margin-top: 25px;">Lucky Round! Restart</button>
+                </div>
                 <div id="result-area" class="hidden">
                     <div id="capture-area" style="padding: 20px; background: #ffffff;">
                         <div class="receipt" id="receipt">
@@ -164,7 +163,7 @@
                         </div>
                     </div>
                     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                        <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
+                        <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;">Next Round</button>
                         <button class="btn-secondary" id="id-share-btn" onclick="shareAsImage()">Share Receipt Image</button>
                     </div>
                 </div>
@@ -182,7 +181,7 @@
         let typeTimeout;
         let isGameOver = false; 
         let winnerIndex = -1;
-        let goldenHandIndex = -1;
+        let isLuckyRound = false;
 
         function updateText(msg) {
             clearTimeout(typeTimeout);
@@ -253,7 +252,7 @@
                 if (type === 'start') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.3); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.3); }
                 else if (type === 'safe') { osc.frequency.setValueAtTime(880, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.1); }
                 else if (type === 'fail') { osc.frequency.setValueAtTime(349.23, now); osc.frequency.linearRampToValueAtTime(110, now + 0.6); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
-                else if (type === 'gold') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now+0.1); osc.frequency.setValueAtTime(783.99, now+0.2); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.4); }
+                else if (type === 'lucky') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now+0.1); osc.frequency.setValueAtTime(783.99, now+0.2); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.4); }
             }
         };
 
@@ -268,16 +267,16 @@
             localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
             AudioEngine.play('start'); 
             
-            // 초기화
             winnerIndex = Math.floor(Math.random() * count);
-            goldenHandIndex = (Math.random() < 0.1) ? Math.floor(Math.random() * count) : -1; // 10% 확률 골든핸드
+            isLuckyRound = Math.random() < 0.1; // 10% 확률 럭키 라운드
             isGameOver = false;
 
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
+            document.getElementById('lucky-area').classList.add('hidden');
             document.getElementById('receipt').classList.remove('show');
-            updateText(goldenHandIndex !== -1 ? "Look! A Golden Hand appeared!" : "Who will pay? Pick a hand!");
+            updateText("Who will pay? Pick a hand!");
             document.getElementById('main-img').src = 'coffee.png'; document.getElementById('main-img').classList.remove('large');
             
             const display = document.getElementById('hand-display');
@@ -286,7 +285,6 @@
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
                 const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png';
                 handImg.className = 'hand-img'; 
-                if (i === goldenHandIndex) handImg.classList.add('golden-hand');
                 handImg.onclick = () => openHand(i, count);
                 const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
                 wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
@@ -299,13 +297,13 @@
             const handImg = hands[index];
             if (handImg.dataset.opened === "true") return;
 
-            // 골든 핸드 클릭 시 (전원 세이프)
-            if (index === goldenHandIndex) {
-                isGameOver = true; AudioEngine.play('gold');
+            // 10% 확률로 럭키 라운드 발동 (누구를 누르든 상관없이 발생)
+            if (isLuckyRound) {
+                isGameOver = true; AudioEngine.play('lucky');
                 handImg.src = 'hand_open.png';
                 confetti({ particleCount: 200, spread: 100, colors: ['#FFD700', '#FFA500'] });
                 updateText("LUCKY! Everyone is SAFE today! 🌟");
-                setTimeout(() => { if(confirm("Golden Hand Effect: No one pays! Re-start?")) resetGame(); }, 2000);
+                document.getElementById('lucky-area').classList.remove('hidden');
                 return;
             }
 
@@ -334,7 +332,6 @@
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
-            document.getElementById('btn-restart').innerText = "Next Round";
             setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); }, 600);
         }
 

@@ -91,7 +91,6 @@
             margin: 20px 0;
         }
 
-        /* 열리는 애니메이션 추가 */
         @keyframes reveal-image {
             from { clip-path: inset(0 50% 0 50%); }
             to { clip-path: inset(0 0% 0 0%); }
@@ -196,7 +195,7 @@
                         <div class="receipt-total" style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;">
                             <span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span>
                         </div>
-                        <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
+                        <p id="receipt-lucky-msg" style="font-size: 0.7rem; text-align: center; margin-top: 15px; color: #666; font-style: italic;"></p>
                     </div>
                     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
                         <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
@@ -209,6 +208,30 @@
     </div>
 
     <script>
+        // [사운드 설정]
+        const sounds = {
+            click: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'),
+            win: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
+            print: new Audio('https://assets.mixkit.co/active_storage/sfx/1545/1545-preview.mp3')
+        };
+
+        // [영수증 랜덤 문구]
+        const luckyMsgs = [
+            "TODAY'S LUCK: JUST BAD.",
+            "BETTER LUCK NEXT TIME!",
+            "YOU BOUGHT HAPPINESS FOR OTHERS!",
+            "THE UNIVERSE WANTED YOUR MONEY.",
+            "DON'T CRY. IT'S JUST COFFEE.",
+            "CONGRATS! YOU ARE THE WINNER(OF PAYING).",
+            "YOUR WALLET IS LIGHTER NOW.",
+            "GENEROSITY IS YOUR MIDDLE NAME."
+        ];
+
+        function playSfx(name) {
+            sounds[name].currentTime = 0;
+            sounds[name].play().catch(e => console.log("Audio play blocked"));
+        }
+
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
@@ -216,21 +239,16 @@
                 splash.style.pointerEvents = 'none';
                 setTimeout(() => {
                     splash.classList.add('hidden');
-                    
-                    // 이미지 열림 효과 트리거
                     const mainImg = document.getElementById('main-img');
                     mainImg.classList.remove('reveal-effect');
                     void mainImg.offsetWidth;
                     mainImg.classList.add('reveal-effect');
-                    
                     updateText("Welcome to our coffee shop");
                 }, 600);
             }
         }
 
-        window.onload = () => {
-            setTimeout(hideSplash, 1500);
-        };
+        window.onload = () => { setTimeout(hideSplash, 1500); };
 
         const menuData = [
             { name: "Americano", price: 4.50 },
@@ -259,6 +277,9 @@
         }
 
         function startGame() {
+            // 사용자 상호작용 시점에 오디오 잠금 해제
+            playSfx('click'); 
+
             const memberCount = parseInt(document.getElementById('member-select').value);
             winnerIndex = Math.floor(Math.random() * memberCount);
             isGameOver = false;
@@ -272,7 +293,7 @@
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'coffee.png';
             mainImg.classList.remove('large'); 
-            mainImg.classList.remove('reveal-effect'); // 게임 중엔 효과 제거
+            mainImg.classList.remove('reveal-effect');
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
@@ -303,6 +324,8 @@
 
             if (index === winnerIndex) {
                 isGameOver = true;
+                playSfx('win'); // 당첨 사운드
+                
                 handImg.src = 'hand_money.png';
                 handImg.classList.add('shake');
                 
@@ -317,6 +340,7 @@
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 showFinish(total, index + 1);
             } else {
+                playSfx('click'); // 안전 사운드
                 handImg.src = 'hand_open.png';
                 handImg.dataset.opened = "true";
                 updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
@@ -328,8 +352,10 @@
             if(typeof confetti === 'function') {
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             }
+            
             const selectedMenu = menuData[Math.floor(Math.random() * menuData.length)];
             const now = new Date();
+            
             document.getElementById('receipt-date').innerText = now.toLocaleDateString();
             document.getElementById('receipt-order-no').innerText = "NO. " + Math.floor(1000 + Math.random() * 9000);
             document.getElementById('receipt-menu').innerText = selectedMenu.name;
@@ -339,21 +365,24 @@
             document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
             document.getElementById('btn-restart').innerText = `${total} cups, please`;
             
+            // 랜덤 문구 적용
+            document.getElementById('receipt-lucky-msg').innerText = luckyMsgs[Math.floor(Math.random() * luckyMsgs.length)];
+            
             setTimeout(() => { 
+                playSfx('print'); // 영수증 출력 사운드
                 document.getElementById('result-area').classList.remove('hidden'); 
             }, 600);
         }
 
         function resetGame() {
+            playSfx('click');
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
             isGameOver = false;
-            
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'cafe_counter.png';
             mainImg.classList.add('large'); 
             
-            // 효과 트리거
             mainImg.classList.remove('reveal-effect');
             void mainImg.offsetWidth; 
             mainImg.classList.add('reveal-effect');

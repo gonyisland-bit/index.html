@@ -17,16 +17,10 @@
             --rpg-border: #4d4d4d;
         }
 
-        html, body { 
-            height: 100%; margin: 0; padding: 0; 
-            touch-action: pan-x pan-y;
-            -webkit-text-size-adjust: none;
-        }
-
+        html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--primary-color);
+            background-color: var(--bg-color); color: var(--primary-color);
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
             overflow-x: hidden; overflow-y: auto;
         }
@@ -37,7 +31,6 @@
             width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
             border-radius: 8px; padding: 15px; margin: 20px auto; box-sizing: border-box; position: relative;
         }
-
         #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; }
         #rpg-textbox::after { content: '▼'; position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: var(--rpg-border); animation: bounce 0.8s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
@@ -48,19 +41,18 @@
         
         .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
         .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
-
-        @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
         .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
 
-        main { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        
-        /* 이름 입력 칸 스타일 */
+        /* 네임 입력창: 한 줄에 3개 배치 및 가운데 정렬 */
         #name-input-container {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 85%; max-width: 400px; margin: 15px 0;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; width: 90%; max-width: 450px; margin: 15px 0;
         }
         .name-input {
-            padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; outline: none;
+            padding: 8px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; 
+            outline: none; text-align: center; width: 100%; box-sizing: border-box;
         }
+        .name-input::placeholder { text-align: center; color: #aaa; }
         .name-input:focus { border-color: #000; }
 
         .option-group { margin: 10px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
@@ -88,8 +80,13 @@
         .receipt-item { display: flex; justify-content: space-between; margin: 5px 0; }
         .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
         .receipt-subheader { text-align: center; font-size: 0.8rem; margin-bottom: 10px; }
-        .fortune-area { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; text-align: center; font-size: 0.85rem; color: #555; line-height: 1.4; }
+        
+        /* CUSTOMER 레이아웃 수정 */
+        .receipt-total { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; margin-top: 15px; border-top: 2px solid #333; padding-top: 10px; }
+        .label-customer { font-size: 0.8rem; color: #666; }
+        .value-customer { color: #e63946; font-size: 1.3rem; }
 
+        .fortune-area { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; text-align: center; font-size: 0.85rem; color: #555; line-height: 1.4; }
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
@@ -127,7 +124,8 @@
                     Members:
                     <select id="member-select" onchange="generateNameInputs()">
                         <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
-                        <option value="5">5</option><option value="6">6</option>
+                        <option value="5">5</option><option value="6">6</option><option value="7">7</option>
+                        <option value="8">8</option><option value="9">9</option>
                     </select>
                 </div>
                 <div id="name-input-container"></div>
@@ -147,9 +145,9 @@
                             <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                             <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
-                            <div class="receipt-total" style="display: flex; flex-direction: column; align-items: flex-end; font-weight: bold; margin-top: 15px; border-top: 2px solid #333; padding-top: 10px;">
-                                <span style="font-size: 0.8rem; color: #666;">PAYER</span>
-                                <span id="receipt-payer" style="color: #e63946; font-size: 1.4rem;"></span>
+                            <div class="receipt-total">
+                                <span class="label-customer">CUSTOMER</span>
+                                <span id="receipt-payer" class="value-customer"></span>
                             </div>
                             <div class="fortune-area" id="receipt-fortune"></div>
                             <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
@@ -168,7 +166,7 @@
     <script>
         const fortunes = [
             "오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", 
-            "당신의 지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.",
+            "지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.",
             "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"
         ];
 

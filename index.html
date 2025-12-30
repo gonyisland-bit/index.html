@@ -17,92 +17,34 @@
             --rpg-border: #4d4d4d;
         }
 
-        html, body { 
-            height: 100%; margin: 0; padding: 0; 
-            touch-action: pan-x pan-y;
-            -webkit-text-size-adjust: none;
-        }
-
+        html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--primary-color);
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            justify-content: flex-start;
-            overflow-x: hidden; 
-            overflow-y: auto;
+            background-color: var(--bg-color); color: var(--primary-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            overflow-x: hidden; overflow-y: auto;
         }
 
-        .wrapper {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
+        .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; }
 
         #rpg-textbox {
-            width: 90%;
-            max-width: 450px;
-            background: white;
-            border: 4px solid var(--rpg-border);
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px auto;
-            box-sizing: border-box;
-            position: relative;
+            width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
+            border-radius: 8px; padding: 15px; margin: 20px auto; box-sizing: border-box; position: relative;
         }
 
-        #rpg-content {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-gray-70);
-            min-height: 1.5rem;
-            word-break: keep-all;
-            white-space: pre-wrap; 
-        }
-
-        #rpg-textbox::after {
-            content: '▼';
-            position: absolute; bottom: 5px; right: 10px;
-            font-size: 0.8rem; color: var(--rpg-border);
-            animation: bounce 0.8s infinite;
-        }
-
+        #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; }
+        #rpg-textbox::after { content: '▼'; position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: var(--rpg-border); animation: bounce 0.8s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
         header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         
-        .title-image { 
-            width: 33vw; 
-            max-width: 150px; 
-            height: auto; 
-            border-radius: 15px; 
-            margin-top: 10px; 
-        }
+        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
+        .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
 
-        .title-image.large {
-            width: 70vw;
-            max-width: 330px;
-            margin: 20px 0;
-        }
-
-        @keyframes reveal-image {
-            from { clip-path: inset(0 50% 0 50%); }
-            to { clip-path: inset(0 0% 0 0%); }
-        }
-        .reveal-effect {
-            animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        main { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .option-group { margin: 20px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
-        select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid #000; border-radius: 10px; margin-left: 10px; background: white; }
+        @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
+        .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
         .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; width: 85%; max-width: 300px;}
         .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
@@ -112,23 +54,24 @@
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
         .shake { animation: shake-animation 0.15s infinite; }
-        @keyframes shake-animation {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(2px, 2px); }
-            50% { transform: translate(0, 0); }
-            75% { transform: translate(-2px, 2px); }
-            100% { transform: translate(0, 0); }
-        }
+        @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
-        /* 공유 시 흰색 배경을 확실히 하기 위해 스타일 보강 */
+        /* 영수증 스타일 및 애니메이션 */
         .receipt {
             background: white; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 2px; position: relative; opacity: 0;
-            animation: slideUpReceipt 0.6s forwards; text-align: left;
-            margin: 0 auto;
+            border-radius: 2px; text-align: left; margin: 0 auto;
+            opacity: 0; transform: translateY(20px);
         }
-        @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .receipt.show {
+            animation: slideUpReceipt 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes slideUpReceipt { 
+            from { transform: translateY(20px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
 
         .receipt-item { display: flex; justify-content: space-between; margin: 5px 0; }
         .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
@@ -139,8 +82,7 @@
 
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.6s ease-out;
         }
         .splash-logo { width: 120px; margin-bottom: 20px; }
@@ -156,25 +98,20 @@
     <div class="wrapper">
         <header onclick="resetGame()">
             <div class="title-container">
-                <span class="title-coffee">coffee</span>
-                <span class="title-game">game</span>
+                <span class="title-coffee">coffee</span><span class="title-game">game</span>
             </div>
             <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image large" onerror="this.style.display='none'">
         </header>
 
         <main id="main-content">
-            <div id="rpg-textbox">
-                <div id="rpg-content"></div>
-            </div>
+            <div id="rpg-textbox"><div id="rpg-content"></div></div>
 
             <div id="setup-view">
-                <div class="option-group">
-                    Members:
+                <div class="option-group">Members:
                     <select id="member-select">
                         <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
                         <option value="5">5</option><option value="6">6</option><option value="7">7</option>
                         <option value="8">8</option><option value="9">9</option><option value="10">10</option>
-                        <option value="11">11</option><option value="12">12</option>
                     </select>
                 </div>
                 <button class="btn-main" onclick="startGame()">start</button>
@@ -183,13 +120,13 @@
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
                 <div id="result-area" class="hidden">
-                    <div id="capture-area" style="padding: 10px; background: #fff;">
+                    <div id="capture-area" style="padding: 15px; background: #fff;">
                         <div class="receipt" id="receipt">
                             <div class="receipt-header">RECEIPT</div>
                             <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
                             <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                            <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
+                            <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
                             <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                             <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
@@ -201,7 +138,7 @@
                     </div>
                     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
                         <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
-                        <button class="btn-secondary" id="id-share-btn" onclick="shareAsImage()">Share Receipt Image</button>
+                        <button class="btn-secondary" id="share-btn" onclick="shareAsImage()">Share Receipt Image</button>
                     </div>
                 </div>
             </div>
@@ -224,8 +161,7 @@
                 const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
                 if (type === 'start') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(392, now);
-                    osc.frequency.exponentialRampToValueAtTime(523, now + 0.1);
+                    osc.frequency.setValueAtTime(392, now); osc.frequency.exponentialRampToValueAtTime(523, now + 0.1);
                     gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                     osc.start(now); osc.stop(now + 0.3);
                 } else if (type === 'safe') {
@@ -241,57 +177,52 @@
             }
         };
 
-        // --- [공유 및 이미지 변환 로직] ---
+        // --- [핵심 수정: 선명한 캡처 로직] ---
         async function shareAsImage() {
-            const captureArea = document.getElementById('capture-area');
-            const shareBtn = document.getElementById('id-share-btn');
+            const btn = document.getElementById('share-btn');
+            const target = document.getElementById('capture-area');
             
-            shareBtn.innerText = "Generating...";
-            shareBtn.disabled = true;
+            btn.innerText = "Capturing...";
+            btn.disabled = true;
+
+            // 애니메이션이 확실히 끝난 뒤(또는 투명도가 1인 상태) 캡처하기 위해 50ms 대기
+            await new Promise(r => setTimeout(r, 50));
 
             try {
-                // 1. 영수증 영역을 캔버스로 변환
-                const canvas = await html2canvas(captureArea, {
+                const canvas = await html2canvas(target, {
                     backgroundColor: "#ffffff",
-                    scale: 2 // 화질 향상
+                    scale: 3, // 선명도를 위해 스케일 업
+                    logging: false,
+                    useCORS: true
                 });
 
-                // 2. 캔버스를 Blob(이미지 파일)으로 변환
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], "coffee_receipt.png", { type: "image/png" });
                     
-                    // 3. Web Share API 확인 (모바일 브라우저 전용)
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try {
-                            await navigator.share({
-                                files: [file],
-                                title: 'Coffee Game Result',
-                                text: 'Look who bought the coffee today!'
-                            });
-                        } catch (err) {
-                            console.log("Share failed:", err);
-                        }
+                        await navigator.share({
+                            files: [file],
+                            title: 'Coffee Game Receipt',
+                            text: 'Guess who paid for coffee!'
+                        });
                     } else {
-                        // 공유 기능을 지원하지 않는 경우 (PC 등) 다운로드 유도
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(blob);
                         link.download = 'coffee_receipt.png';
                         link.click();
-                        alert("Image saved! Share this file with your friends.");
+                        alert("Image saved to your gallery!");
                     }
-                    shareBtn.innerText = "Share Receipt Image";
-                    shareBtn.disabled = false;
+                    btn.innerText = "Share Receipt Image";
+                    btn.disabled = false;
                 }, 'image/png');
-
-            } catch (error) {
-                console.error("Capture failed:", error);
-                alert("Could not generate image. Please try again.");
-                shareBtn.innerText = "Share Receipt Image";
-                shareBtn.disabled = false;
+            } catch (err) {
+                alert("Capture failed. Please try again.");
+                btn.innerText = "Share Receipt Image";
+                btn.disabled = false;
             }
         }
 
-        // --- [기존 로직 유지] ---
+        // --- [게임 로직] ---
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
@@ -299,21 +230,14 @@
                 setTimeout(() => {
                     splash.classList.add('hidden');
                     const mainImg = document.getElementById('main-img');
-                    mainImg.classList.remove('reveal-effect');
-                    void mainImg.offsetWidth;
                     mainImg.classList.add('reveal-effect');
                     updateText("Welcome to our coffee shop");
                 }, 600);
             }
         }
 
-        window.onload = () => { setTimeout(hideSplash, 1500); };
-
-        const menuData = [
-            { name: "Americano", price: 4.50 }, { name: "Cafe Latte", price: 5.50 }, { name: "Specialty Coffee", price: 8.00 }
-        ];
-
-        let typingTimer = null; let isGameOver = false; let winnerIndex = -1;
+        const menuData = [{ name: "Americano", price: 4.50 }, { name: "Cafe Latte", price: 5.50 }, { name: "Specialty Coffee", price: 8.00 }];
+        let typingTimer = null, isGameOver = false, winnerIndex = -1;
         const safeMsgs = ["Safe!", "Phew...", "Lucky me!", "Not me!", "Survived!"];
 
         function updateText(msg) {
@@ -334,6 +258,8 @@
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
+            document.getElementById('receipt').classList.remove('show'); // 영수증 초기화
+            
             updateText("Please pay for it");
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'coffee.png'; mainImg.classList.remove('large');
@@ -381,7 +307,11 @@
             document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
             document.getElementById('btn-restart').innerText = `${total} cups, please`;
-            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); }, 600);
+            
+            setTimeout(() => { 
+                document.getElementById('result-area').classList.remove('hidden'); 
+                document.getElementById('receipt').classList.add('show'); // 영수증 애니메이션 시작
+            }, 600);
         }
 
         function resetGame() {

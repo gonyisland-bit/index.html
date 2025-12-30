@@ -46,47 +46,46 @@
         .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
         .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
 
-        .team-presets { 
-            width: 90%; max-width: 450px; 
-            display: flex; flex-wrap: wrap; justify-content: center;
-            gap: 8px; margin-bottom: 15px; padding: 5px;
-        }
-        .preset-btn { background: #f0f0f0; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; color: #666; transition: 0.2s; }
-        .preset-btn.active { background: #000; color: #fff; }
-
         .setup-card {
             width: 90%; max-width: 450px;
             background: var(--tablet-bg); border: 2px solid var(--tablet-border); border-radius: 24px;
-            padding: 25px; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.03); margin: 0 auto 20px;
+            padding: 20px; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.03); margin: 0 auto 20px;
             display: flex; flex-direction: column; align-items: center;
         }
 
-        .option-group { margin-bottom: 10px; font-size: 1rem; font-weight: 800; color: #333; }
-        select { padding: 8px 15px; font-size: 1rem; border: 1.5px solid #ddd; border-radius: 10px; margin-left: 10px; background: white; outline: none;}
+        /* 팝업 선택기 버튼 스타일 */
+        .picker-group { width: 100%; display: flex; justify-content: space-between; gap: 10px; margin-bottom: 15px; }
+        .picker-btn { 
+            flex: 1; padding: 12px; border: 1.5px solid #eee; border-radius: 12px; 
+            background: white; font-weight: 800; font-size: 0.8rem; color: #333; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .picker-btn::after { content: '▾'; color: #ccc; }
 
-        /* [수정] 박스 없는 간결한 버튼 및 간격 조정 */
-        .name-mgmt-bar { width: 100%; display: flex; justify-content: center; gap: 25px; margin: 12px 0 5px; }
+        .name-mgmt-bar { width: 100%; display: flex; justify-content: center; gap: 25px; margin: 10px 0 2px; }
         .btn-text { background: none; border: none; color: #aaa; font-size: 0.75rem; padding: 5px; cursor: pointer; transition: 0.2s; font-weight: 700; letter-spacing: 0.5px; }
         .btn-text:hover { color: #000; }
-        .btn-text.save { color: #888; }
 
-        /* [수정] 구분선 마진 조정 (버튼과 가깝게) */
-        .divider { width: 100%; height: 1px; background-color: var(--divider-color); margin: 2px 0 20px; }
+        .divider { width: 100%; height: 1px; background-color: var(--divider-color); margin: 0 0 20px; }
 
         #name-input-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin: 0 auto 10px; }
         .name-input { padding: 12px 5px; border: 1.5px solid #eee; border-radius: 10px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; background: white; }
+
+        /* 그룹 목록 모달 */
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 10000; display: none; align-items: center; justify-content: center; }
+        .modal-content { background: white; width: 85%; max-width: 320px; border-radius: 20px; padding: 20px; box-sizing: border-box; }
+        .modal-title { font-weight: 800; margin-bottom: 15px; font-size: 1rem; }
+        .group-list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #f5f5f5; }
+        .group-name-link { flex: 1; text-align: left; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
+        .delete-group-btn { color: #ccc; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
 
         .stats-container { width: 100%; background: #f1f1f1; padding: 15px; border-radius: 12px; font-size: 0.8rem; box-sizing: border-box; text-align: center; margin-top: 20px; }
         .stats-title { font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: #888; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 6px; color: #555; }
 
-        /* 손 애니메이션 */
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px 10px; width: 100%; box-sizing: border-box; }
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 20px); min-width: 90px; }
-        .hand-img { 
-            width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; 
-            -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; 
-        }
+        .hand-img { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .tension-shake { animation: tension-animation 0.1s infinite !important; }
         @keyframes tension-animation { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
@@ -94,12 +93,7 @@
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         .member-name { font-size: 0.9rem; font-weight: 800; margin-top: 8px; color: #333; }
 
-        /* 영수증 디자인 */
-        .receipt { 
-            background: #fff; color: #333; width: 280px; padding: 30px 25px; 
-            font-family: 'Courier Prime', monospace; box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
-            border-radius: 2px; position: relative; opacity: 0; margin: 0 auto;
-        }
+        .receipt { background: #fff; color: #333; width: 280px; padding: 30px 25px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border-radius: 2px; position: relative; opacity: 0; margin: 0 auto; }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -107,10 +101,7 @@
         .receipt-subheader { font-size: 0.75rem; margin-bottom: 20px; text-align: center; color: #666; }
         .receipt-line { border-top: 1px dashed #bbb; margin: 12px 0; width: 100%; }
         .receipt-item { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; width: 100%; }
-        .receipt-total { 
-            display: flex; flex-direction: column; align-items: center; 
-            margin: 20px 0; padding: 10px 0; border-top: 2px solid #333; border-bottom: 2px solid #333;
-        }
+        .receipt-total { display: flex; flex-direction: column; align-items: center; margin: 20px 0; padding: 10px 0; border-top: 2px solid #333; border-bottom: 2px solid #333; }
         .label-customer { font-size: 0.7rem; font-weight: 700; color: #888; margin-bottom: 5px; }
         .value-customer { font-size: 1.8rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; }
         .fortune-area { font-size: 0.75rem; line-height: 1.5; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; }
@@ -131,6 +122,14 @@
         <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem;">Ready for Coffee?</div>
     </div>
 
+    <div id="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-title" id="modal-title">Select Group</div>
+            <div id="modal-list-container"></div>
+            <button class="btn-secondary" style="width:100%; border:none; background:#f5f5f5;" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
     <div class="wrapper">
         <header onclick="resetToTitle()">
             <div class="title-container">
@@ -143,29 +142,27 @@
             <div id="rpg-textbox"><div id="rpg-content"></div></div>
 
             <div id="setup-view">
-                <div class="team-presets" id="team-presets"></div>
-                
                 <div class="setup-card">
-                    <div class="option-group">MEMBERS
-                        <select id="member-select" onchange="generateNameInputs()">
-                            <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
-                            <option value="5">5</option><option value="6">6</option><option value="7">7</option>
-                            <option value="8">8</option><option value="9">9</option>
-                        </select>
+                    <div class="picker-group">
+                        <div class="picker-btn" onclick="openGroupModal()">
+                            <span id="display-group-name">Empty</span>
+                        </div>
+                        <div class="picker-btn" onclick="openMemberModal()">
+                            <span id="display-member-count">3 Members</span>
+                        </div>
                     </div>
 
                     <div class="name-mgmt-bar">
                         <button class="btn-text" onclick="fillRandomNames()">RANDOM</button>
                         <button class="btn-text" onclick="clearNames()">CLEAR</button>
-                        <button class="btn-text save" onclick="saveCurrentTeam()">SAVE</button>
+                        <button class="btn-text" onclick="saveCurrentTeam()">SAVE</button>
                     </div>
-
                     <div class="divider"></div>
 
                     <div id="name-input-container"></div>
 
                     <div id="stats-dashboard" class="stats-container hidden">
-                        <div class="stats-title">🏆 TOTAL DONATIONS <button style="font-size:0.65rem; color:#aaa; border:none; background:none; cursor:pointer;" onclick="resetStats()">Reset</button></div>
+                        <div class="stats-title">🏆 TOTAL DONATIONS <button style="font-size:0.65rem; color:#aaa; border:none; background:none;" onclick="resetStats()">Reset</button></div>
                         <div id="stats-list"></div>
                     </div>
                 </div>
@@ -212,7 +209,8 @@
         const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread"];
         
         let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; let isLuckyRound = false;
-        let currentTeamName = 'Main';
+        let currentTeamName = 'Empty';
+        let currentMemberCount = 3;
 
         function updateText(msg) {
             clearTimeout(typeTimeout);
@@ -221,19 +219,127 @@
             typing();
         }
 
+        /* 이름 입력 필드 생성 (비어있을 시 랜덤 자동 채우기) */
         function generateNameInputs(providedNames = null) {
-            const count = parseInt(document.getElementById('member-select').value);
-            const container = document.getElementById('name-input-container'); container.innerHTML = '';
+            const container = document.getElementById('name-input-container');
+            const currentInputs = Array.from(container.querySelectorAll('.name-input')).map(i => i.value);
+            container.innerHTML = '';
+            
             const savedNames = providedNames || JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]');
-            for (let i = 0; i < count; i++) {
-                const input = document.createElement('input'); input.type = 'text'; input.className = 'name-input';
+            
+            for (let i = 0; i < currentMemberCount; i++) {
+                const input = document.createElement('input'); 
+                input.type = 'text'; input.className = 'name-input';
                 input.placeholder = `Name ${i+1}`; input.id = `input-name-${i}`;
-                if (savedNames[i]) input.value = savedNames[i];
+                
+                // 1. 제공된 이름 우선 2. 기존 입력값 유지 3. 없으면 랜덤
+                if (providedNames && providedNames[i]) input.value = providedNames[i];
+                else if (!providedNames && currentInputs[i]) input.value = currentInputs[i];
+                else input.value = getRandomNick();
+
                 container.appendChild(input);
             }
+            document.getElementById('display-member-count').innerText = `${currentMemberCount} Members`;
             showStats();
         }
 
+        function getRandomNick() { return randomNicknames[Math.floor(Math.random() * randomNicknames.length)]; }
+
+        /* 모달 시스템 */
+        function openGroupModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const container = document.getElementById('modal-list-container');
+            document.getElementById('modal-title').innerText = "Select Group";
+            overlay.style.display = 'flex';
+            container.innerHTML = '';
+
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            
+            // 기본 Empty 추가
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'group-list-item';
+            emptyDiv.innerHTML = `<span class="group-name-link" onclick="loadTeam('Empty')">Empty</span>`;
+            container.appendChild(emptyDiv);
+
+            Object.keys(teams).forEach(name => {
+                const div = document.createElement('div');
+                div.className = 'group-list-item';
+                div.innerHTML = `
+                    <span class="group-name-link" onclick="loadTeam('${name}')">${name}</span>
+                    <span class="delete-group-btn" onclick="deleteTeam('${name}')">×</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function openMemberModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const container = document.getElementById('modal-list-container');
+            document.getElementById('modal-title').innerText = "Member Count";
+            overlay.style.display = 'flex';
+            container.innerHTML = '';
+
+            for (let i = 2; i <= 9; i++) {
+                const div = document.createElement('div');
+                div.className = 'group-list-item';
+                div.innerHTML = `<span class="group-name-link" style="text-align:center" onclick="setMemberCount(${i})">${i} Members</span>`;
+                container.appendChild(div);
+            }
+        }
+
+        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+
+        function setMemberCount(num) {
+            currentMemberCount = num;
+            generateNameInputs();
+            closeModal();
+        }
+
+        function loadTeam(name) {
+            currentTeamName = name;
+            document.getElementById('display-group-name').innerText = name;
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            if (name !== 'Empty' && teams[name]) {
+                currentMemberCount = teams[name].count;
+                generateNameInputs(teams[name].names);
+            } else {
+                generateNameInputs([]);
+            }
+            closeModal();
+        }
+
+        function deleteTeam(name) {
+            if (!confirm(`Delete '${name}' group?`)) return;
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            delete teams[name];
+            localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+            if (currentTeamName === name) loadTeam('Empty');
+            openGroupModal(); // 새로고침
+        }
+
+        function saveCurrentTeam() {
+            const name = prompt("Group Name:");
+            if (!name) return;
+            const inputs = document.querySelectorAll('.name-input');
+            const names = Array.from(inputs).map(i => i.value.trim());
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            teams[name] = { count: currentMemberCount, names: names };
+            localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+            currentTeamName = name;
+            document.getElementById('display-group-name').innerText = name;
+        }
+
+        function fillRandomNames() {
+            const inputs = document.querySelectorAll('.name-input');
+            inputs.forEach(input => { input.value = getRandomNick(); });
+        }
+
+        function clearNames() {
+            const inputs = document.querySelectorAll('.name-input');
+            inputs.forEach(i => i.value = '');
+        }
+
+        /* 게임 로직 (기존 유지) */
         const AudioEngine = {
             ctx: null,
             init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
@@ -249,16 +355,15 @@
         };
 
         function startGame() {
-            const count = parseInt(document.getElementById('member-select').value);
             memberNames = []; const namesToSave = [];
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < currentMemberCount; i++) {
                 const val = document.getElementById(`input-name-${i}`).value.trim();
                 memberNames.push(val || `Member ${i+1}`); namesToSave.push(val);
             }
-            if (currentTeamName === 'Main') localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
+            if (currentTeamName === 'Empty') localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
             
             AudioEngine.play('start'); 
-            winnerIndex = Math.floor(Math.random() * count);
+            winnerIndex = Math.floor(Math.random() * currentMemberCount);
             isLuckyRound = Math.random() < 0.1; 
             isGameOver = false;
 
@@ -274,10 +379,10 @@
             document.getElementById('main-img').classList.remove('large');
 
             const display = document.getElementById('hand-display'); display.innerHTML = ''; 
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < currentMemberCount; i++) {
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
                 const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png'; handImg.className = 'hand-img'; 
-                handImg.onclick = () => handleHandClick(i, count);
+                handImg.onclick = () => handleHandClick(i, currentMemberCount);
                 const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
                 wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
             }
@@ -338,75 +443,15 @@
             document.getElementById('game-view').classList.add('hidden');
             document.getElementById('main-img').src = 'cafe_counter.png'; 
             document.getElementById('main-img').classList.add('large');
-            /* [수정] 리셋 시 환영 인사를 Gony's Coffee Shop으로 변경 */
             updateText("Welcome to Gony's Coffee Shop"); 
             generateNameInputs(); 
-            renderTeamTabs();
         }
 
         function resetToTitle() { location.reload(); }
 
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            if (splash) { 
-                splash.style.opacity = '0'; 
-                setTimeout(() => { 
-                    splash.classList.add('hidden'); 
-                    /* [수정] 첫 시작 환영 인사를 Gony's Coffee Shop으로 변경 */
-                    updateText("Welcome to Gony's Coffee Shop"); 
-                    renderTeamTabs(); 
-                    generateNameInputs(); 
-                }, 600); 
-            }
-        }
-
-        function fillRandomNames() {
-            const inputs = document.querySelectorAll('.name-input');
-            const used = [];
-            inputs.forEach(input => {
-                let r;
-                do { r = randomNicknames[Math.floor(Math.random() * randomNicknames.length)]; } while (used.includes(r));
-                input.value = r;
-                used.push(r);
-            });
-        }
-
-        function saveCurrentTeam() {
-            const name = prompt("이 팀의 이름을 입력하세요 (예: 팀A, 오후모임):");
-            if (!name) return;
-            const inputs = document.querySelectorAll('.name-input');
-            const names = Array.from(inputs).map(i => i.value.trim());
-            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            teams[name] = { count: inputs.length, names: names };
-            localStorage.setItem('coffeeTeams', JSON.stringify(teams));
-            currentTeamName = name;
-            renderTeamTabs();
-        }
-
-        function loadTeam(name) {
-            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            currentTeamName = name;
-            if (name === 'Main') {
-                generateNameInputs();
-            } else if (teams[name]) {
-                document.getElementById('member-select').value = teams[name].count;
-                generateNameInputs(teams[name].names);
-            }
-            renderTeamTabs();
-        }
-
-        function renderTeamTabs() {
-            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            const container = document.getElementById('team-presets');
-            container.innerHTML = `<button class="preset-btn ${currentTeamName==='Main'?'active':''}" onclick="loadTeam('Main')">Main</button>`;
-            Object.keys(teams).forEach(t => {
-                container.innerHTML += `<button class="preset-btn ${currentTeamName===t?'active':''}" onclick="loadTeam('${t}')">${t}</button>`;
-            });
-        }
-
-        function clearNames() {
-            const inputs = document.querySelectorAll('.name-input');
-            inputs.forEach(i => i.value = '');
+            if (splash) { splash.style.opacity = '0'; setTimeout(() => { splash.classList.add('hidden'); updateText("Welcome to Gony's Coffee Shop"); generateNameInputs(); }, 600); }
         }
 
         function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); stats[name] = (stats[name] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }

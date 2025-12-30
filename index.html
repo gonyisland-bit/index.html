@@ -17,6 +17,7 @@
             --rpg-border: #4d4d4d;
             --tablet-bg: #fdfdfd;
             --tablet-border: #e0e0e0;
+            --point-red: #ff4d4d;
         }
 
         html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
@@ -54,11 +55,8 @@
 
         .setup-card {
             width: 90%; max-width: 450px;
-            background: var(--tablet-bg); 
-            border: 2px solid var(--tablet-border);
-            border-radius: 24px;
-            padding: 25px; box-sizing: border-box;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03); margin: 0 auto 20px;
+            background: var(--tablet-bg); border: 2px solid var(--tablet-border); border-radius: 24px;
+            padding: 25px; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.03); margin: 0 auto 20px;
             display: flex; flex-direction: column; align-items: center;
         }
 
@@ -67,157 +65,127 @@
 
         .name-mgmt-bar { width: 100%; display: flex; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
         .btn-small { flex: 1; background: white; border: 1.5px solid #eee; color: #777; font-size: 0.8rem; padding: 8px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: 600;}
-        .btn-small:active { background: #f9f9f9; transform: scale(0.98); }
 
-        #name-input-container {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin: 0 auto 20px;
-        }
+        #name-input-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin: 0 auto 20px; }
         .name-input { padding: 12px 5px; border: 1.5px solid #eee; border-radius: 10px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; background: white; }
-        .name-input:focus { border-color: #000; }
 
-        .stats-container { 
-            width: 100%; background: #f1f1f1; padding: 15px; border-radius: 12px; 
-            font-size: 0.8rem; box-sizing: border-box; text-align: center;
-        }
+        .stats-container { width: 100%; background: #f1f1f1; padding: 15px; border-radius: 12px; font-size: 0.8rem; box-sizing: border-box; text-align: center; }
         .stats-title { font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: #888; }
-        .stats-list { width: 100%; text-align: left; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 6px; color: #555; }
-        .btn-reset-stats { font-size: 0.65rem; color: #aaa; border: none; background: none; cursor: pointer; text-decoration: underline; }
 
-        /* [복구] 손 애니메이션 섹션 */
+        /* 손 애니메이션 */
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px 10px; width: 100%; box-sizing: border-box; }
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 20px); min-width: 90px; }
-        
         .hand-img { 
             width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; 
-            -webkit-tap-highlight-color: transparent;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: floating 3s ease-in-out infinite; /* 기본 둥둥 떠있는 효과 */
+            -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; 
         }
-        
-        /* 대기 중인 손들에 개별 딜레이를 주어 자연스럽게 */
-        .hand-wrapper:nth-child(2n) .hand-img { animation-delay: 0.5s; }
-        .hand-wrapper:nth-child(3n) .hand-img { animation-delay: 1s; }
-
-        @keyframes floating {
-            0%, 100% { transform: translateY(0) rotate(0); }
-            50% { transform: translateY(-10px) rotate(2deg); }
-        }
-
-        .hand-img:hover { transform: scale(1.1) rotate(-3deg); }
-        .hand-img:active { transform: scale(0.9); }
-
-        /* 긴장되는 흔들림 */
-        .tension-shake { animation: tension-animation 0.1s infinite !important; filter: contrast(1.2); }
-        @keyframes tension-animation {
-            0% { transform: translate(2px, 2px) rotate(0deg); }
-            50% { transform: translate(-2px, -2px) rotate(1deg); }
-            100% { transform: translate(2px, -2px) rotate(-1deg); }
-        }
-
-        /* 당첨 시 강한 흔들림 */
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .tension-shake { animation: tension-animation 0.1s infinite !important; }
+        @keyframes tension-animation { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
         .shake { animation: winner-shake 0.15s infinite !important; }
-        @keyframes winner-shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(4px) rotate(2deg); }
-            75% { transform: translateX(-4px) rotate(-2deg); }
-        }
-
+        @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         .member-name { font-size: 0.9rem; font-weight: 800; margin-top: 8px; color: #333; }
 
-        .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; width: 85%; max-width: 300px;}
-        .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
-        
-        .receipt { background: white; color: #333; width: 280px; padding: 25px 20px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto; }
+        /* [수정] 영수증 안정적인 디자인 복구 */
+        .receipt { 
+            background: #fff; color: #333; width: 280px; padding: 30px 25px; 
+            font-family: 'Courier Prime', monospace; box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+            border-radius: 2px; position: relative; opacity: 0; margin: 0 auto;
+        }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
+        .receipt-header { font-size: 1.4rem; font-weight: 800; margin-bottom: 5px; letter-spacing: 2px; text-align: center; }
+        .receipt-subheader { font-size: 0.75rem; margin-bottom: 20px; text-align: center; color: #666; }
+        
+        .receipt-line { border-top: 1px dashed #bbb; margin: 12px 0; width: 100%; }
+        
+        .receipt-item { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; width: 100%; }
+        .receipt-total { 
+            display: flex; flex-direction: column; align-items: center; 
+            margin: 20px 0; padding: 10px 0; border-top: 2px solid #333; border-bottom: 2px solid #333;
+        }
+        .label-customer { font-size: 0.7rem; font-weight: 700; color: #888; margin-bottom: 5px; }
+        .value-customer { font-size: 1.8rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; }
+        
+        .fortune-area { font-size: 0.75rem; line-height: 1.5; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; }
+
+        .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; margin: 10px 0; width: 85%; max-width: 300px; text-transform: uppercase;}
+        .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
+        
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
-        .splash-logo { width: 120px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
     <div id="splash-screen" onclick="hideSplash()">
-        <img src="coffee.png" alt="Logo" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/924/924514.png'">
+        <img src="coffee.png" alt="Logo" style="width:120px; margin-bottom:20px;">
         <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem;">Ready for Coffee?</div>
     </div>
 
     <div class="wrapper">
         <header onclick="resetGame()">
             <div class="title-container">
-                <span class="title-coffee">coffee</span>
-                <span class="title-game">game</span>
+                <span class="title-coffee">coffee</span><span class="title-game">game</span>
             </div>
-            <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image large" onerror="this.style.display='none'">
+            <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image large">
         </header>
 
         <main id="main-content">
-            <div id="rpg-textbox">
-                <div id="rpg-content"></div>
-            </div>
+            <div id="rpg-textbox"><div id="rpg-content"></div></div>
 
             <div id="setup-view">
                 <div class="team-presets" id="team-presets"></div>
-
                 <div class="setup-card">
-                    <div class="option-group">
-                        MEMBERS
+                    <div class="option-group">MEMBERS
                         <select id="member-select" onchange="generateNameInputs()">
                             <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
                             <option value="5">5</option><option value="6">6</option><option value="7">7</option>
                             <option value="8">8</option><option value="9">9</option>
                         </select>
                     </div>
-
                     <div class="name-mgmt-bar">
                         <button class="btn-small" onclick="fillRandomNames()">🎲 RANDOM</button>
                         <button class="btn-small" onclick="clearNames()">🧹 CLEAR</button>
                     </div>
-
                     <div id="name-input-container"></div>
-
                     <div id="stats-dashboard" class="stats-container hidden">
-                        <div class="stats-title">
-                            🏆 TOTAL DONATIONS
-                            <button class="btn-reset-stats" onclick="resetStats()">Reset</button>
-                        </div>
-                        <div id="stats-list" class="stats-list"></div>
+                        <div class="stats-title">🏆 TOTAL DONATIONS <button style="font-size:0.65rem; color:#aaa; border:none; background:none; cursor:pointer;" onclick="resetStats()">Reset</button></div>
+                        <div id="stats-list"></div>
                     </div>
                 </div>
-
                 <button class="btn-main" onclick="startGame()">start game</button>
             </div>
 
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
-                <div id="lucky-area" class="hidden">
-                    <button class="btn-main" onclick="resetGame()" style="margin-top: 25px;">Lucky Round! Restart</button>
-                </div>
+                <div id="lucky-area" class="hidden"><button class="btn-main" onclick="resetGame()">Lucky Round! Restart</button></div>
                 <div id="result-area" class="hidden">
-                    <div id="capture-area" style="padding: 20px; background: #ffffff;">
+                    <div id="capture-area" style="padding: 25px 10px; background: #ffffff;">
                         <div class="receipt" id="receipt">
                             <div class="receipt-header">RECEIPT</div>
-                            <div class="receipt-subheader" style="text-align: center; font-size: 0.8rem; margin-bottom: 10px;">GONY'S COFFEE SHOP</div>
+                            <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
                             <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
-                            <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
+                            <div class="receipt-line"></div>
                             <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
-                            <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
-                            <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                            <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
+                            <div class="receipt-item"><span>UNIT PRICE</span><span id="receipt-price"></span></div>
+                            <div class="receipt-line"></div>
+                            <div class="receipt-item" style="font-weight:800;"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
                             <div class="receipt-total">
-                                <span class="label-customer">CUSTOMER</span>
+                                <span class="label-customer">SELECTED CUSTOMER</span>
                                 <span id="receipt-payer" class="value-customer"></span>
                             </div>
+                            <div class="receipt-line"></div>
                             <div class="fortune-area" id="receipt-fortune"></div>
-                            <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
+                            <p style="font-size: 0.65rem; text-align: center; margin-top: 20px; color:#aaa;">*** END OF RECEIPT ***</p>
                         </div>
                     </div>
-                    <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                        <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;">Next Round</button>
+                    <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+                        <button class="btn-main" onclick="resetGame()">Next Round</button>
                         <button class="btn-secondary" id="id-share-btn" onclick="shareAsImage()">Share Receipt Image</button>
                     </div>
                 </div>
@@ -231,88 +199,21 @@
         const randomMenus = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"];
         const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread"];
         
-        let memberNames = [];
-        let typeTimeout;
-        let isGameOver = false; 
-        let winnerIndex = -1;
-        let isLuckyRound = false;
-        let currentTeamName = 'Default';
+        let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; let isLuckyRound = false; let currentTeamName = 'Default';
 
         function updateText(msg) {
             clearTimeout(typeTimeout);
-            const content = document.getElementById('rpg-content');
-            content.innerText = '';
-            let i = 0;
-            function typing() {
-                if (i < msg.length) {
-                    content.innerText += msg.charAt(i);
-                    i++;
-                    typeTimeout = setTimeout(typing, 50);
-                }
-            }
+            const content = document.getElementById('rpg-content'); content.innerText = ''; let i = 0;
+            function typing() { if (i < msg.length) { content.innerText += msg.charAt(i); i++; typeTimeout = setTimeout(typing, 50); } }
             typing();
         }
 
-        function loadTeam(teamName) {
-            currentTeamName = teamName;
-            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            const savedNames = (teamName === 'Default') ? JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]') : teams[teamName];
-            if (savedNames && savedNames.length > 0) {
-                document.getElementById('member-select').value = savedNames.length;
-                generateNameInputs(savedNames);
-            }
-            renderTeamTabs();
-        }
-
-        function saveCurrentTeam() {
-            const name = prompt("Enter Team Name:");
-            if (!name) return;
-            const inputs = document.querySelectorAll('.name-input');
-            const names = Array.from(inputs).map(input => input.value.trim());
-            let teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            teams[name] = names;
-            localStorage.setItem('coffeeTeams', JSON.stringify(teams));
-            renderTeamTabs();
-        }
-
-        function fillRandomNames() {
-            const inputs = document.querySelectorAll('.name-input');
-            const used = [];
-            inputs.forEach(input => {
-                let r;
-                do { r = randomNicknames[Math.floor(Math.random() * randomNicknames.length)]; } while (used.includes(r));
-                input.value = r;
-                used.push(r);
-            });
-        }
-
-        function updateStats(name) {
-            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            stats[name] = (stats[name] || 0) + 1;
-            localStorage.setItem('coffeeStats', JSON.stringify(stats));
-        }
-
-        function showStats() {
-            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            const dashboard = document.getElementById('stats-dashboard');
-            const list = document.getElementById('stats-list');
-            const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
-            if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
-            dashboard.classList.remove('hidden');
-            list.innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
-        }
-
-        function resetStats() { if(confirm("통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
-        function clearNames() { localStorage.removeItem('savedCoffeeNames'); generateNameInputs(); }
-
         function generateNameInputs(providedNames = null) {
             const count = parseInt(document.getElementById('member-select').value);
-            const container = document.getElementById('name-input-container');
-            container.innerHTML = '';
+            const container = document.getElementById('name-input-container'); container.innerHTML = '';
             const savedNames = providedNames || JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]');
             for (let i = 0; i < count; i++) {
-                const input = document.createElement('input');
-                input.type = 'text'; input.className = 'name-input';
+                const input = document.createElement('input'); input.type = 'text'; input.className = 'name-input';
                 input.placeholder = `Name ${i+1}`; input.id = `input-name-${i}`;
                 if (savedNames[i]) input.value = savedNames[i];
                 container.appendChild(input);
@@ -329,7 +230,6 @@
                 if (type === 'start') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.3); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.3); }
                 else if (type === 'safe') { osc.frequency.setValueAtTime(880, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.1); }
                 else if (type === 'fail') { osc.frequency.setValueAtTime(349.23, now); osc.frequency.linearRampToValueAtTime(110, now + 0.6); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
-                else if (type === 'lucky') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now+0.1); osc.frequency.setValueAtTime(783.99, now+0.2); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.4); }
                 else if (type === 'tension') { osc.frequency.setValueAtTime(220, now); osc.frequency.exponentialRampToValueAtTime(440, now + 0.6); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.6); }
             }
         };
@@ -339,28 +239,22 @@
             memberNames = []; const namesToSave = [];
             for (let i = 0; i < count; i++) {
                 const val = document.getElementById(`input-name-${i}`).value.trim();
-                memberNames.push(val || `Member ${i+1}`);
-                namesToSave.push(val);
+                memberNames.push(val || `Member ${i+1}`); namesToSave.push(val);
             }
             if (currentTeamName === 'Default') localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * count);
-            isLuckyRound = Math.random() < 0.1; 
-            isGameOver = false;
+            isLuckyRound = Math.random() < 0.1; isGameOver = false;
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
-            document.getElementById('lucky-area').classList.add('hidden');
             document.getElementById('receipt').classList.remove('show');
             updateText("Who will pay? Pick a hand!");
-            document.getElementById('main-img').src = 'coffee.png'; 
-            document.getElementById('main-img').classList.remove('large');
-            const display = document.getElementById('hand-display');
-            display.innerHTML = ''; 
+            document.getElementById('main-img').src = 'coffee.png'; document.getElementById('main-img').classList.remove('large');
+            const display = document.getElementById('hand-display'); display.innerHTML = ''; 
             for (let i = 0; i < count; i++) {
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
-                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png';
-                handImg.className = 'hand-img'; 
+                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png'; handImg.className = 'hand-img'; 
                 handImg.onclick = () => handleHandClick(i, count);
                 const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
                 wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
@@ -369,50 +263,27 @@
 
         function handleHandClick(index, total) {
             if (isGameOver) return;
-            const hands = document.getElementsByClassName('hand-img');
-            const handImg = hands[index];
+            const hands = document.getElementsByClassName('hand-img'); const handImg = hands[index];
             if (handImg.dataset.opened === "true" || handImg.classList.contains('tension-shake')) return;
-            
-            // 긴장 효과 시작
-            handImg.classList.add('tension-shake');
-            AudioEngine.play('tension');
-            updateText("Wait... Checking...");
-            
-            setTimeout(() => { 
-                handImg.classList.remove('tension-shake'); 
-                openHand(index, total); 
-            }, 800);
+            handImg.classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Wait... Checking...");
+            setTimeout(() => { handImg.classList.remove('tension-shake'); openHand(index, total); }, 800);
         }
 
         function openHand(index, total) {
-            const hands = document.getElementsByClassName('hand-img');
-            const handImg = hands[index];
+            const hands = document.getElementsByClassName('hand-img'); const handImg = hands[index];
             if (isLuckyRound) {
-                isGameOver = true; AudioEngine.play('lucky'); 
-                handImg.src = 'hand_open.png';
-                handImg.style.animation = "floating 0.5s infinite"; // 신나는 움직임
-                confetti({ particleCount: 200, spread: 100 });
+                isGameOver = true; handImg.src = 'hand_open.png'; confetti({ particleCount: 200, spread: 100 });
                 updateText("LUCKY! Everyone is SAFE! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden'); return;
             }
             if (index === winnerIndex) {
-                isGameOver = true; AudioEngine.play('fail'); 
-                handImg.src = 'hand_money.png';
-                handImg.classList.add('shake'); // 당첨된 손은 계속 떨기
-                for (let i = 0; i < hands.length; i++) {
-                    if (i !== winnerIndex) {
-                        hands[i].src = 'hand_clap.gif';
-                        hands[i].style.animation = "none"; // GIF 자체 애니메이션 사용
-                    }
-                }
+                isGameOver = true; AudioEngine.play('fail'); handImg.src = 'hand_money.png'; handImg.classList.add('shake');
+                for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 updateStats(memberNames[index]); showFinish(total, memberNames[index]);
             } else {
-                AudioEngine.play('safe'); 
-                handImg.src = 'hand_open.png'; 
-                handImg.dataset.opened = "true";
-                handImg.style.animation = "none"; // 연 손은 멈춤
+                AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true"; handImg.style.animation = "none";
                 updateText(`${memberNames[index]} is Safe!`);
             }
         }
@@ -432,39 +303,43 @@
         }
 
         function resetGame() {
-            document.getElementById('setup-view').classList.remove('hidden');
-            document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('setup-view').classList.remove('hidden'); document.getElementById('game-view').classList.add('hidden');
             document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
-            updateText("Welcome to Gony's Coffee");
-            generateNameInputs(); renderTeamTabs();
+            updateText("Welcome to Gony's Coffee"); generateNameInputs(); renderTeamTabs();
         }
 
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            if (splash && !splash.classList.contains('hidden')) {
-                splash.style.opacity = '0'; splash.style.pointerEvents = 'none';
-                setTimeout(() => { 
-                    splash.classList.add('hidden'); 
-                    updateText("Welcome to Gony's Coffee");
-                    renderTeamTabs();
-                }, 600);
-            }
+            if (splash) { splash.style.opacity = '0'; setTimeout(() => { splash.classList.add('hidden'); updateText("Welcome to Gony's Coffee"); renderTeamTabs(); }, 600); }
         }
 
         function renderTeamTabs() {
-            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            const container = document.getElementById('team-presets');
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}'); const container = document.getElementById('team-presets');
             container.innerHTML = `<button class="preset-btn ${currentTeamName==='Default'?'active':''}" onclick="loadTeam('Default')">Main</button>`;
-            Object.keys(teams).forEach(t => {
-                container.innerHTML += `<button class="preset-btn ${currentTeamName===t?'active':''}" onclick="loadTeam('${t}')">${t}</button>`;
-            });
+            Object.keys(teams).forEach(t => { container.innerHTML += `<button class="preset-btn ${currentTeamName===t?'active':''}" onclick="loadTeam('${t}')">${t}</button>`; });
             container.innerHTML += `<button class="preset-btn" onclick="saveCurrentTeam()">+ Save</button>`;
         }
 
+        function fillRandomNames() {
+            const inputs = document.querySelectorAll('.name-input'); const used = [];
+            inputs.forEach(input => {
+                let r; do { r = randomNicknames[Math.floor(Math.random() * randomNicknames.length)]; } while (used.includes(r));
+                input.value = r; used.push(r);
+            });
+        }
+        function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); stats[name] = (stats[name] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
+        function showStats() {
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); const dashboard = document.getElementById('stats-dashboard');
+            const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
+            if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
+            dashboard.classList.remove('hidden');
+            document.getElementById('stats-list').innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
+        }
+        function resetStats() { if(confirm("통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
+        function clearNames() { localStorage.removeItem('savedCoffeeNames'); generateNameInputs(); }
+
         async function shareAsImage() {
-            const captureArea = document.getElementById('capture-area');
-            const receipt = document.getElementById('receipt');
-            const shareBtn = document.getElementById('id-share-btn');
+            const captureArea = document.getElementById('capture-area'); const receipt = document.getElementById('receipt'); const shareBtn = document.getElementById('id-share-btn');
             shareBtn.innerText = "Generating..."; shareBtn.disabled = true;
             const originalStyle = receipt.getAttribute('style') || "";
             receipt.style.animation = "none"; receipt.style.opacity = "1"; receipt.style.transform = "none";

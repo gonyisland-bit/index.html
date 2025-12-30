@@ -83,13 +83,13 @@
             height: auto; 
             border-radius: 15px; 
             margin-top: 10px; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            /* 줌/애니메이션 제거 */
         }
 
-        /* cafe_counter.png 크게 보이기 */
         .title-image.large {
-            transform: scale(2.2);
-            margin: 50px 0;
+            width: 70vw; /* scale 대신 크기 직접 조정 */
+            max-width: 330px;
+            margin: 20px 0;
         }
 
         main { width: 100%; display: flex; flex-direction: column; align-items: center; }
@@ -103,27 +103,30 @@
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 100px; }
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
+        /* 영수증 중앙 정렬 수정 */
         .receipt {
             background: #fdfdfd; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 2px; position: relative; transform: scale(0.9); opacity: 0;
+            border-radius: 2px; position: relative; opacity: 0;
             animation: slideUpReceipt 0.6s forwards; text-align: left;
+            margin: 0 auto; /* 중앙 정렬 */
         }
-        @keyframes slideUpReceipt { to { transform: scale(1); opacity: 1; } }
+        @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .receipt-item { display: flex; justify-content: space-between; margin: 5px 0; }
+        .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
+        .receipt-subheader { text-align: center; font-size: 0.8rem; margin-bottom: 10px; }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
-        /* 스플래시 화면 수정 */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.6s ease-out;
-            cursor: pointer;
         }
-        .splash-logo { width: 120px; margin-bottom: 20px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .splash-logo { width: 120px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -131,7 +134,6 @@
     <div id="splash-screen" onclick="hideSplash()">
         <img src="coffee.png" alt="Logo" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/924/924514.png'">
         <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem;">Ready for Coffee?</div>
-        <p style="font-size: 0.8rem; color: #aaa; margin-top: 10px;">Tap to start</p>
     </div>
 
     <div class="wrapper">
@@ -178,8 +180,10 @@
                         </div>
                         <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
                     </div>
-                    <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
-                    <button class="btn-secondary" id="btn-share" onclick="shareResult()">Share Result</button>
+                    <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                        <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
+                        <button class="btn-secondary" id="btn-share" onclick="alert('Result shared!')">Share Result</button>
+                    </div>
                 </div>
             </div>
         </main>
@@ -187,10 +191,9 @@
     </div>
 
     <script>
-        // 1. 스플래시 화면 숨기기 함수
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            if (!splash.classList.contains('hidden')) {
+            if (splash && !splash.classList.contains('hidden')) {
                 splash.style.opacity = '0';
                 splash.style.pointerEvents = 'none';
                 setTimeout(() => {
@@ -200,7 +203,7 @@
             }
         }
 
-        // 초기 로드: 1.5초 후 자동 숨김 시도
+        // 초기 로드 시 1.5초 후 자동 진입
         window.onload = () => {
             setTimeout(hideSplash, 1500);
         };
@@ -211,9 +214,6 @@
             { name: "Specialty Coffee", price: 8.00 }
         ];
 
-        let selectedMenu = menuData[0];
-        let currentTotalMembers = 0;
-        let finalPayerNum = 0;
         let typingTimer = null; 
         let isGameOver = false;
         let winnerIndex = -1;
@@ -235,8 +235,8 @@
         }
 
         function startGame() {
-            currentTotalMembers = parseInt(document.getElementById('member-select').value);
-            winnerIndex = Math.floor(Math.random() * currentTotalMembers);
+            const memberCount = parseInt(document.getElementById('member-select').value);
+            winnerIndex = Math.floor(Math.random() * memberCount);
             isGameOver = false;
 
             document.getElementById('setup-view').classList.add('hidden');
@@ -252,17 +252,19 @@
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
 
-            for (let i = 0; i < currentTotalMembers; i++) {
+            for (let i = 0; i < memberCount; i++) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'hand-wrapper';
                 const handImg = document.createElement('img');
                 handImg.src = 'hand_nothing.png';
                 handImg.className = 'hand-img';
                 handImg.id = `hand-${i}`;
-                handImg.onclick = () => openHand(i, currentTotalMembers);
+                handImg.onclick = () => openHand(i, memberCount);
+                
                 const num = document.createElement('div');
-                num.className = 'hand-number';
                 num.innerText = i + 1;
+                num.style.fontWeight = "800";
+                
                 wrapper.appendChild(handImg);
                 wrapper.appendChild(num);
                 display.appendChild(wrapper);
@@ -289,9 +291,10 @@
         }
 
         function showFinish(total, payerNum) {
-            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-            selectedMenu = menuData[Math.floor(Math.random() * menuData.length)];
-            finalPayerNum = payerNum;
+            if(typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            }
+            const selectedMenu = menuData[Math.floor(Math.random() * menuData.length)];
             const now = new Date();
             document.getElementById('receipt-date').innerText = now.toLocaleDateString();
             document.getElementById('receipt-order-no').innerText = "NO. " + Math.floor(1000 + Math.random() * 9000);
@@ -301,7 +304,10 @@
             document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
             document.getElementById('btn-restart').innerText = `${total} cups, please`;
-            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); }, 800);
+            
+            setTimeout(() => { 
+                document.getElementById('result-area').classList.remove('hidden'); 
+            }, 600);
         }
 
         function resetGame() {

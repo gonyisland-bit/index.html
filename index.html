@@ -77,7 +77,6 @@
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         
-        /* 이미지 기본 스타일 */
         .title-image { 
             width: 33vw; 
             max-width: 150px; 
@@ -87,10 +86,10 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
 
-        /* cafe_counter.png 전용 큰 사이즈 클래스 */
+        /* cafe_counter.png 크게 보이기 */
         .title-image.large {
-            transform: scale(2.2); /* 약 2.5배 효과 */
-            margin: 50px 0; /* 주변 요소와의 간격 확보 */
+            transform: scale(2.2);
+            margin: 50px 0;
         }
 
         main { width: 100%; display: flex; flex-direction: column; align-items: center; }
@@ -99,93 +98,29 @@
 
         .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; width: 85%; max-width: 300px;}
         .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
-        .btn-main:active, .btn-secondary:active { transform: scale(0.95); }
-
-        #hand-display { 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            gap: 10px; 
-            padding: 10px; 
-            width: 100%; 
-            box-sizing: border-box; 
-        }
-
-        .hand-wrapper { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            flex: 0 0 calc(33.33% - 15px);
-            min-width: 100px; 
-        }
-
-        .hand-img { 
-            width: 100%;
-            max-width: 180px;
-            height: auto; 
-            aspect-ratio: 1 / 1;
-            object-fit: contain; 
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: pointer; 
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .hand-number { font-size: 1rem; font-weight: 800; color: var(--text-gray-70); margin-top: 5px; }
-        .hand-img.winner { animation: shake 0.1s infinite; }
-        .hand-img.clapping { animation: clap 0.4s infinite alternate; }
-
-        @keyframes shake { 0% { transform: translate(3px, 3px) rotate(0deg); } 100% { transform: translate(-3px, -3px) rotate(-1deg); } }
-        @keyframes clap { from { transform: scale(1); } to { transform: scale(1.1); } }
-
-        #result-area { 
-            margin: 30px 0; 
-            width: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            perspective: 1000px;
-        }
+        
+        #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
+        .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 100px; }
+        .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
         .receipt {
-            background: #fdfdfd;
-            color: #333;
-            width: 280px;
-            padding: 25px 20px;
-            font-family: 'Courier Prime', monospace;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 2px;
-            position: relative;
-            transform: scale(0.9);
-            opacity: 0;
-            animation: slideUpReceipt 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            text-align: left;
+            background: #fdfdfd; color: #333; width: 280px; padding: 25px 20px;
+            font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 2px; position: relative; transform: scale(0.9); opacity: 0;
+            animation: slideUpReceipt 0.6s forwards; text-align: left;
         }
-
-        .receipt::after {
-            content: "";
-            position: absolute;
-            bottom: -10px; left: 0; right: 0;
-            height: 10px;
-            background: linear-gradient(-45deg, transparent 5px, #fdfdfd 0), linear-gradient(45deg, transparent 5px, #fdfdfd 0);
-            background-size: 10px 10px;
-        }
-
         @keyframes slideUpReceipt { to { transform: scale(1); opacity: 1; } }
-
-        .receipt-line { border-top: 1px dashed #ccc; margin: 10px 0; }
-        .receipt-header { text-align: center; font-weight: bold; font-size: 1.3rem; margin-bottom: 5px; letter-spacing: 2px; }
-        .receipt-subheader { text-align: center; font-size: 0.7rem; margin-bottom: 15px; color: #777; }
-        .receipt-item { display: flex; justify-content: space-between; font-size: 0.9rem; margin: 5px 0; }
-        .receipt-total { display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;}
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
+        /* 스플래시 화면 수정 */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 1000;
+            background: white; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease-out;
+            transition: opacity 0.6s ease-out;
+            cursor: pointer;
         }
         .splash-logo { width: 120px; margin-bottom: 20px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
@@ -193,9 +128,10 @@
 </head>
 <body>
 
-    <div id="splash-screen">
+    <div id="splash-screen" onclick="hideSplash()">
         <img src="coffee.png" alt="Logo" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/924/924514.png'">
         <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem;">Ready for Coffee?</div>
+        <p style="font-size: 0.8rem; color: #aaa; margin-top: 10px;">Tap to start</p>
     </div>
 
     <div class="wrapper">
@@ -232,13 +168,14 @@
                         <div class="receipt-header">RECEIPT</div>
                         <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
                         <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
-                        <div class="receipt-line"></div>
+                        <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                         <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
                         <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
-                        <div class="receipt-line"></div>
+                        <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                         <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
-                        <div class="receipt-total"><span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span></div>
-                        <div class="receipt-line"></div>
+                        <div class="receipt-total" style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;">
+                            <span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span>
+                        </div>
                         <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
                     </div>
                     <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
@@ -246,11 +183,28 @@
                 </div>
             </div>
         </main>
-
         <div class="footer">designed by gony</div>
     </div>
 
     <script>
+        // 1. 스플래시 화면 숨기기 함수
+        function hideSplash() {
+            const splash = document.getElementById('splash-screen');
+            if (!splash.classList.contains('hidden')) {
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    splash.classList.add('hidden');
+                    updateText("Welcome to our coffee shop");
+                }, 600);
+            }
+        }
+
+        // 초기 로드: 1.5초 후 자동 숨김 시도
+        window.onload = () => {
+            setTimeout(hideSplash, 1500);
+        };
+
         const menuData = [
             { name: "Americano", price: 4.50 },
             { name: "Cafe Latte", price: 5.50 },
@@ -261,52 +215,13 @@
         let currentTotalMembers = 0;
         let finalPayerNum = 0;
         let typingTimer = null; 
-
-        window.onload = () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.classList.add('hidden'), 800);
-            }, 1000);
-            updateText("Welcome to our coffee shop");
-        };
-
         let isGameOver = false;
         let winnerIndex = -1;
         const safeMsgs = ["Safe!", "Phew...", "Lucky me!", "Not me!", "Survived!"];
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playSound(type) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            
-            if(type === 'tap') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-            } else if(type === 'win') {
-                const now = audioCtx.currentTime;
-                [523, 659, 783, 1046].forEach((f, i) => {
-                    const o = audioCtx.createOscillator();
-                    const g = audioCtx.createGain();
-                    o.connect(g); g.connect(audioCtx.destination);
-                    o.frequency.setValueAtTime(f, now + (i * 0.05));
-                    g.gain.setValueAtTime(0.1, now + (i * 0.05));
-                    g.gain.exponentialRampToValueAtTime(0.01, now + 0.3 + (i * 0.05));
-                    o.start(now + (i * 0.05)); o.stop(now + 0.4 + (i * 0.05));
-                });
-            }
-        }
-
         function updateText(msg) {
             const container = document.getElementById('rpg-content');
-            if (typingTimer) {
-                clearTimeout(typingTimer);
-                typingTimer = null;
-            }
+            if (typingTimer) clearTimeout(typingTimer);
             container.innerText = ''; 
             let i = 0;
             function typeWriter() {
@@ -314,8 +229,6 @@
                     container.innerText += msg.charAt(i);
                     i++;
                     typingTimer = setTimeout(typeWriter, 50);
-                } else {
-                    typingTimer = null;
                 }
             }
             typeWriter();
@@ -334,7 +247,7 @@
             
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'coffee.png';
-            mainImg.classList.remove('large'); // 게임 시작 시 크기 축소
+            mainImg.classList.remove('large'); 
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
@@ -342,17 +255,14 @@
             for (let i = 0; i < currentTotalMembers; i++) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'hand-wrapper';
-
                 const handImg = document.createElement('img');
                 handImg.src = 'hand_nothing.png';
                 handImg.className = 'hand-img';
                 handImg.id = `hand-${i}`;
                 handImg.onclick = () => openHand(i, currentTotalMembers);
-
                 const num = document.createElement('div');
                 num.className = 'hand-number';
                 num.innerText = i + 1;
-
                 wrapper.appendChild(handImg);
                 wrapper.appendChild(num);
                 display.appendChild(wrapper);
@@ -366,7 +276,43 @@
 
             if (index === winnerIndex) {
                 isGameOver = true;
-                playSound('win');
-                if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+                handImg.src = 'hand_money.png';
+                updateText("Thank you for the drink");
+                document.getElementById('main-img').src = 'coffee_broken.png';
+                showFinish(total, index + 1);
+            } else {
+                handImg.src = 'hand_open.png';
+                handImg.dataset.opened = "true";
+                updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
+                setTimeout(() => { if(!isGameOver) updateText("Please pay for it"); }, 1200);
+            }
+        }
 
-                handImg.src = 'hand_money.
+        function showFinish(total, payerNum) {
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            selectedMenu = menuData[Math.floor(Math.random() * menuData.length)];
+            finalPayerNum = payerNum;
+            const now = new Date();
+            document.getElementById('receipt-date').innerText = now.toLocaleDateString();
+            document.getElementById('receipt-order-no').innerText = "NO. " + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('receipt-menu').innerText = selectedMenu.name;
+            document.getElementById('receipt-qty').innerText = "x" + total;
+            document.getElementById('receipt-price').innerText = "$" + selectedMenu.price.toFixed(2);
+            document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
+            document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
+            document.getElementById('btn-restart').innerText = `${total} cups, please`;
+            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); }, 800);
+        }
+
+        function resetGame() {
+            document.getElementById('setup-view').classList.remove('hidden');
+            document.getElementById('game-view').classList.add('hidden');
+            isGameOver = false;
+            const mainImg = document.getElementById('main-img');
+            mainImg.src = 'cafe_counter.png';
+            mainImg.classList.add('large'); 
+            updateText("Welcome to our coffee shop");
+        }
+    </script>
+</body>
+</html>

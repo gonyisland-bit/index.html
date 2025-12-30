@@ -77,21 +77,20 @@
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         
-        /* 기본 이미지 스타일 */
+        /* 이미지 기본 스타일 */
         .title-image { 
             width: 33vw; 
             max-width: 150px; 
             height: auto; 
             border-radius: 15px; 
             margin-top: 10px; 
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), margin 0.4s; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
 
-        /* 카페 카운터 이미지용 2.5배 줌 클래스 */
-        .title-image.zoom { 
-            transform: scale(2.5); 
-            margin-top: 60px; /* 확대 시 타이틀과 겹치지 않게 여백 추가 */
-            margin-bottom: 50px;
+        /* cafe_counter.png 전용 큰 사이즈 클래스 */
+        .title-image.large {
+            transform: scale(2.2); /* 약 2.5배 효과 */
+            margin: 50px 0; /* 주변 요소와의 간격 확보 */
         }
 
         main { width: 100%; display: flex; flex-direction: column; align-items: center; }
@@ -205,7 +204,7 @@
                 <span class="title-coffee">coffee</span>
                 <span class="title-game">game</span>
             </div>
-            <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image zoom" onerror="this.style.display='none'">
+            <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image large" onerror="this.style.display='none'">
         </header>
 
         <main id="main-content">
@@ -333,10 +332,9 @@
             
             updateText("Please pay for it");
             
-            // 줌 클래스 제거 및 이미지 변경
             const mainImg = document.getElementById('main-img');
-            mainImg.classList.remove('zoom');
             mainImg.src = 'coffee.png';
+            mainImg.classList.remove('large'); // 게임 시작 시 크기 축소
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
@@ -371,32 +369,4 @@
                 playSound('win');
                 if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
 
-                handImg.src = 'hand_money.png';
-                handImg.classList.add('winner');
-                
-                updateText("Thank you for the drink");
-                document.getElementById('main-img').src = 'coffee_broken.png';
-                
-                for (let i = 0; i < total; i++) {
-                    if (i !== winnerIndex) {
-                        const otherHand = document.getElementById(`hand-${i}`);
-                        otherHand.src = 'hand_clap.png';
-                        otherHand.classList.add('clapping');
-                    }
-                }
-                showFinish(total, index + 1);
-            } else {
-                playSound('tap');
-                if (navigator.vibrate) navigator.vibrate(10);
-                
-                handImg.src = 'hand_open.png';
-                handImg.dataset.opened = "true";
-                
-                updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
-                setTimeout(() => { 
-                    if(!isGameOver) updateText("Please pay for it"); 
-                }, 1200);
-            }
-        }
-
-        function showFinish(
+                handImg.src = 'hand_money.

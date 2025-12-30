@@ -27,81 +27,43 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--primary-color);
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            justify-content: flex-start;
-            overflow-x: hidden; 
-            overflow-y: auto;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            overflow-x: hidden; overflow-y: auto;
         }
 
-        .wrapper {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
+        .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; }
 
         #rpg-textbox {
-            width: 90%;
-            max-width: 450px;
-            background: white;
-            border: 4px solid var(--rpg-border);
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px auto;
-            box-sizing: border-box;
-            position: relative;
+            width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
+            border-radius: 8px; padding: 15px; margin: 20px auto; box-sizing: border-box; position: relative;
         }
 
-        #rpg-content {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-gray-70);
-            min-height: 1.5rem;
-            word-break: keep-all;
-            white-space: pre-wrap; 
-        }
-
-        #rpg-textbox::after {
-            content: '▼';
-            position: absolute; bottom: 5px; right: 10px;
-            font-size: 0.8rem; color: var(--rpg-border);
-            animation: bounce 0.8s infinite;
-        }
-
+        #rpg-content { font-size: 1.1rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; }
+        #rpg-textbox::after { content: '▼'; position: absolute; bottom: 5px; right: 10px; font-size: 0.8rem; color: var(--rpg-border); animation: bounce 0.8s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
         header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         
-        .title-image { 
-            width: 33vw; 
-            max-width: 150px; 
-            height: auto; 
-            border-radius: 15px; 
-            margin-top: 10px; 
-        }
+        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
+        .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
 
-        .title-image.large {
-            width: 70vw;
-            max-width: 330px;
-            margin: 20px 0;
-        }
-
-        @keyframes reveal-image {
-            from { clip-path: inset(0 50% 0 50%); }
-            to { clip-path: inset(0 0% 0 0%); }
-        }
-        .reveal-effect {
-            animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
+        @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
+        .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
         main { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .option-group { margin: 20px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
+        
+        /* 이름 입력 칸 스타일 */
+        #name-input-container {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 85%; max-width: 400px; margin: 15px 0;
+        }
+        .name-input {
+            padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; outline: none;
+        }
+        .name-input:focus { border-color: #000; }
+
+        .option-group { margin: 10px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
         select { padding: 8px 15px; font-size: 1.1rem; border: 2px solid #000; border-radius: 10px; margin-left: 10px; background: white; }
 
         .btn-main { padding: 18px 40px; font-size: 1.2rem; font-weight: 800; background-color: var(--primary-color); color: white; border: none; border-radius: 15px; cursor: pointer; transition: 0.1s; text-transform: uppercase; margin: 10px 0; width: 85%; max-width: 300px;}
@@ -110,51 +72,30 @@
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 100px; }
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .member-name { font-size: 0.9rem; font-weight: 800; margin-top: 5px; color: #333; }
 
         .shake { animation: shake-animation 0.15s infinite; }
-        @keyframes shake-animation {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(2px, 2px); }
-            50% { transform: translate(0, 0); }
-            75% { transform: translate(-2px, 2px); }
-            100% { transform: translate(0, 0); }
-        }
+        @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
         .receipt {
             background: white; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 2px; position: relative; opacity: 0;
-            text-align: left; margin: 0 auto;
+            border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto;
         }
-        
-        .receipt.show {
-            animation: slideUpReceipt 0.6s forwards;
-        }
-
+        .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .receipt-item { display: flex; justify-content: space-between; margin: 5px 0; }
         .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
         .receipt-subheader { text-align: center; font-size: 0.8rem; margin-bottom: 10px; }
-
-        /* 점괘 영역 스타일 */
-        .fortune-area {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px dashed #ccc;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #555;
-            line-height: 1.4;
-        }
+        .fortune-area { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; text-align: center; font-size: 0.85rem; color: #555; line-height: 1.4; }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.6s ease-out;
         }
         .splash-logo { width: 120px; margin-bottom: 20px; }
@@ -184,13 +125,12 @@
             <div id="setup-view">
                 <div class="option-group">
                     Members:
-                    <select id="member-select">
+                    <select id="member-select" onchange="generateNameInputs()">
                         <option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
-                        <option value="5">5</option><option value="6">6</option><option value="7">7</option>
-                        <option value="8">8</option><option value="9">9</option><option value="10">10</option>
-                        <option value="11">11</option><option value="12">12</option>
+                        <option value="5">5</option><option value="6">6</option>
                     </select>
                 </div>
+                <div id="name-input-container"></div>
                 <button class="btn-main" onclick="startGame()">start</button>
             </div>
 
@@ -207,8 +147,9 @@
                             <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                             <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
-                            <div class="receipt-total" style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;">
-                                <span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span>
+                            <div class="receipt-total" style="display: flex; flex-direction: column; align-items: flex-end; font-weight: bold; margin-top: 15px; border-top: 2px solid #333; padding-top: 10px;">
+                                <span style="font-size: 0.8rem; color: #666;">PAYER</span>
+                                <span id="receipt-payer" style="color: #e63946; font-size: 1.4rem;"></span>
                             </div>
                             <div class="fortune-area" id="receipt-fortune"></div>
                             <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
@@ -226,42 +167,35 @@
 
     <script>
         const fortunes = [
-            "Today's Luck: Good things will happen in the afternoon!",
-            "Your kindness will return to you as a blessing.",
-            "Today's Fortune: You'll hear a compliment from someone.",
-            "Lucky Day: This coffee will give you great ideas!",
-            "The person paying looks amazing today.",
-            "Your wallet might be light, but your heart is full.",
-            "Tip: Say 'Thank you' to the payer for more luck!"
+            "오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", 
+            "당신의 지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.",
+            "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"
         ];
+
+        let memberNames = [];
+        
+        function generateNameInputs() {
+            const count = parseInt(document.getElementById('member-select').value);
+            const container = document.getElementById('name-input-container');
+            container.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const input = document.createElement('input');
+                input.type = 'text'; input.className = 'name-input';
+                input.placeholder = `Name ${i+1}`;
+                input.id = `input-name-${i}`;
+                container.appendChild(input);
+            }
+        }
 
         const AudioEngine = {
             ctx: null,
-            init() {
-                if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                if (this.ctx.state === 'suspended') this.ctx.resume();
-            },
+            init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
             play(type) {
-                this.init();
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                const now = this.ctx.currentTime;
+                this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
-                if (type === 'start') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(392, now);
-                    osc.frequency.exponentialRampToValueAtTime(523, now + 0.1);
-                    gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                    osc.start(now); osc.stop(now + 0.3);
-                } else if (type === 'safe') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(440, now);
-                    gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                    osc.start(now); osc.stop(now + 0.1);
-                } else if (type === 'fail') {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now);
-                    osc.frequency.linearRampToValueAtTime(110, now + 0.5);
-                    gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
-                    osc.start(now); osc.stop(now + 0.6);
-                }
+                if (type === 'start') { osc.frequency.setValueAtTime(392, now); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.3); }
+                else if (type === 'safe') { osc.frequency.setValueAtTime(440, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.1); }
+                else if (type === 'fail') { osc.frequency.setValueAtTime(220, now); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
             }
         };
 
@@ -269,166 +203,97 @@
             const captureArea = document.getElementById('capture-area');
             const receipt = document.getElementById('receipt');
             const shareBtn = document.getElementById('id-share-btn');
-            
-            shareBtn.innerText = "Generating...";
-            shareBtn.disabled = true;
-
+            shareBtn.innerText = "Generating..."; shareBtn.disabled = true;
             const originalStyle = receipt.getAttribute('style') || "";
-            receipt.style.animation = "none";
-            receipt.style.opacity = "1";
-            receipt.style.transform = "none";
-
+            receipt.style.animation = "none"; receipt.style.opacity = "1"; receipt.style.transform = "none";
             try {
                 await new Promise(r => setTimeout(r, 200));
-
-                const canvas = await html2canvas(captureArea, {
-                    backgroundColor: "#ffffff",
-                    scale: 3,
-                    useCORS: true,
-                    logging: false,
-                    onclone: (clonedDoc) => {
-                        const clonedReceipt = clonedDoc.getElementById('receipt');
-                        clonedReceipt.style.opacity = "1";
-                        clonedReceipt.style.animation = "none";
-                        clonedReceipt.style.transform = "none";
-                    }
-                });
-
+                const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", scale: 3, useCORS: true });
                 canvas.toBlob(async (blob) => {
-                    const file = new File([blob], "coffee_receipt.png", { type: "image/png" });
-                    
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try {
-                            await navigator.share({
-                                files: [file],
-                                title: 'Coffee Game Result'
-                            });
-                        } catch (err) { }
-                    } else {
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.download = 'coffee_receipt.png';
-                        link.click();
-                    }
-                    
-                    receipt.setAttribute('style', originalStyle);
-                    shareBtn.innerText = "Share Receipt Image";
-                    shareBtn.disabled = false;
-                }, 'image/png');
-
-            } catch (error) {
-                receipt.setAttribute('style', originalStyle);
-                shareBtn.innerText = "Share Receipt Image";
-                shareBtn.disabled = false;
-            }
+                    const file = new File([blob], "receipt.png", { type: "image/png" });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); }
+                    else { const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'receipt.png'; link.click(); }
+                    receipt.setAttribute('style', originalStyle); shareBtn.innerText = "Share Receipt Image"; shareBtn.disabled = false;
+                });
+            } catch (error) { shareBtn.disabled = false; }
         }
 
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
                 splash.style.opacity = '0'; splash.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    splash.classList.add('hidden');
-                    const mainImg = document.getElementById('main-img');
-                    mainImg.classList.add('reveal-effect');
-                    updateText("Welcome to our coffee shop");
-                }, 600);
+                setTimeout(() => { splash.classList.add('hidden'); document.getElementById('main-img').classList.add('reveal-effect'); updateText("Welcome to Gony's Coffee"); }, 600);
             }
         }
 
-        window.onload = () => { setTimeout(hideSplash, 1500); };
+        window.onload = () => { generateNameInputs(); setTimeout(hideSplash, 1500); };
 
-        const menuData = [
-            { name: "Americano", price: 4.50 }, { name: "Cafe Latte", price: 5.50 }, { name: "Specialty Coffee", price: 8.00 }
-        ];
-
-        let typingTimer = null; let isGameOver = false; let winnerIndex = -1;
-        const safeMsgs = ["Safe!", "Phew...", "Lucky me!", "Not me!", "Survived!"];
-
-        function updateText(msg) {
-            const container = document.getElementById('rpg-content');
-            if (typingTimer) clearTimeout(typingTimer);
-            container.innerText = ''; let i = 0;
-            function typeWriter() {
-                if (i < msg.length) { container.innerText += msg.charAt(i); i++; typingTimer = setTimeout(typeWriter, 50); }
-            }
-            typeWriter();
-        }
+        let isGameOver = false; let winnerIndex = -1;
+        function updateText(msg) { document.getElementById('rpg-content').innerText = msg; }
 
         function startGame() {
+            const count = parseInt(document.getElementById('member-select').value);
+            memberNames = [];
+            for (let i = 0; i < count; i++) {
+                const val = document.getElementById(`input-name-${i}`).value.trim();
+                memberNames.push(val || `Member ${i+1}`);
+            }
             AudioEngine.play('start');
-            const memberCount = parseInt(document.getElementById('member-select').value);
-            winnerIndex = Math.floor(Math.random() * memberCount);
+            winnerIndex = Math.floor(Math.random() * count);
             isGameOver = false;
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
             document.getElementById('receipt').classList.remove('show');
-            updateText("Please pay for it");
-            const mainImg = document.getElementById('main-img');
-            mainImg.src = 'coffee.png'; mainImg.classList.remove('large');
+            updateText("Who will pay? Pick a hand!");
+            document.getElementById('main-img').src = 'coffee.png'; document.getElementById('main-img').classList.remove('large');
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
-            for (let i = 0; i < memberCount; i++) {
+            for (let i = 0; i < count; i++) {
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
                 const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png';
-                handImg.className = 'hand-img'; handImg.id = `hand-${i}`;
-                handImg.onclick = () => openHand(i, memberCount);
-                const num = document.createElement('div'); num.innerText = i + 1; num.style.fontWeight = "800";
-                wrapper.appendChild(handImg); wrapper.appendChild(num); display.appendChild(wrapper);
+                handImg.className = 'hand-img'; handImg.onclick = () => openHand(i, count);
+                const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
+                wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
             }
         }
 
         function openHand(index, total) {
             if (isGameOver) return;
-            const handImg = document.getElementById(`hand-${index}`);
+            const handImg = document.getElementsByClassName('hand-img')[index];
             if (handImg.dataset.opened === "true") return;
             if (index === winnerIndex) {
                 isGameOver = true; AudioEngine.play('fail');
                 handImg.src = 'hand_money.png'; handImg.classList.add('shake');
-                for (let i = 0; i < total; i++) {
-                    if (i !== winnerIndex) document.getElementById(`hand-${i}`).src = 'hand_clap.gif';
-                }
-                updateText("Thank you for the drink");
+                updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
-                showFinish(total, index + 1);
+                showFinish(total, memberNames[index]);
             } else {
                 AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
-                updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
-                setTimeout(() => { if(!isGameOver) updateText("Please pay for it"); }, 1200);
+                updateText(`${memberNames[index]} is Safe!`);
             }
         }
 
-        function showFinish(total, payerNum) {
+        function showFinish(total, payerName) {
             if(typeof confetti === 'function') confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-            const selectedMenu = menuData[Math.floor(Math.random() * menuData.length)];
             const now = new Date();
             document.getElementById('receipt-date').innerText = now.toLocaleDateString();
-            document.getElementById('receipt-order-no').innerText = "NO. " + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('receipt-menu').innerText = selectedMenu.name;
+            document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
             document.getElementById('receipt-qty').innerText = "x" + total;
-            document.getElementById('receipt-price').innerText = "$" + selectedMenu.price.toFixed(2);
-            document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
-            document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
-            
-            // 점괘 무작위 생성
-            const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-            document.getElementById('receipt-fortune').innerText = randomFortune;
-
-            document.getElementById('btn-restart').innerText = `${total} cups, please`;
-            setTimeout(() => { 
-                document.getElementById('result-area').classList.remove('hidden'); 
-                document.getElementById('receipt').classList.add('show');
-            }, 600);
+            document.getElementById('receipt-price').innerText = "$4.50";
+            document.getElementById('receipt-subtotal').innerText = "$" + (4.5 * total).toFixed(2);
+            document.getElementById('receipt-payer').innerText = payerName;
+            document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+            document.getElementById('btn-restart').innerText = "Next Round";
+            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); }, 600);
         }
 
         function resetGame() {
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
-            isGameOver = false;
-            const mainImg = document.getElementById('main-img');
-            mainImg.src = 'cafe_counter.png'; mainImg.classList.add('large');
-            updateText("Welcome to our coffee shop");
+            document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
+            updateText("Welcome to Gony's Coffee");
+            generateNameInputs();
         }
     </script>
 </body>

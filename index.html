@@ -61,6 +61,8 @@
             color: var(--text-gray-70);
             min-height: 1.5rem;
             word-break: keep-all;
+            /* 추가: 공백과 줄바꿈을 있는 그대로 보존 */
+            white-space: pre-wrap; 
         }
 
         #rpg-textbox::after {
@@ -285,11 +287,10 @@
             }
         }
 
-        // --- 수정된 updateText 함수 (띄어쓰기 반영 로직) ---
+        // --- 수정된 updateText 함수 (띄어쓰기 오류 수정) ---
         function updateText(msg) {
             const container = document.getElementById('rpg-content');
             
-            // 기존 타이머 중지
             if (typingTimer) {
                 clearTimeout(typingTimer);
                 typingTimer = null;
@@ -300,17 +301,11 @@
 
             function typeWriter() {
                 if (i < msg.length) {
-                    const char = msg.charAt(i);
-                    container.innerText += char;
+                    // 한 글자씩 정확하게 추가
+                    container.innerText += msg.charAt(i);
                     i++;
-
-                    // 다음 글자가 공백(띄어쓰기)이라면 대기 시간 없이 즉시 다음 실행
-                    if (msg.charAt(i) === ' ') {
-                        typeWriter(); 
-                    } else {
-                        // 일반 글자는 50ms 간격으로 출력
-                        typingTimer = setTimeout(typeWriter, 50);
-                    }
+                    // 모든 글자(공백 포함)를 50ms 간격으로 출력하여 정확도 유지
+                    typingTimer = setTimeout(typeWriter, 50);
                 } else {
                     typingTimer = null;
                 }

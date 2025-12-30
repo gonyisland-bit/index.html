@@ -193,7 +193,7 @@
 
         <main id="main-content">
             <div id="rpg-textbox">
-                <div id="rpg-content">Welcome to our coffee shop</div>
+                <div id="rpg-content"></div>
             </div>
 
             <div id="setup-view">
@@ -244,7 +244,7 @@
         let selectedMenu = menuData[0];
         let currentTotalMembers = 0;
         let finalPayerNum = 0;
-        let typingTimer = null; // 타이핑 타이머 변수 추가
+        let typingTimer = null; 
 
         window.onload = () => {
             setTimeout(() => {
@@ -252,7 +252,7 @@
                 splash.style.opacity = '0';
                 setTimeout(() => splash.classList.add('hidden'), 800);
             }, 1000);
-            updateText("Welcome to our coffee shop"); // 초기 텍스트에도 효과 적용
+            updateText("Welcome to our coffee shop");
         };
 
         let isGameOver = false;
@@ -285,34 +285,37 @@
             }
         }
 
-       // --- 수정된 updateText 함수 (띄어쓰기 반영 및 자연스러운 타이핑) ---
+        // --- 수정된 updateText 함수 (띄어쓰기 반영 로직) ---
         function updateText(msg) {
             const container = document.getElementById('rpg-content');
-            if (typingTimer) clearInterval(typingTimer);
+            
+            // 기존 타이머 중지
+            if (typingTimer) {
+                clearTimeout(typingTimer);
+                typingTimer = null;
+            }
 
-            container.innerText = '';
+            container.innerText = ''; 
             let i = 0;
 
-            function type() {
+            function typeWriter() {
                 if (i < msg.length) {
                     const char = msg.charAt(i);
                     container.innerText += char;
                     i++;
 
-                    // 다음 글자가 공백이면 지연 시간 없이 즉시 다음 실행
+                    // 다음 글자가 공백(띄어쓰기)이라면 대기 시간 없이 즉시 다음 실행
                     if (msg.charAt(i) === ' ') {
-                        type(); 
-                        return;
+                        typeWriter(); 
+                    } else {
+                        // 일반 글자는 50ms 간격으로 출력
+                        typingTimer = setTimeout(typeWriter, 50);
                     }
-                    
-                    // 일반 글자는 설정된 속도(50ms)로 반복
-                    typingTimer = setTimeout(type, 50);
                 } else {
                     typingTimer = null;
                 }
             }
-            
-            type();
+            typeWriter();
         }
 
         function startGame() {
@@ -382,7 +385,9 @@
                 handImg.dataset.opened = "true";
                 
                 updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
-                setTimeout(() => { if(!isGameOver) updateText("Please pay for it"); }, 1200);
+                setTimeout(() => { 
+                    if(!isGameOver) updateText("Please pay for it"); 
+                }, 1200);
             }
         }
 
@@ -436,4 +441,3 @@
     </script>
 </body>
 </html>
-

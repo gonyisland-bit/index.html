@@ -44,15 +44,14 @@
         .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
 
-        .name-mgmt-bar { width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px; }
+        .name-mgmt-bar { width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px; gap: 5px; }
         .btn-clear { background: none; border: 1px solid #ccc; color: #999; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
-        .btn-clear:hover { background: #eee; color: #666; }
+        .btn-random { background: #f0f0f0; border: 1px solid #ccc; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
 
         #name-input-container {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 90%; max-width: 400px; margin: 0 auto 15px; justify-items: center;
         }
         .name-input { padding: 8px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; }
-        .name-input::placeholder { text-align: center; color: #aaa; }
         .name-input:focus { border-color: #000; }
 
         .option-group { margin: 10px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
@@ -69,6 +68,10 @@
         .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
+        /* 황금손 효과 */
+        .golden-hand { filter: drop-shadow(0 0 10px gold) sepia(1) saturate(5) hue-rotate(10deg); animation: pulse-gold 1s infinite alternate; }
+        @keyframes pulse-gold { from { transform: scale(1); } to { transform: scale(1.05); } }
+
         .receipt { background: white; color: #333; width: 280px; padding: 25px 20px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto; }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -80,7 +83,6 @@
         .value-customer { color: #e63946; font-size: 1.3rem; }
         .fortune-area { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; text-align: center; font-size: 0.85rem; color: #555; line-height: 1.4; }
 
-        /* 기부왕 통계 영역 */
         .stats-container { margin-top: 30px; width: 90%; max-width: 400px; background: #f8f8f8; padding: 15px; border-radius: 12px; font-size: 0.85rem; }
         .stats-title { font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .stats-list { text-align: left; border-top: 1px solid #ddd; padding-top: 8px; }
@@ -124,7 +126,10 @@
                         <option value="8">8</option><option value="9">9</option>
                     </select>
                 </div>
-                <div class="name-mgmt-bar"><button class="btn-clear" onclick="clearNames()">Clear all</button></div>
+                <div class="name-mgmt-bar">
+                    <button class="btn-random" onclick="fillRandomNames()">🎲 Random</button>
+                    <button class="btn-clear" onclick="clearNames()">Clear all</button>
+                </div>
                 <div id="name-input-container"></div>
                 <button class="btn-main" onclick="startGame()">start</button>
 
@@ -170,11 +175,14 @@
 
     <script>
         const fortunes = ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"];
-        // 영문 메뉴 리스트
         const randomMenus = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"];
+        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread"];
         
         let memberNames = [];
         let typeTimeout;
+        let isGameOver = false; 
+        let winnerIndex = -1;
+        let goldenHandIndex = -1;
 
         function updateText(msg) {
             clearTimeout(typeTimeout);
@@ -191,7 +199,17 @@
             typing();
         }
 
-        // 통계 관련 함수들
+        function fillRandomNames() {
+            const inputs = document.querySelectorAll('.name-input');
+            const used = [];
+            inputs.forEach(input => {
+                let r;
+                do { r = randomNicknames[Math.floor(Math.random() * randomNicknames.length)]; } while (used.includes(r));
+                input.value = r;
+                used.push(r);
+            });
+        }
+
         function updateStats(name) {
             let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
             stats[name] = (stats[name] || 0) + 1;
@@ -202,34 +220,20 @@
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
             const dashboard = document.getElementById('stats-dashboard');
             const list = document.getElementById('stats-list');
-            
             const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
-            if (entries.length === 0) {
-                dashboard.classList.add('hidden');
-                return;
-            }
-            
+            if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
             dashboard.classList.remove('hidden');
-            list.innerHTML = entries.map(([name, count]) => 
-                `<div class="stats-row"><span>${name}</span><span>${count} times ☕</span></div>`
-            ).join('');
+            list.innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times ☕</span></div>`).join('');
         }
 
-        function resetStats() {
-            if(confirm("기부 통계를 초기화할까요?")) {
-                localStorage.removeItem('coffeeStats');
-                showStats();
-            }
-        }
-
+        function resetStats() { if(confirm("기부 통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
         function clearNames() { localStorage.removeItem('savedCoffeeNames'); generateNameInputs(); }
 
         function generateNameInputs() {
             const count = parseInt(document.getElementById('member-select').value);
             const container = document.getElementById('name-input-container');
             container.innerHTML = '';
-            const savedData = localStorage.getItem('savedCoffeeNames');
-            const savedNames = savedData ? JSON.parse(savedData) : [];
+            const savedNames = JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]');
             for (let i = 0; i < count; i++) {
                 const input = document.createElement('input');
                 input.type = 'text'; input.className = 'name-input';
@@ -237,7 +241,7 @@
                 if (savedNames[i]) input.value = savedNames[i];
                 container.appendChild(input);
             }
-            showStats(); // 이름 생성할 때 통계도 갱신
+            showStats();
         }
 
         const AudioEngine = {
@@ -246,29 +250,109 @@
             play(type) {
                 this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
-                
-                if (type === 'start') { 
-                    // 경쾌한 시작음
-                    osc.frequency.setValueAtTime(523.25, now); // C5
-                    osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.3); // C6
-                    gain.gain.setValueAtTime(0.1, now);
-                    osc.start(now); osc.stop(now + 0.3); 
-                }
-                else if (type === 'safe') { 
-                    // 높은 알림음
-                    osc.frequency.setValueAtTime(880, now); // A5
-                    gain.gain.setValueAtTime(0.05, now);
-                    osc.start(now); osc.stop(now + 0.1); 
-                }
-                else if (type === 'fail') { 
-                    // 떨어지는 당첨음
-                    osc.frequency.setValueAtTime(349.23, now); // F4
-                    osc.frequency.linearRampToValueAtTime(110, now + 0.6); // A2
-                    gain.gain.setValueAtTime(0.1, now);
-                    osc.start(now); osc.stop(now + 0.6); 
-                }
+                if (type === 'start') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.3); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.3); }
+                else if (type === 'safe') { osc.frequency.setValueAtTime(880, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.1); }
+                else if (type === 'fail') { osc.frequency.setValueAtTime(349.23, now); osc.frequency.linearRampToValueAtTime(110, now + 0.6); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
+                else if (type === 'gold') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now+0.1); osc.frequency.setValueAtTime(783.99, now+0.2); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.4); }
             }
         };
+
+        function startGame() {
+            const count = parseInt(document.getElementById('member-select').value);
+            memberNames = []; const namesToSave = [];
+            for (let i = 0; i < count; i++) {
+                const val = document.getElementById(`input-name-${i}`).value.trim();
+                memberNames.push(val || `Member ${i+1}`);
+                namesToSave.push(val);
+            }
+            localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
+            AudioEngine.play('start'); 
+            
+            // 초기화
+            winnerIndex = Math.floor(Math.random() * count);
+            goldenHandIndex = (Math.random() < 0.1) ? Math.floor(Math.random() * count) : -1; // 10% 확률 골든핸드
+            isGameOver = false;
+
+            document.getElementById('setup-view').classList.add('hidden');
+            document.getElementById('game-view').classList.remove('hidden');
+            document.getElementById('result-area').classList.add('hidden');
+            document.getElementById('receipt').classList.remove('show');
+            updateText(goldenHandIndex !== -1 ? "Look! A Golden Hand appeared!" : "Who will pay? Pick a hand!");
+            document.getElementById('main-img').src = 'coffee.png'; document.getElementById('main-img').classList.remove('large');
+            
+            const display = document.getElementById('hand-display');
+            display.innerHTML = ''; 
+            for (let i = 0; i < count; i++) {
+                const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
+                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png';
+                handImg.className = 'hand-img'; 
+                if (i === goldenHandIndex) handImg.classList.add('golden-hand');
+                handImg.onclick = () => openHand(i, count);
+                const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
+                wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
+            }
+        }
+
+        function openHand(index, total) {
+            if (isGameOver) return;
+            const hands = document.getElementsByClassName('hand-img');
+            const handImg = hands[index];
+            if (handImg.dataset.opened === "true") return;
+
+            // 골든 핸드 클릭 시 (전원 세이프)
+            if (index === goldenHandIndex) {
+                isGameOver = true; AudioEngine.play('gold');
+                handImg.src = 'hand_open.png';
+                confetti({ particleCount: 200, spread: 100, colors: ['#FFD700', '#FFA500'] });
+                updateText("LUCKY! Everyone is SAFE today! 🌟");
+                setTimeout(() => { if(confirm("Golden Hand Effect: No one pays! Re-start?")) resetGame(); }, 2000);
+                return;
+            }
+
+            if (index === winnerIndex) {
+                isGameOver = true; AudioEngine.play('fail');
+                handImg.src = 'hand_money.png'; handImg.classList.add('shake');
+                for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
+                updateText(`Oh! ${memberNames[index]} will pay!`);
+                document.getElementById('main-img').src = 'coffee_broken.png';
+                updateStats(memberNames[index]);
+                showFinish(total, memberNames[index]);
+            } else {
+                AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
+                updateText(`${memberNames[index]} is Safe!`);
+            }
+        }
+
+        function showFinish(total, payerName) {
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            const now = new Date();
+            document.getElementById('receipt-date').innerText = now.toLocaleDateString();
+            document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('receipt-qty').innerText = "x" + total;
+            document.getElementById('receipt-price').innerText = "$4.50";
+            document.getElementById('receipt-subtotal').innerText = "$" + (4.5 * total).toFixed(2);
+            document.getElementById('receipt-payer').innerText = payerName;
+            document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+            document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
+            document.getElementById('btn-restart').innerText = "Next Round";
+            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); }, 600);
+        }
+
+        function resetGame() {
+            document.getElementById('setup-view').classList.remove('hidden');
+            document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
+            updateText("Welcome to Gony's Coffee");
+            generateNameInputs();
+        }
+
+        function hideSplash() {
+            const splash = document.getElementById('splash-screen');
+            if (splash && !splash.classList.contains('hidden')) {
+                splash.style.opacity = '0'; splash.style.pointerEvents = 'none';
+                setTimeout(() => { splash.classList.add('hidden'); document.getElementById('main-img').classList.add('reveal-effect'); updateText("Welcome to Gony's Coffee"); }, 600);
+            }
+        }
 
         async function shareAsImage() {
             const captureArea = document.getElementById('capture-area');
@@ -289,96 +373,7 @@
             } catch (error) { shareBtn.disabled = false; }
         }
 
-        function hideSplash() {
-            const splash = document.getElementById('splash-screen');
-            if (splash && !splash.classList.contains('hidden')) {
-                splash.style.opacity = '0'; splash.style.pointerEvents = 'none';
-                setTimeout(() => { splash.classList.add('hidden'); document.getElementById('main-img').classList.add('reveal-effect'); updateText("Welcome to Gony's Coffee"); }, 600);
-            }
-        }
-
         window.onload = () => { generateNameInputs(); setTimeout(hideSplash, 1500); };
-
-        let isGameOver = false; let winnerIndex = -1;
-
-        function startGame() {
-            const count = parseInt(document.getElementById('member-select').value);
-            memberNames = []; const namesToSave = [];
-            for (let i = 0; i < count; i++) {
-                const val = document.getElementById(`input-name-${i}`).value.trim();
-                memberNames.push(val || `Member ${i+1}`);
-                namesToSave.push(val);
-            }
-            localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
-            AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * count); isGameOver = false;
-            document.getElementById('setup-view').classList.add('hidden');
-            document.getElementById('game-view').classList.remove('hidden');
-            document.getElementById('result-area').classList.add('hidden');
-            document.getElementById('receipt').classList.remove('show');
-            updateText("Who will pay? Pick a hand!");
-            document.getElementById('main-img').src = 'coffee.png'; document.getElementById('main-img').classList.remove('large');
-            const display = document.getElementById('hand-display');
-            display.innerHTML = ''; 
-            for (let i = 0; i < count; i++) {
-                const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
-                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png';
-                handImg.className = 'hand-img'; handImg.onclick = () => openHand(i, count);
-                const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
-                wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
-            }
-        }
-
-        function openHand(index, total) {
-            if (isGameOver) return;
-            const hands = document.getElementsByClassName('hand-img');
-            const handImg = hands[index];
-            if (handImg.dataset.opened === "true") return;
-            if (index === winnerIndex) {
-                isGameOver = true; AudioEngine.play('fail');
-                handImg.src = 'hand_money.png'; handImg.classList.add('shake');
-                for (let i = 0; i < hands.length; i++) {
-                    if (i !== winnerIndex) {
-                        hands[i].src = 'hand_clap.gif';
-                    }
-                }
-                updateText(`Oh! ${memberNames[index]} will pay!`);
-                document.getElementById('main-img').src = 'coffee_broken.png';
-                
-                // 통계 누적
-                updateStats(memberNames[index]);
-                
-                showFinish(total, memberNames[index]);
-            } else {
-                AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
-                updateText(`${memberNames[index]} is Safe!`);
-            }
-        }
-
-        function showFinish(total, payerName) {
-            if(typeof confetti === 'function') confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-            const now = new Date();
-            document.getElementById('receipt-date').innerText = now.toLocaleDateString();
-            document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('receipt-qty').innerText = "x" + total;
-            document.getElementById('receipt-price').innerText = "$4.50";
-            document.getElementById('receipt-subtotal').innerText = "$" + (4.5 * total).toFixed(2);
-            document.getElementById('receipt-payer').innerText = payerName;
-            document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
-            
-            // 랜덤 영문 메뉴 적용
-            document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
-            
-            document.getElementById('btn-restart').innerText = "Next Round";
-            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); }, 600);
-        }
-
-        function resetGame() {
-            document.getElementById('setup-view').classList.remove('hidden');
-            document.getElementById('game-view').classList.add('hidden');
-            document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
-            updateText("Welcome to Gony's Coffee");
-            generateNameInputs();
-        }
     </script>
 </body>
 </html>

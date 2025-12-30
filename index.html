@@ -172,6 +172,7 @@
             transition: opacity 0.8s ease-out;
         }
         .splash-logo { width: 120px; margin-bottom: 20px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
@@ -243,6 +244,7 @@
         let selectedMenu = menuData[0];
         let currentTotalMembers = 0;
         let finalPayerNum = 0;
+        let typingTimer = null; // 타이핑 타이머 변수 추가
 
         window.onload = () => {
             setTimeout(() => {
@@ -250,6 +252,7 @@
                 splash.style.opacity = '0';
                 setTimeout(() => splash.classList.add('hidden'), 800);
             }, 1000);
+            updateText("Welcome to our coffee shop"); // 초기 텍스트에도 효과 적용
         };
 
         let isGameOver = false;
@@ -282,8 +285,22 @@
             }
         }
 
+        // --- 수정된 updateText 함수 (타이핑 효과) ---
         function updateText(msg) {
-            document.getElementById('rpg-content').innerText = msg;
+            const container = document.getElementById('rpg-content');
+            if (typingTimer) clearInterval(typingTimer);
+
+            container.innerText = '';
+            let i = 0;
+            typingTimer = setInterval(() => {
+                if (i < msg.length) {
+                    container.innerText += msg.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingTimer);
+                    typingTimer = null;
+                }
+            }, 50); 
         }
 
         function startGame() {
@@ -353,14 +370,13 @@
                 handImg.dataset.opened = "true";
                 
                 updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
-                setTimeout(() => { if(!isGameOver) updateText("Please pay for it"); }, 1000);
+                setTimeout(() => { if(!isGameOver) updateText("Please pay for it"); }, 1200);
             }
         }
 
         function showFinish(total, payerNum) {
             confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             
-            // 메뉴 랜덤 결정 (아이디어 1번)
             selectedMenu = menuData[Math.floor(Math.random() * menuData.length)];
             finalPayerNum = payerNum;
 
@@ -380,7 +396,6 @@
             }, 800);
         }
 
-        // 공유하기 기능 (아이디어 3번)
         async function shareResult() {
             const shareData = {
                 title: 'Coffee Game Result',

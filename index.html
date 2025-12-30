@@ -65,6 +65,10 @@
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .member-name { font-size: 0.9rem; font-weight: 800; margin-top: 5px; color: #333; }
 
+        /* 긴장감 Shake 효과 */
+        .tension-shake { animation: tension-animation 0.1s infinite; filter: grayscale(0.5); }
+        @keyframes tension-animation { 0% { transform: translate(1px, 1px) rotate(0deg); } 50% { transform: translate(-1px, -1px) rotate(1deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
+
         .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
 
@@ -253,6 +257,7 @@
                 else if (type === 'safe') { osc.frequency.setValueAtTime(880, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.1); }
                 else if (type === 'fail') { osc.frequency.setValueAtTime(349.23, now); osc.frequency.linearRampToValueAtTime(110, now + 0.6); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
                 else if (type === 'lucky') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now+0.1); osc.frequency.setValueAtTime(783.99, now+0.2); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.4); }
+                else if (type === 'tension') { osc.frequency.setValueAtTime(220, now); osc.frequency.exponentialRampToValueAtTime(440, now + 0.6); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.6); }
             }
         };
 
@@ -268,7 +273,7 @@
             AudioEngine.play('start'); 
             
             winnerIndex = Math.floor(Math.random() * count);
-            isLuckyRound = Math.random() < 0.1; // 10% 확률 럭키 라운드
+            isLuckyRound = Math.random() < 0.1; 
             isGameOver = false;
 
             document.getElementById('setup-view').classList.add('hidden');
@@ -285,19 +290,34 @@
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
                 const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png';
                 handImg.className = 'hand-img'; 
-                handImg.onclick = () => openHand(i, count);
+                handImg.onclick = () => handleHandClick(i, count);
                 const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
                 wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
             }
         }
 
-        function openHand(index, total) {
+        // 클릭 시 긴장감 연출 후 실제 결과 공개
+        function handleHandClick(index, total) {
             if (isGameOver) return;
             const hands = document.getElementsByClassName('hand-img');
             const handImg = hands[index];
-            if (handImg.dataset.opened === "true") return;
+            if (handImg.dataset.opened === "true" || handImg.classList.contains('tension-shake')) return;
 
-            // 10% 확률로 럭키 라운드 발동 (누구를 누르든 상관없이 발생)
+            // 1. 긴장감 연출 (0.6초간 떨림)
+            handImg.classList.add('tension-shake');
+            AudioEngine.play('tension');
+            updateText("Wait... Checking...");
+
+            setTimeout(() => {
+                handImg.classList.remove('tension-shake');
+                openHand(index, total);
+            }, 600);
+        }
+
+        function openHand(index, total) {
+            const hands = document.getElementsByClassName('hand-img');
+            const handImg = hands[index];
+
             if (isLuckyRound) {
                 isGameOver = true; AudioEngine.play('lucky');
                 handImg.src = 'hand_open.png';

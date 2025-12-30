@@ -45,12 +45,13 @@
         .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
         .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
 
+        /* 팀 프리셋 버튼들 */
         .team-presets { 
             width: 90%; max-width: 450px; 
             display: flex; flex-wrap: wrap; justify-content: center;
             gap: 8px; margin-bottom: 15px; padding: 5px;
         }
-        .preset-btn { background: #f0f0f0; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; color: #666; }
+        .preset-btn { background: #f0f0f0; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; color: #666; transition: 0.2s; }
         .preset-btn.active { background: #000; color: #fff; }
 
         .setup-card {
@@ -60,13 +61,18 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        .option-group { margin-bottom: 15px; font-size: 1rem; font-weight: 800; color: #333; }
+        .option-group { margin-bottom: 20px; font-size: 1rem; font-weight: 800; color: #333; }
         select { padding: 8px 15px; font-size: 1rem; border: 1.5px solid #ddd; border-radius: 10px; margin-left: 10px; background: white; outline: none;}
+
+        /* [복구] 랜덤 및 이름 관리 바 */
+        .name-mgmt-bar { width: 100%; display: flex; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
+        .btn-small { flex: 1; background: white; border: 1.5px solid #eee; color: #777; font-size: 0.8rem; padding: 10px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: 600;}
+        .btn-small:hover { background: #f9f9f9; border-color: #ddd; }
 
         #name-input-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin: 0 auto 20px; }
         .name-input { padding: 12px 5px; border: 1.5px solid #eee; border-radius: 10px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; background: white; }
 
-        .stats-container { width: 100%; background: #f1f1f1; padding: 15px; border-radius: 12px; font-size: 0.8rem; box-sizing: border-box; text-align: center; }
+        .stats-container { width: 100%; background: #f1f1f1; padding: 15px; border-radius: 12px; font-size: 0.8rem; box-sizing: border-box; text-align: center; margin-top: 10px; }
         .stats-title { font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: #888; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 6px; color: #555; }
 
@@ -84,7 +90,7 @@
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         .member-name { font-size: 0.9rem; font-weight: 800; margin-top: 8px; color: #333; }
 
-        /* 영수증 디자인 복구 */
+        /* 영수증 디자인 */
         .receipt { 
             background: #fff; color: #333; width: 280px; padding: 30px 25px; 
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
@@ -134,6 +140,7 @@
 
             <div id="setup-view">
                 <div class="team-presets" id="team-presets"></div>
+                
                 <div class="setup-card">
                     <div class="option-group">MEMBERS
                         <select id="member-select" onchange="generateNameInputs()">
@@ -142,7 +149,15 @@
                             <option value="8">8</option><option value="9">9</option>
                         </select>
                     </div>
+
+                    <div class="name-mgmt-bar">
+                        <button class="btn-small" onclick="fillRandomNames()">🎲 RANDOM</button>
+                        <button class="btn-small" onclick="clearNames()">🧹 CLEAR</button>
+                        <button class="btn-small" onclick="saveCurrentTeam()" style="border-color: #000; color: #000;">💾 SAVE</button>
+                    </div>
+
                     <div id="name-input-container"></div>
+
                     <div id="stats-dashboard" class="stats-container hidden">
                         <div class="stats-title">🏆 TOTAL DONATIONS <button style="font-size:0.65rem; color:#aaa; border:none; background:none; cursor:pointer;" onclick="resetStats()">Reset</button></div>
                         <div id="stats-list"></div>
@@ -153,11 +168,7 @@
 
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
-                
-                <div id="lucky-area" class="hidden">
-                    <button class="btn-main" onclick="startGame()">Lucky Round! Restart</button>
-                </div>
-
+                <div id="lucky-area" class="hidden"><button class="btn-main" onclick="startGame()">Lucky Round! Restart</button></div>
                 <div id="result-area" class="hidden">
                     <div id="capture-area" style="padding: 25px 10px; background: #ffffff;">
                         <div class="receipt" id="receipt">
@@ -195,6 +206,7 @@
         const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread"];
         
         let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; let isLuckyRound = false;
+        let currentTeamName = 'Main';
 
         function updateText(msg) {
             clearTimeout(typeTimeout);
@@ -203,10 +215,10 @@
             typing();
         }
 
-        function generateNameInputs() {
+        function generateNameInputs(providedNames = null) {
             const count = parseInt(document.getElementById('member-select').value);
             const container = document.getElementById('name-input-container'); container.innerHTML = '';
-            const savedNames = JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]');
+            const savedNames = providedNames || JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]');
             for (let i = 0; i < count; i++) {
                 const input = document.createElement('input'); input.type = 'text'; input.className = 'name-input';
                 input.placeholder = `Name ${i+1}`; input.id = `input-name-${i}`;
@@ -237,7 +249,7 @@
                 const val = document.getElementById(`input-name-${i}`).value.trim();
                 memberNames.push(val || `Member ${i+1}`); namesToSave.push(val);
             }
-            localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
+            if (currentTeamName === 'Main') localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
             
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * count);
@@ -275,27 +287,21 @@
 
         function openHand(index, total) {
             const hands = document.getElementsByClassName('hand-img'); const handImg = hands[index];
-            
             if (isLuckyRound) {
-                isGameOver = true; 
-                AudioEngine.play('lucky');
+                isGameOver = true; AudioEngine.play('lucky');
                 for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
-                // 럭키 상황: 폭죽 제외
                 updateText("LUCKY! Everyone is SAFE! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden'); 
                 document.getElementById('btn-reset-game').classList.add('hidden');
                 return;
             }
-
             if (index === winnerIndex) {
-                isGameOver = true; 
-                AudioEngine.play('fail'); 
+                isGameOver = true; AudioEngine.play('fail'); 
                 handImg.src = 'hand_money.png'; handImg.classList.add('shake');
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 updateStats(memberNames[index]); 
-                // 당첨 상황: 폭죽 터짐
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(total, memberNames[index]);
             } else {
@@ -314,7 +320,6 @@
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
-            
             setTimeout(() => { 
                 document.getElementById('result-area').classList.remove('hidden'); 
                 document.getElementById('receipt').classList.add('show'); 
@@ -329,13 +334,65 @@
             document.getElementById('main-img').classList.add('large');
             updateText("Welcome to Gony's Coffee"); 
             generateNameInputs(); 
+            renderTeamTabs();
         }
 
         function resetToTitle() { location.reload(); }
 
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            if (splash) { splash.style.opacity = '0'; setTimeout(() => { splash.classList.add('hidden'); updateText("Welcome to Gony's Coffee"); generateNameInputs(); }, 600); }
+            if (splash) { splash.style.opacity = '0'; setTimeout(() => { splash.classList.add('hidden'); updateText("Welcome to Gony's Coffee"); renderTeamTabs(); generateNameInputs(); }, 600); }
+        }
+
+        /* [복구] 랜덤 이름 생성 */
+        function fillRandomNames() {
+            const inputs = document.querySelectorAll('.name-input');
+            const used = [];
+            inputs.forEach(input => {
+                let r;
+                do { r = randomNicknames[Math.floor(Math.random() * randomNicknames.length)]; } while (used.includes(r));
+                input.value = r;
+                used.push(r);
+            });
+        }
+
+        /* [복구] 팀 저장 및 탭 렌더링 */
+        function saveCurrentTeam() {
+            const name = prompt("이 팀의 이름을 입력하세요 (예: 팀A, 오후모임):");
+            if (!name) return;
+            const inputs = document.querySelectorAll('.name-input');
+            const names = Array.from(inputs).map(i => i.value.trim());
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            teams[name] = { count: inputs.length, names: names };
+            localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+            currentTeamName = name;
+            renderTeamTabs();
+        }
+
+        function loadTeam(name) {
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            currentTeamName = name;
+            if (name === 'Main') {
+                generateNameInputs();
+            } else if (teams[name]) {
+                document.getElementById('member-select').value = teams[name].count;
+                generateNameInputs(teams[name].names);
+            }
+            renderTeamTabs();
+        }
+
+        function renderTeamTabs() {
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            const container = document.getElementById('team-presets');
+            container.innerHTML = `<button class="preset-btn ${currentTeamName==='Main'?'active':''}" onclick="loadTeam('Main')">Main</button>`;
+            Object.keys(teams).forEach(t => {
+                container.innerHTML += `<button class="preset-btn ${currentTeamName===t?'active':''}" onclick="loadTeam('${t}')">${t}</button>`;
+            });
+        }
+
+        function clearNames() {
+            const inputs = document.querySelectorAll('.name-input');
+            inputs.forEach(i => i.value = '');
         }
 
         function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); stats[name] = (stats[name] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
@@ -365,7 +422,7 @@
             } catch (error) { shareBtn.disabled = false; }
         }
 
-        window.onload = () => { generateNameInputs(); setTimeout(hideSplash, 1500); };
+        window.onload = () => { setTimeout(hideSplash, 1500); };
     </script>
 </body>
 </html>

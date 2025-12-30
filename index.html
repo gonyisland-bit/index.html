@@ -79,6 +79,14 @@
         .label-customer { font-size: 0.8rem; color: #666; }
         .value-customer { color: #e63946; font-size: 1.3rem; }
         .fortune-area { margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc; text-align: center; font-size: 0.85rem; color: #555; line-height: 1.4; }
+
+        /* 기부왕 통계 영역 */
+        .stats-container { margin-top: 30px; width: 90%; max-width: 400px; background: #f8f8f8; padding: 15px; border-radius: 12px; font-size: 0.85rem; }
+        .stats-title { font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .stats-list { text-align: left; border-top: 1px solid #ddd; padding-top: 8px; }
+        .stats-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .btn-reset-stats { font-size: 0.6rem; color: #bbb; border: none; background: none; cursor: pointer; text-decoration: underline; }
+
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.8rem; color: var(--text-gray-70); }
         .hidden { display: none !important; }
 
@@ -119,6 +127,14 @@
                 <div class="name-mgmt-bar"><button class="btn-clear" onclick="clearNames()">Clear all</button></div>
                 <div id="name-input-container"></div>
                 <button class="btn-main" onclick="startGame()">start</button>
+
+                <div id="stats-dashboard" class="stats-container hidden">
+                    <div class="stats-title">
+                        🏆 Hall of Fame
+                        <button class="btn-reset-stats" onclick="resetStats()">Reset Stats</button>
+                    </div>
+                    <div id="stats-list" class="stats-list"></div>
+                </div>
             </div>
 
             <div id="game-view" class="hidden">
@@ -130,7 +146,7 @@
                             <div class="receipt-subheader" style="text-align: center; font-size: 0.8rem; margin-bottom: 10px;">GONY'S COFFEE SHOP</div>
                             <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                            <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
+                            <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
                             <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
                             <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                             <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
@@ -154,10 +170,12 @@
 
     <script>
         const fortunes = ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"];
+        // 영문 메뉴 리스트
+        const randomMenus = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"];
+        
         let memberNames = [];
         let typeTimeout;
 
-        // 타자기 효과 함수
         function updateText(msg) {
             clearTimeout(typeTimeout);
             const content = document.getElementById('rpg-content');
@@ -171,6 +189,37 @@
                 }
             }
             typing();
+        }
+
+        // 통계 관련 함수들
+        function updateStats(name) {
+            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            stats[name] = (stats[name] || 0) + 1;
+            localStorage.setItem('coffeeStats', JSON.stringify(stats));
+        }
+
+        function showStats() {
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const dashboard = document.getElementById('stats-dashboard');
+            const list = document.getElementById('stats-list');
+            
+            const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
+            if (entries.length === 0) {
+                dashboard.classList.add('hidden');
+                return;
+            }
+            
+            dashboard.classList.remove('hidden');
+            list.innerHTML = entries.map(([name, count]) => 
+                `<div class="stats-row"><span>${name}</span><span>${count} times ☕</span></div>`
+            ).join('');
+        }
+
+        function resetStats() {
+            if(confirm("기부 통계를 초기화할까요?")) {
+                localStorage.removeItem('coffeeStats');
+                showStats();
+            }
         }
 
         function clearNames() { localStorage.removeItem('savedCoffeeNames'); generateNameInputs(); }
@@ -188,6 +237,7 @@
                 if (savedNames[i]) input.value = savedNames[i];
                 container.appendChild(input);
             }
+            showStats(); // 이름 생성할 때 통계도 갱신
         }
 
         const AudioEngine = {
@@ -196,9 +246,27 @@
             play(type) {
                 this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
-                if (type === 'start') { osc.frequency.setValueAtTime(392, now); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.3); }
-                else if (type === 'safe') { osc.frequency.setValueAtTime(440, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.1); }
-                else if (type === 'fail') { osc.frequency.setValueAtTime(220, now); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
+                
+                if (type === 'start') { 
+                    // 경쾌한 시작음
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.3); // C6
+                    gain.gain.setValueAtTime(0.1, now);
+                    osc.start(now); osc.stop(now + 0.3); 
+                }
+                else if (type === 'safe') { 
+                    // 높은 알림음
+                    osc.frequency.setValueAtTime(880, now); // A5
+                    gain.gain.setValueAtTime(0.05, now);
+                    osc.start(now); osc.stop(now + 0.1); 
+                }
+                else if (type === 'fail') { 
+                    // 떨어지는 당첨음
+                    osc.frequency.setValueAtTime(349.23, now); // F4
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.6); // A2
+                    gain.gain.setValueAtTime(0.1, now);
+                    osc.start(now); osc.stop(now + 0.6); 
+                }
             }
         };
 
@@ -268,7 +336,6 @@
             if (index === winnerIndex) {
                 isGameOver = true; AudioEngine.play('fail');
                 handImg.src = 'hand_money.png'; handImg.classList.add('shake');
-                // 박수치는 GIF 적용 로직
                 for (let i = 0; i < hands.length; i++) {
                     if (i !== winnerIndex) {
                         hands[i].src = 'hand_clap.gif';
@@ -276,6 +343,10 @@
                 }
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
+                
+                // 통계 누적
+                updateStats(memberNames[index]);
+                
                 showFinish(total, memberNames[index]);
             } else {
                 AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
@@ -293,6 +364,10 @@
             document.getElementById('receipt-subtotal').innerText = "$" + (4.5 * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+            
+            // 랜덤 영문 메뉴 적용
+            document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
+            
             document.getElementById('btn-restart').innerText = "Next Round";
             setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); }, 600);
         }

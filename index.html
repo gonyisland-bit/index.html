@@ -44,9 +44,15 @@
         .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
 
-        /* 네임 입력창: 한 줄에 3개 배치 및 가운데 정렬 */
+        /* 수정된 네임 입력창 컨테이너: margin: auto로 중앙 정렬 */
         #name-input-container {
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; width: 90%; max-width: 450px; margin: 15px 0;
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 8px; 
+            width: 90%; 
+            max-width: 400px; 
+            margin: 15px auto; /* 좌우 마진 auto로 중앙 정렬 */
+            justify-items: center;
         }
         .name-input {
             padding: 8px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85rem; 
@@ -81,7 +87,6 @@
         .receipt-header { text-align: center; font-weight: 800; font-size: 1.2rem; }
         .receipt-subheader { text-align: center; font-size: 0.8rem; margin-bottom: 10px; }
         
-        /* CUSTOMER 레이아웃 수정 */
         .receipt-total { display: flex; justify-content: space-between; align-items: baseline; font-weight: bold; margin-top: 15px; border-top: 2px solid #333; padding-top: 10px; }
         .label-customer { font-size: 0.8rem; color: #666; }
         .value-customer { color: #e63946; font-size: 1.3rem; }

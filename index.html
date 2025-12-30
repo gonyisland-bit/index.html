@@ -44,14 +44,22 @@
         .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
 
-        /* 수정된 네임 입력창 컨테이너: margin: auto로 중앙 정렬 */
+        /* 네임 입력 관리 바 */
+        .name-mgmt-bar {
+            width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px;
+        }
+        .btn-clear {
+            background: none; border: 1px solid #ccc; color: #999; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase;
+        }
+        .btn-clear:hover { background: #eee; color: #666; }
+
         #name-input-container {
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             gap: 8px; 
             width: 90%; 
             max-width: 400px; 
-            margin: 15px auto; /* 좌우 마진 auto로 중앙 정렬 */
+            margin: 0 auto 15px;
             justify-items: center;
         }
         .name-input {
@@ -133,6 +141,9 @@
                         <option value="8">8</option><option value="9">9</option>
                     </select>
                 </div>
+                <div class="name-mgmt-bar">
+                    <button class="btn-clear" onclick="clearNames()">Clear all</button>
+                </div>
                 <div id="name-input-container"></div>
                 <button class="btn-main" onclick="startGame()">start</button>
             </div>
@@ -177,15 +188,31 @@
 
         let memberNames = [];
         
+        // 이름 초기화 함수
+        function clearNames() {
+            localStorage.removeItem('savedCoffeeNames');
+            const inputs = document.querySelectorAll('.name-input');
+            inputs.forEach(input => input.value = '');
+        }
+
         function generateNameInputs() {
             const count = parseInt(document.getElementById('member-select').value);
             const container = document.getElementById('name-input-container');
             container.innerHTML = '';
+            
+            // 저장된 이름 불러오기
+            const savedData = localStorage.getItem('savedCoffeeNames');
+            const savedNames = savedData ? JSON.parse(savedData) : [];
+
             for (let i = 0; i < count; i++) {
                 const input = document.createElement('input');
                 input.type = 'text'; input.className = 'name-input';
                 input.placeholder = `Name ${i+1}`;
                 input.id = `input-name-${i}`;
+                // 저장된 이름이 있으면 넣어줌
+                if (savedNames[i]) {
+                    input.value = savedNames[i];
+                }
                 container.appendChild(input);
             }
         }
@@ -237,10 +264,17 @@
         function startGame() {
             const count = parseInt(document.getElementById('member-select').value);
             memberNames = [];
+            const namesToSave = [];
+
             for (let i = 0; i < count; i++) {
                 const val = document.getElementById(`input-name-${i}`).value.trim();
                 memberNames.push(val || `Member ${i+1}`);
+                namesToSave.push(val); // 빈 값도 위치 유지를 위해 저장
             }
+
+            // 로컬 스토리지에 이름 저장
+            localStorage.setItem('savedCoffeeNames', JSON.stringify(namesToSave));
+
             AudioEngine.play('start');
             winnerIndex = Math.floor(Math.random() * count);
             isGameOver = false;

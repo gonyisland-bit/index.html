@@ -8,6 +8,7 @@
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -110,9 +111,7 @@
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 100px; }
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
-        .shake {
-            animation: shake-animation 0.15s infinite;
-        }
+        .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation {
             0% { transform: translate(0, 0); }
             25% { transform: translate(2px, 2px); }
@@ -121,8 +120,9 @@
             100% { transform: translate(0, 0); }
         }
 
+        /* 공유 시 흰색 배경을 확실히 하기 위해 스타일 보강 */
         .receipt {
-            background: #fdfdfd; color: #333; width: 280px; padding: 25px 20px;
+            background: white; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             border-radius: 2px; position: relative; opacity: 0;
             animation: slideUpReceipt 0.6s forwards; text-align: left;
@@ -183,23 +183,25 @@
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
                 <div id="result-area" class="hidden">
-                    <div class="receipt" id="receipt">
-                        <div class="receipt-header">RECEIPT</div>
-                        <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
-                        <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
-                        <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                        <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
-                        <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
-                        <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                        <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
-                        <div class="receipt-total" style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;">
-                            <span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span>
+                    <div id="capture-area" style="padding: 10px; background: #fff;">
+                        <div class="receipt" id="receipt">
+                            <div class="receipt-header">RECEIPT</div>
+                            <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
+                            <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
+                            <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
+                            <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
+                            <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
+                            <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
+                            <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
+                            <div class="receipt-total" style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;">
+                                <span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span>
+                            </div>
+                            <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
                         </div>
-                        <p style="font-size: 0.7rem; text-align: center; margin-top: 15px;">THANKS FOR THE DRINK!</p>
                     </div>
                     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
                         <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
-                        <button class="btn-secondary" id="btn-share" onclick="alert('Result shared!')">Share Result</button>
+                        <button class="btn-secondary" id="id-share-btn" onclick="shareAsImage()">Share Receipt Image</button>
                     </div>
                 </div>
             </div>
@@ -208,64 +210,92 @@
     </div>
 
     <script>
-        // --- [사운드 엔진: Web Audio API] ---
+        // --- [사운드 엔진] ---
         const AudioEngine = {
             ctx: null,
             init() {
-                if (!this.ctx) {
-                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
+                if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                if (this.ctx.state === 'suspended') this.ctx.resume();
             },
             play(type) {
                 this.init();
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 const now = this.ctx.currentTime;
-
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-
+                osc.connect(gain); gain.connect(this.ctx.destination);
                 if (type === 'start') {
-                    // 상큼한 시작음 (솔-도)
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(392, now); // G4
-                    osc.frequency.exponentialRampToValueAtTime(523, now + 0.1); // C5
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                    osc.start(now);
-                    osc.stop(now + 0.3);
-                } 
-                else if (type === 'safe') {
-                    // 짧고 가벼운 틱 소리
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(440, now);
-                    gain.gain.setValueAtTime(0.05, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                    osc.start(now);
-                    osc.stop(now + 0.1);
-                } 
-                else if (type === 'fail') {
-                    // 긴장되는 벌칙음 (낮게 떨어지는 소리)
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(220, now);
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(392, now);
+                    osc.frequency.exponentialRampToValueAtTime(523, now + 0.1);
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                } else if (type === 'safe') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now); osc.stop(now + 0.1);
+                } else if (type === 'fail') {
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, now);
                     osc.frequency.linearRampToValueAtTime(110, now + 0.5);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
-                    osc.start(now);
-                    osc.stop(now + 0.6);
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+                    osc.start(now); osc.stop(now + 0.6);
                 }
             }
         };
 
-        // --- [기존 로직] ---
+        // --- [공유 및 이미지 변환 로직] ---
+        async function shareAsImage() {
+            const captureArea = document.getElementById('capture-area');
+            const shareBtn = document.getElementById('id-share-btn');
+            
+            shareBtn.innerText = "Generating...";
+            shareBtn.disabled = true;
+
+            try {
+                // 1. 영수증 영역을 캔버스로 변환
+                const canvas = await html2canvas(captureArea, {
+                    backgroundColor: "#ffffff",
+                    scale: 2 // 화질 향상
+                });
+
+                // 2. 캔버스를 Blob(이미지 파일)으로 변환
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], "coffee_receipt.png", { type: "image/png" });
+                    
+                    // 3. Web Share API 확인 (모바일 브라우저 전용)
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Coffee Game Result',
+                                text: 'Look who bought the coffee today!'
+                            });
+                        } catch (err) {
+                            console.log("Share failed:", err);
+                        }
+                    } else {
+                        // 공유 기능을 지원하지 않는 경우 (PC 등) 다운로드 유도
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'coffee_receipt.png';
+                        link.click();
+                        alert("Image saved! Share this file with your friends.");
+                    }
+                    shareBtn.innerText = "Share Receipt Image";
+                    shareBtn.disabled = false;
+                }, 'image/png');
+
+            } catch (error) {
+                console.error("Capture failed:", error);
+                alert("Could not generate image. Please try again.");
+                shareBtn.innerText = "Share Receipt Image";
+                shareBtn.disabled = false;
+            }
+        }
+
+        // --- [기존 로직 유지] ---
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
-                splash.style.opacity = '0';
-                splash.style.pointerEvents = 'none';
+                splash.style.opacity = '0'; splash.style.pointerEvents = 'none';
                 setTimeout(() => {
                     splash.classList.add('hidden');
                     const mainImg = document.getElementById('main-img');
@@ -277,72 +307,45 @@
             }
         }
 
-        window.onload = () => {
-            setTimeout(hideSplash, 1500);
-        };
+        window.onload = () => { setTimeout(hideSplash, 1500); };
 
         const menuData = [
-            { name: "Americano", price: 4.50 },
-            { name: "Cafe Latte", price: 5.50 },
-            { name: "Specialty Coffee", price: 8.00 }
+            { name: "Americano", price: 4.50 }, { name: "Cafe Latte", price: 5.50 }, { name: "Specialty Coffee", price: 8.00 }
         ];
 
-        let typingTimer = null; 
-        let isGameOver = false;
-        let winnerIndex = -1;
+        let typingTimer = null; let isGameOver = false; let winnerIndex = -1;
         const safeMsgs = ["Safe!", "Phew...", "Lucky me!", "Not me!", "Survived!"];
 
         function updateText(msg) {
             const container = document.getElementById('rpg-content');
             if (typingTimer) clearTimeout(typingTimer);
-            container.innerText = ''; 
-            let i = 0;
+            container.innerText = ''; let i = 0;
             function typeWriter() {
-                if (i < msg.length) {
-                    container.innerText += msg.charAt(i);
-                    i++;
-                    typingTimer = setTimeout(typeWriter, 50);
-                }
+                if (i < msg.length) { container.innerText += msg.charAt(i); i++; typingTimer = setTimeout(typeWriter, 50); }
             }
             typeWriter();
         }
 
         function startGame() {
-            AudioEngine.play('start'); // [소리 추가]
+            AudioEngine.play('start');
             const memberCount = parseInt(document.getElementById('member-select').value);
             winnerIndex = Math.floor(Math.random() * memberCount);
             isGameOver = false;
-
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
-            
             updateText("Please pay for it");
-            
             const mainImg = document.getElementById('main-img');
-            mainImg.src = 'coffee.png';
-            mainImg.classList.remove('large'); 
-            mainImg.classList.remove('reveal-effect');
-            
+            mainImg.src = 'coffee.png'; mainImg.classList.remove('large');
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
-
             for (let i = 0; i < memberCount; i++) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'hand-wrapper';
-                const handImg = document.createElement('img');
-                handImg.src = 'hand_nothing.png';
-                handImg.className = 'hand-img';
-                handImg.id = `hand-${i}`;
+                const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
+                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png';
+                handImg.className = 'hand-img'; handImg.id = `hand-${i}`;
                 handImg.onclick = () => openHand(i, memberCount);
-                
-                const num = document.createElement('div');
-                num.innerText = i + 1;
-                num.style.fontWeight = "800";
-                
-                wrapper.appendChild(handImg);
-                wrapper.appendChild(num);
-                display.appendChild(wrapper);
+                const num = document.createElement('div'); num.innerText = i + 1; num.style.fontWeight = "800";
+                wrapper.appendChild(handImg); wrapper.appendChild(num); display.appendChild(wrapper);
             }
         }
 
@@ -350,36 +353,24 @@
             if (isGameOver) return;
             const handImg = document.getElementById(`hand-${index}`);
             if (handImg.dataset.opened === "true") return;
-
             if (index === winnerIndex) {
-                isGameOver = true;
-                AudioEngine.play('fail'); // [소리 추가]
-                handImg.src = 'hand_money.png';
-                handImg.classList.add('shake');
-                
+                isGameOver = true; AudioEngine.play('fail');
+                handImg.src = 'hand_money.png'; handImg.classList.add('shake');
                 for (let i = 0; i < total; i++) {
-                    if (i !== winnerIndex) {
-                        const otherHand = document.getElementById(`hand-${i}`);
-                        otherHand.src = 'hand_clap.gif';
-                    }
+                    if (i !== winnerIndex) document.getElementById(`hand-${i}`).src = 'hand_clap.gif';
                 }
-
                 updateText("Thank you for the drink");
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 showFinish(total, index + 1);
             } else {
-                AudioEngine.play('safe'); // [소리 추가]
-                handImg.src = 'hand_open.png';
-                handImg.dataset.opened = "true";
+                AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
                 updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
                 setTimeout(() => { if(!isGameOver) updateText("Please pay for it"); }, 1200);
             }
         }
 
         function showFinish(total, payerNum) {
-            if(typeof confetti === 'function') {
-                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-            }
+            if(typeof confetti === 'function') confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             const selectedMenu = menuData[Math.floor(Math.random() * menuData.length)];
             const now = new Date();
             document.getElementById('receipt-date').innerText = now.toLocaleDateString();
@@ -390,25 +381,15 @@
             document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
             document.getElementById('btn-restart').innerText = `${total} cups, please`;
-            
-            setTimeout(() => { 
-                document.getElementById('result-area').classList.remove('hidden'); 
-            }, 600);
+            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); }, 600);
         }
 
         function resetGame() {
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('hidden');
             isGameOver = false;
-            
             const mainImg = document.getElementById('main-img');
-            mainImg.src = 'cafe_counter.png';
-            mainImg.classList.add('large'); 
-            
-            mainImg.classList.remove('reveal-effect');
-            void mainImg.offsetWidth; 
-            mainImg.classList.add('reveal-effect');
-            
+            mainImg.src = 'cafe_counter.png'; mainImg.classList.add('large');
             updateText("Welcome to our coffee shop");
         }
     </script>

@@ -18,6 +18,7 @@
             --tablet-bg: #fdfdfd;
             --tablet-border: #e0e0e0;
             --point-red: #ff4d4d;
+            --divider-color: #f0f0f0;
         }
 
         html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
@@ -45,7 +46,6 @@
         .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; }
         .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
 
-        /* 팀 프리셋 버튼들 */
         .team-presets { 
             width: 90%; max-width: 450px; 
             display: flex; flex-wrap: wrap; justify-content: center;
@@ -61,18 +61,22 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        .option-group { margin-bottom: 20px; font-size: 1rem; font-weight: 800; color: #333; }
+        .option-group { margin-bottom: 10px; font-size: 1rem; font-weight: 800; color: #333; }
         select { padding: 8px 15px; font-size: 1rem; border: 1.5px solid #ddd; border-radius: 10px; margin-left: 10px; background: white; outline: none;}
 
-        /* [복구] 랜덤 및 이름 관리 바 */
-        .name-mgmt-bar { width: 100%; display: flex; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
-        .btn-small { flex: 1; background: white; border: 1.5px solid #eee; color: #777; font-size: 0.8rem; padding: 10px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: 600;}
-        .btn-small:hover { background: #f9f9f9; border-color: #ddd; }
+        /* [수정] 박스 없는 텍스트 전용 버튼 */
+        .name-mgmt-bar { width: 100%; display: flex; justify-content: center; gap: 20px; margin: 15px 0 10px; }
+        .btn-text { background: none; border: none; color: #999; font-size: 0.75rem; padding: 5px; cursor: pointer; transition: 0.2s; font-weight: 700; letter-spacing: 0.5px; }
+        .btn-text:hover { color: #000; }
+        .btn-text.save { color: #666; }
 
-        #name-input-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin: 0 auto 20px; }
+        /* [추가] 가로 구분선 */
+        .divider { width: 100%; height: 1px; background-color: var(--divider-color); margin: 10px 0 20px; }
+
+        #name-input-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin: 0 auto 10px; }
         .name-input { padding: 12px 5px; border: 1.5px solid #eee; border-radius: 10px; font-size: 0.85rem; outline: none; text-align: center; width: 100%; box-sizing: border-box; background: white; }
 
-        .stats-container { width: 100%; background: #f1f1f1; padding: 15px; border-radius: 12px; font-size: 0.8rem; box-sizing: border-box; text-align: center; margin-top: 10px; }
+        .stats-container { width: 100%; background: #f1f1f1; padding: 15px; border-radius: 12px; font-size: 0.8rem; box-sizing: border-box; text-align: center; margin-top: 20px; }
         .stats-title { font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; color: #888; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 6px; color: #555; }
 
@@ -151,10 +155,12 @@
                     </div>
 
                     <div class="name-mgmt-bar">
-                        <button class="btn-small" onclick="fillRandomNames()">🎲 RANDOM</button>
-                        <button class="btn-small" onclick="clearNames()">🧹 CLEAR</button>
-                        <button class="btn-small" onclick="saveCurrentTeam()" style="border-color: #000; color: #000;">💾 SAVE</button>
+                        <button class="btn-text" onclick="fillRandomNames()">RANDOM</button>
+                        <button class="btn-text" onclick="clearNames()">CLEAR</button>
+                        <button class="btn-text save" onclick="saveCurrentTeam()">+ SAVE TEAM</button>
                     </div>
+
+                    <div class="divider"></div>
 
                     <div id="name-input-container"></div>
 
@@ -344,7 +350,6 @@
             if (splash) { splash.style.opacity = '0'; setTimeout(() => { splash.classList.add('hidden'); updateText("Welcome to Gony's Coffee"); renderTeamTabs(); generateNameInputs(); }, 600); }
         }
 
-        /* [복구] 랜덤 이름 생성 */
         function fillRandomNames() {
             const inputs = document.querySelectorAll('.name-input');
             const used = [];
@@ -356,7 +361,6 @@
             });
         }
 
-        /* [복구] 팀 저장 및 탭 렌더링 */
         function saveCurrentTeam() {
             const name = prompt("이 팀의 이름을 입력하세요 (예: 팀A, 오후모임):");
             if (!name) return;

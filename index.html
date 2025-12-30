@@ -76,7 +76,23 @@
         header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
-        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 15px; margin-top: 10px; transition: 0.3s; }
+        
+        /* 기본 이미지 스타일 */
+        .title-image { 
+            width: 33vw; 
+            max-width: 150px; 
+            height: auto; 
+            border-radius: 15px; 
+            margin-top: 10px; 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), margin 0.4s; 
+        }
+
+        /* 카페 카운터 이미지용 2.5배 줌 클래스 */
+        .title-image.zoom { 
+            transform: scale(2.5); 
+            margin-top: 60px; /* 확대 시 타이틀과 겹치지 않게 여백 추가 */
+            margin-bottom: 50px;
+        }
 
         main { width: 100%; display: flex; flex-direction: column; align-items: center; }
         .option-group { margin: 20px 0; font-size: 1rem; font-weight: 700; color: var(--text-gray-70); }
@@ -189,7 +205,7 @@
                 <span class="title-coffee">coffee</span>
                 <span class="title-game">game</span>
             </div>
-            <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image" onerror="this.style.display='none'">
+            <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image zoom" onerror="this.style.display='none'">
         </header>
 
         <main id="main-content">
@@ -316,8 +332,11 @@
             document.getElementById('result-area').classList.add('hidden');
             
             updateText("Please pay for it");
-            // 게임 시작 시 이미지를 기존 coffee.png로 변경
-            document.getElementById('main-img').src = 'coffee.png';
+            
+            // 줌 클래스 제거 및 이미지 변경
+            const mainImg = document.getElementById('main-img');
+            mainImg.classList.remove('zoom');
+            mainImg.src = 'coffee.png';
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
@@ -380,53 +399,4 @@
             }
         }
 
-        function showFinish(total, payerNum) {
-            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-            
-            selectedMenu = menuData[Math.floor(Math.random() * menuData.length)];
-            finalPayerNum = payerNum;
-
-            const now = new Date();
-            document.getElementById('receipt-date').innerText = now.toLocaleDateString();
-            document.getElementById('receipt-order-no').innerText = "NO. " + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('receipt-menu').innerText = selectedMenu.name;
-            document.getElementById('receipt-qty').innerText = "x" + total;
-            document.getElementById('receipt-price').innerText = "$" + selectedMenu.price.toFixed(2);
-            document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
-            document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
-
-            document.getElementById('btn-restart').innerText = `${total} cups, please`;
-
-            setTimeout(() => {
-                document.getElementById('result-area').classList.remove('hidden');
-            }, 800);
-        }
-
-        async function shareResult() {
-            const shareData = {
-                title: 'Coffee Game Result',
-                text: `Today's Payer is Member No.${finalPayerNum}! ☕\nMenu: ${selectedMenu.name} x ${currentTotalMembers}\nTotal: $${(selectedMenu.price * currentTotalMembers).toFixed(2)}`,
-                url: window.location.href
-            };
-            try {
-                if (navigator.share) {
-                    await navigator.share(shareData);
-                } else {
-                    alert("Sharing not supported on this browser. Copy the text:\n\n" + shareData.text);
-                }
-            } catch (err) {
-                console.log('Error sharing:', err);
-            }
-        }
-
-        function resetGame() {
-            document.getElementById('setup-view').classList.remove('hidden');
-            document.getElementById('game-view').classList.add('hidden');
-            isGameOver = false;
-            // 리셋 시 다시 카운터 이미지로 복구
-            document.getElementById('main-img').src = 'cafe_counter.png';
-            updateText("Welcome to our coffee shop");
-        }
-    </script>
-</body>
-</html>
+        function showFinish(

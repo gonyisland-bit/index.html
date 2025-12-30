@@ -44,6 +44,11 @@
         .reveal-effect { animation: reveal-image 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         @keyframes reveal-image { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0% 0 0%); } }
 
+        /* [추가] 팀 프리셋 스타일 */
+        .team-presets { width: 90%; max-width: 400px; display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .preset-btn { background: #f8f8f8; border: 1px solid #ddd; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
+        .preset-btn.active { background: #000; color: #fff; border-color: #000; }
+
         .name-mgmt-bar { width: 90%; max-width: 400px; display: flex; justify-content: flex-end; margin-bottom: 5px; gap: 5px; }
         .btn-clear { background: none; border: 1px solid #ccc; color: #999; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
         .btn-random { background: #f0f0f0; border: 1px solid #ccc; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
@@ -65,12 +70,17 @@
         .hand-img { width: 100%; max-width: 180px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .member-name { font-size: 0.9rem; font-weight: 800; margin-top: 5px; color: #333; }
 
-        /* 긴장감 Shake 효과 */
         .tension-shake { animation: tension-animation 0.1s infinite; filter: grayscale(0.5); }
         @keyframes tension-animation { 0% { transform: translate(1px, 1px) rotate(0deg); } 50% { transform: translate(-1px, -1px) rotate(1deg); } 100% { transform: translate(1px, -1px) rotate(-1deg); } }
 
         .shake { animation: shake-animation 0.15s infinite; }
         @keyframes shake-animation { 0% { transform: translate(0, 0); } 25% { transform: translate(2px, 2px); } 50% { transform: translate(0, 0); } 75% { transform: translate(-2px, 2px); } 100% { transform: translate(0, 0); } }
+
+        /* [추가] 쿠폰 보드 스타일 */
+        .coupon-board { width: 90%; max-width: 400px; background: #fffbe6; border: 2px dashed #d4a373; border-radius: 10px; padding: 10px; margin: 20px auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+        .stamp-slot { width: 35px; height: 35px; border: 2px solid #e9edc9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #e9edc9; }
+        .stamp-slot.active { background: #d4a373; border-color: #d4a373; color: white; animation: stamp-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes stamp-pop { from { transform: scale(2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .receipt { background: white; color: #333; width: 280px; padding: 25px 20px; font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; text-align: left; margin: 0 auto; }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
@@ -118,6 +128,13 @@
             </div>
 
             <div id="setup-view">
+                <div class="team-presets" id="team-presets">
+                    <button class="preset-btn active" onclick="loadTeam('Default')">Main</button>
+                    <button class="preset-btn" onclick="loadTeam('Team A')">Team A</button>
+                    <button class="preset-btn" onclick="loadTeam('Team B')">Team B</button>
+                    <button class="preset-btn" onclick="saveCurrentTeam()">+ Save Current</button>
+                </div>
+
                 <div class="option-group">
                     Members:
                     <select id="member-select" onchange="generateNameInputs()">
@@ -132,6 +149,8 @@
                 </div>
                 <div id="name-input-container"></div>
                 <button class="btn-main" onclick="startGame()">start</button>
+
+                <div class="coupon-board" id="coupon-board"></div>
 
                 <div id="stats-dashboard" class="stats-container hidden">
                     <div class="stats-title">
@@ -186,6 +205,7 @@
         let isGameOver = false; 
         let winnerIndex = -1;
         let isLuckyRound = false;
+        let currentTeamName = 'Default';
 
         function updateText(msg) {
             clearTimeout(typeTimeout);
@@ -200,6 +220,59 @@
                 }
             }
             typing();
+        }
+
+        // [추가] 팀 관리 기능
+        function loadTeam(teamName) {
+            currentTeamName = teamName;
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            const savedNames = teams[teamName] || [];
+            
+            if (savedNames.length > 0) {
+                document.getElementById('member-select').value = savedNames.length;
+                generateNameInputs(savedNames);
+            }
+            
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === teamName);
+            });
+        }
+
+        function saveCurrentTeam() {
+            const name = prompt("Enter Team Name (e.g. Project A, Family):");
+            if (!name) return;
+            const inputs = document.querySelectorAll('.name-input');
+            const names = Array.from(inputs).map(input => input.value.trim());
+            
+            let teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            teams[name] = names;
+            localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+            location.reload(); // 버튼 갱신을 위해 리로드
+        }
+
+        // [추가] 쿠폰 도장 시스템
+        function updateCoupon() {
+            let count = parseInt(localStorage.getItem('gameCount') || '0');
+            count++;
+            localStorage.setItem('gameCount', count);
+            renderCoupon();
+            if (count % 10 === 0) {
+                setTimeout(() => alert("🎉 Wow! You've played 10 games! You are a coffee lover!"), 500);
+            }
+        }
+
+        function renderCoupon() {
+            const board = document.getElementById('coupon-board');
+            let count = parseInt(localStorage.getItem('gameCount') || '0') % 10;
+            if (count === 0 && parseInt(localStorage.getItem('gameCount') || '0') > 0) count = 10;
+            
+            board.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const slot = document.createElement('div');
+                slot.className = `stamp-slot ${i <= count ? 'active' : ''}`;
+                slot.innerText = i <= count ? '☕' : i;
+                board.appendChild(slot);
+            }
         }
 
         function fillRandomNames() {
@@ -232,11 +305,11 @@
         function resetStats() { if(confirm("기부 통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
         function clearNames() { localStorage.removeItem('savedCoffeeNames'); generateNameInputs(); }
 
-        function generateNameInputs() {
+        function generateNameInputs(providedNames = null) {
             const count = parseInt(document.getElementById('member-select').value);
             const container = document.getElementById('name-input-container');
             container.innerHTML = '';
-            const savedNames = JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]');
+            const savedNames = providedNames || JSON.parse(localStorage.getItem('savedCoffeeNames') || '[]');
             for (let i = 0; i < count; i++) {
                 const input = document.createElement('input');
                 input.type = 'text'; input.className = 'name-input';
@@ -296,14 +369,12 @@
             }
         }
 
-        // 클릭 시 긴장감 연출 후 실제 결과 공개
         function handleHandClick(index, total) {
             if (isGameOver) return;
             const hands = document.getElementsByClassName('hand-img');
             const handImg = hands[index];
             if (handImg.dataset.opened === "true" || handImg.classList.contains('tension-shake')) return;
 
-            // 1. 긴장감 연출 (0.6초간 떨림)
             handImg.classList.add('tension-shake');
             AudioEngine.play('tension');
             updateText("Wait... Checking...");
@@ -324,6 +395,7 @@
                 confetti({ particleCount: 200, spread: 100, colors: ['#FFD700', '#FFA500'] });
                 updateText("LUCKY! Everyone is SAFE today! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden');
+                updateCoupon(); // 게임 카운트 증가
                 return;
             }
 
@@ -334,6 +406,7 @@
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 updateStats(memberNames[index]);
+                updateCoupon(); // 게임 카운트 증가
                 showFinish(total, memberNames[index]);
             } else {
                 AudioEngine.play('safe'); handImg.src = 'hand_open.png'; handImg.dataset.opened = "true";
@@ -361,14 +434,31 @@
             document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
             updateText("Welcome to Gony's Coffee");
             generateNameInputs();
+            renderCoupon();
         }
 
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
             if (splash && !splash.classList.contains('hidden')) {
                 splash.style.opacity = '0'; splash.style.pointerEvents = 'none';
-                setTimeout(() => { splash.classList.add('hidden'); document.getElementById('main-img').classList.add('reveal-effect'); updateText("Welcome to Gony's Coffee"); }, 600);
+                setTimeout(() => { 
+                    splash.classList.add('hidden'); 
+                    document.getElementById('main-img').classList.add('reveal-effect'); 
+                    updateText("Welcome to Gony's Coffee");
+                    renderCoupon();
+                    renderTeamTabs();
+                }, 600);
             }
+        }
+
+        function renderTeamTabs() {
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            const container = document.getElementById('team-presets');
+            container.innerHTML = `<button class="preset-btn ${currentTeamName==='Default'?'active':''}" onclick="loadTeam('Default')">Main</button>`;
+            Object.keys(teams).forEach(t => {
+                container.innerHTML += `<button class="preset-btn ${currentTeamName===t?'active':''}" onclick="loadTeam('${t}')">${t}</button>`;
+            });
+            container.innerHTML += `<button class="preset-btn" onclick="saveCurrentTeam()">+ Save Current</button>`;
         }
 
         async function shareAsImage() {

@@ -8,6 +8,7 @@
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -121,6 +122,7 @@
             100% { transform: translate(0, 0); }
         }
 
+        /* 공유 이미지를 위해 배경색 명시 */
         .receipt {
             background: #fdfdfd; color: #333; width: 280px; padding: 25px 20px;
             font-family: 'Courier Prime', monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -183,23 +185,25 @@
             <div id="game-view" class="hidden">
                 <div id="hand-display"></div>
                 <div id="result-area" class="hidden">
-                    <div class="receipt" id="receipt">
-                        <div class="receipt-header">RECEIPT</div>
-                        <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
-                        <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
-                        <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                        <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
-                        <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
-                        <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                        <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
-                        <div class="receipt-total" style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;">
-                            <span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span>
+                    <div id="receipt-capture-area" style="padding: 20px; background: white;">
+                        <div class="receipt" id="receipt">
+                            <div class="receipt-header">RECEIPT</div>
+                            <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
+                            <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
+                            <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
+                            <div class="receipt-item"><span id="receipt-menu">Americano</span><span id="receipt-qty"></span></div>
+                            <div class="receipt-item"><span>Unit Price</span><span id="receipt-price"></span></div>
+                            <div class="receipt-line" style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
+                            <div class="receipt-item"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
+                            <div class="receipt-total" style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 15px; font-size: 1.2rem; border-top: 2px solid #333; padding-top: 10px;">
+                                <span>PAYER</span><span id="receipt-payer" style="color: #e63946;"></span>
+                            </div>
+                            <p id="receipt-lucky-msg" style="font-size: 0.7rem; text-align: center; margin-top: 15px; color: #666; font-style: italic;"></p>
                         </div>
-                        <p id="receipt-lucky-msg" style="font-size: 0.7rem; text-align: center; margin-top: 15px; color: #666; font-style: italic;"></p>
                     </div>
                     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
                         <button class="btn-main" id="btn-restart" onclick="resetGame()" style="margin-top: 25px;"></button>
-                        <button class="btn-secondary" id="btn-share" onclick="alert('Result shared!')">Share Result</button>
+                        <button class="btn-secondary" id="btn-share" onclick="shareResult()">Share Result</button>
                     </div>
                 </div>
             </div>
@@ -215,7 +219,9 @@
             print: new Audio('https://assets.mixkit.co/active_storage/sfx/1545/1545-preview.mp3')
         };
 
-        // [영수증 랜덤 문구]
+        // 오디오 잠금 해제 상태 관리
+        let audioUnlocked = false;
+
         const luckyMsgs = [
             "TODAY'S LUCK: JUST BAD.",
             "BETTER LUCK NEXT TIME!",
@@ -228,8 +234,22 @@
         ];
 
         function playSfx(name) {
-            sounds[name].currentTime = 0;
-            sounds[name].play().catch(e => console.log("Audio play blocked"));
+            if (sounds[name]) {
+                sounds[name].currentTime = 0;
+                sounds[name].play().catch(e => console.log("Sound play error: ", e));
+            }
+        }
+
+        // 모바일 사운드 잠금 해제 함수
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            Object.values(sounds).forEach(sound => {
+                sound.play().then(() => {
+                    sound.pause();
+                    sound.currentTime = 0;
+                }).catch(() => {});
+            });
+            audioUnlocked = true;
         }
 
         function hideSplash() {
@@ -277,7 +297,7 @@
         }
 
         function startGame() {
-            // 사용자 상호작용 시점에 오디오 잠금 해제
+            unlockAudio(); // 버튼 누를 때 사운드 잠금 해제
             playSfx('click'); 
 
             const memberCount = parseInt(document.getElementById('member-select').value);
@@ -292,8 +312,7 @@
             
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'coffee.png';
-            mainImg.classList.remove('large'); 
-            mainImg.classList.remove('reveal-effect');
+            mainImg.classList.remove('large', 'reveal-effect');
             
             const display = document.getElementById('hand-display');
             display.innerHTML = ''; 
@@ -324,7 +343,7 @@
 
             if (index === winnerIndex) {
                 isGameOver = true;
-                playSfx('win'); // 당첨 사운드
+                playSfx('win'); 
                 
                 handImg.src = 'hand_money.png';
                 handImg.classList.add('shake');
@@ -340,7 +359,7 @@
                 document.getElementById('main-img').src = 'coffee_broken.png';
                 showFinish(total, index + 1);
             } else {
-                playSfx('click'); // 안전 사운드
+                playSfx('click'); 
                 handImg.src = 'hand_open.png';
                 handImg.dataset.opened = "true";
                 updateText(safeMsgs[Math.floor(Math.random()*safeMsgs.length)]);
@@ -364,14 +383,46 @@
             document.getElementById('receipt-subtotal').innerText = "$" + (selectedMenu.price * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = "MEMBER NO." + payerNum;
             document.getElementById('btn-restart').innerText = `${total} cups, please`;
-            
-            // 랜덤 문구 적용
             document.getElementById('receipt-lucky-msg').innerText = luckyMsgs[Math.floor(Math.random() * luckyMsgs.length)];
             
             setTimeout(() => { 
-                playSfx('print'); // 영수증 출력 사운드
+                playSfx('print'); 
                 document.getElementById('result-area').classList.remove('hidden'); 
             }, 600);
+        }
+
+        // 영수증 이미지 캡처 및 공유 기능
+        async function shareResult() {
+            playSfx('click');
+            const captureArea = document.getElementById('receipt-capture-area');
+            
+            try {
+                const canvas = await html2canvas(captureArea, {
+                    backgroundColor: "#ffffff",
+                    scale: 2 // 화질 향상
+                });
+                
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], 'receipt.png', { type: 'image/png' });
+                    
+                    if (navigator.share) {
+                        await navigator.share({
+                            files: [file],
+                            title: '커피 내기 결과',
+                            text: '오늘의 커피 당첨자는?'
+                        });
+                    } else {
+                        // 공유 미지원 브라우저 (PC 등)의 경우 다운로드 처리
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'coffee_receipt.png';
+                        link.click();
+                    }
+                }, 'image/png');
+            } catch (err) {
+                console.error("공유 실패:", err);
+                alert("공유를 할 수 없는 환경입니다.");
+            }
         }
 
         function resetGame() {
@@ -382,11 +433,9 @@
             const mainImg = document.getElementById('main-img');
             mainImg.src = 'cafe_counter.png';
             mainImg.classList.add('large'); 
-            
             mainImg.classList.remove('reveal-effect');
             void mainImg.offsetWidth; 
             mainImg.classList.add('reveal-effect');
-            
             updateText("Welcome to our coffee shop");
         }
     </script>

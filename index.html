@@ -123,7 +123,7 @@
 
         .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
 
-        /* 영수증 디자인 보완 (지그재그 절취선) */
+        /* 영수증 지그재그 절취선 디자인 */
         .receipt { 
             background: #fff; color: #333; width: 280px; padding: 35px 25px 45px; font-family: 'Courier Prime', monospace; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; margin: 0 auto; 
@@ -145,7 +145,7 @@
         .value-customer { font-size: 2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; }
         .fortune-area { font-size: 0.75rem; line-height: 1.5; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; }
 
-        /* 메인 버튼 물리적 피드백 */
+        /* 입체적 버튼 피드백 */
         .btn-main { 
             padding: 20px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px; 
             cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; 
@@ -273,7 +273,10 @@
         const randomMenus = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"];
         const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread", "Espresso Shot", "Milk Foam", "Muffin Man", "Cookie Monster", "Roast Master"];
         
-        let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; let isLuckyRound = false;
+        let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; 
+        let isLuckyRound = false;
+        let lastWasLucky = false; // 럭키 연속 방지를 위한 변수
+        
         let currentTeamName = 'Empty';
         let currentMemberCount = 3;
         let isShuffling = false;
@@ -417,7 +420,14 @@
             saveLastMembers(memberNames);
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * currentMemberCount);
-            isLuckyRound = Math.random() < 0.20; 
+            
+            // [아이디어 적용] 럭키 연속 방지 로직
+            if (lastWasLucky) {
+                isLuckyRound = false; // 이전 판이 럭키였으면 이번엔 무조건 일반 게임
+            } else {
+                isLuckyRound = Math.random() < 0.20; // 20% 확률로 럭키 판
+            }
+
             isGameOver = false;
             isShuffling = false;
 
@@ -515,6 +525,7 @@
             const hands = document.getElementsByClassName('hand-img');
             if (isLuckyRound) {
                 isGameOver = true; AudioEngine.play('lucky');
+                lastWasLucky = true; // 럭키 상태 저장
                 for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
                 updateText("LUCKY! Everyone is SAFE! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden'); 
@@ -524,6 +535,7 @@
             }
             if (index === winnerIndex) {
                 isGameOver = true; AudioEngine.play('fail'); 
+                lastWasLucky = false; // 럭키 실패 상태 저장
                 hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);

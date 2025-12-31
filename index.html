@@ -102,8 +102,13 @@
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #666; font-weight: 600; }
 
         /* 게임 화면 요소 */
-        #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px 10px; width: 100%; box-sizing: border-box; }
-        .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 20px); min-width: 90px; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px 10px; width: 100%; box-sizing: border-box; position: relative; }
+        .hand-wrapper { 
+            display: flex; flex-direction: column; align-items: center; 
+            flex: 0 0 calc(33.33% - 20px); min-width: 90px; 
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1;
+        }
         .hand-img { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
         
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -112,15 +117,33 @@
         .shake { animation: winner-shake 0.15s infinite !important; }
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         
-        /* 셔플 애니메이션 */
-        .shuffle-move { animation: shuffle-animation 0.5s ease-in-out !important; }
-        @keyframes shuffle-animation {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(30px, -30px) rotate(15deg); }
-            50% { transform: translate(-40px, 20px) rotate(-15deg); }
-            75% { transform: translate(20px, 40px) rotate(10deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
+        /* SHUFFLE PUSH BUTTON */
+        .btn-shuffle {
+            background-color: #fff;
+            color: #333;
+            border: 2px solid #333;
+            padding: 10px 30px;
+            font-size: 0.9rem;
+            font-weight: 900;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #333;
+            transition: all 0.1s;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
+        .btn-shuffle:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #333;
+        }
+        .btn-shuffle:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* 개별 손 위치 교차 애니메이션 클래스 */
+        .swapping-left { transform: translate(-100px, 20px) rotate(-15deg) scale(1.1); }
+        .swapping-right { transform: translate(100px, -20px) rotate(15deg) scale(0.9); }
+        .swapping-up { transform: translate(0, -50px) scale(1.1); }
+        .swapping-down { transform: translate(0, 50px) scale(0.9); }
 
         .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
 
@@ -204,8 +227,8 @@
             </div>
 
             <div id="game-view" class="hidden">
-                <div id="shuffle-container" style="margin-bottom: 10px;">
-                    <button class="btn-text" onclick="shufflePositions()" style="color:#333; border: 1px solid #ddd; padding: 8px 20px; border-radius: 30px; background: #fff; font-size: 0.8rem;">🔀 SHUFFLE POSITION</button>
+                <div id="shuffle-container">
+                    <button class="btn-shuffle" id="shuffle-btn" onclick="shufflePositions()">SHUFFLE</button>
                 </div>
                 <div id="hand-display"></div>
                 <div id="lucky-area" class="hidden"><button class="btn-main" onclick="startGame()">Lucky Round! Restart</button></div>
@@ -248,6 +271,7 @@
         let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; let isLuckyRound = false;
         let currentTeamName = 'Empty';
         let currentMemberCount = 3;
+        let isShuffling = false;
 
         function updateText(msg) {
             clearTimeout(typeTimeout);
@@ -353,6 +377,7 @@
                 else if (type === 'fail') { osc.frequency.setValueAtTime(349.23, now); osc.frequency.linearRampToValueAtTime(110, now + 0.6); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
                 else if (type === 'tension') { osc.frequency.setValueAtTime(220, now); osc.frequency.exponentialRampToValueAtTime(440, now + 0.6); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.6); }
                 else if (type === 'lucky') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now+0.1); osc.frequency.setValueAtTime(783.99, now+0.2); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.4); }
+                else if (type === 'whoosh') { osc.type = 'triangle'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.2); gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2); }
             }
         };
 
@@ -366,6 +391,7 @@
             winnerIndex = Math.floor(Math.random() * currentMemberCount);
             isLuckyRound = Math.random() < 0.08; 
             isGameOver = false;
+            isShuffling = false;
 
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
@@ -374,6 +400,7 @@
             document.getElementById('btn-reset-game').classList.remove('hidden');
             document.getElementById('receipt').classList.remove('show');
             document.getElementById('shuffle-container').classList.remove('hidden');
+            document.getElementById('shuffle-btn').disabled = false;
             
             updateText("Who will pay? Pick a hand!");
             document.getElementById('main-img').src = 'coffee.png'; 
@@ -394,34 +421,43 @@
             }
         }
 
-        // --- 수정 및 추가된 셔플 로직 ---
+        // --- 위치 교차 애니메이션 구현 ---
         function shufflePositions() {
-            if (isGameOver) return;
+            if (isGameOver || isShuffling) return;
+            isShuffling = true;
+            document.getElementById('shuffle-btn').disabled = true;
             
-            // 시각적 피드백
-            AudioEngine.play('tension');
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-            updateText("Shuffling positions...");
+            AudioEngine.play('whoosh');
+            if (navigator.vibrate) navigator.vibrate(50);
+            updateText("Mixing the hands...");
             
             const wrappers = document.querySelectorAll('.hand-wrapper');
-            wrappers.forEach(w => w.classList.add('shuffle-move'));
+            const animations = ['swapping-left', 'swapping-right', 'swapping-up', 'swapping-down'];
+
+            // 1단계: 엇갈리게 흩어짐
+            wrappers.forEach((w, idx) => {
+                const animClass = animations[idx % animations.length];
+                w.classList.add(animClass);
+            });
 
             setTimeout(() => {
-                // 데이터 셔플 (Fisher-Yates)
+                // 데이터 셔플
                 for (let i = memberNames.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
                 }
-                // 당첨자 인덱스 재산출
                 winnerIndex = Math.floor(Math.random() * memberNames.length);
                 
+                // 2단계: 원래 위치로 돌아오면서 렌더링
                 renderHands();
-                updateText("Hands shuffled! Pick one.");
+                isShuffling = false;
+                document.getElementById('shuffle-btn').disabled = false;
+                updateText("Shuffled! Now pick one.");
             }, 600);
         }
 
         function handleHandClick(index, total) {
-            if (isGameOver) return;
+            if (isGameOver || isShuffling) return;
             const hands = document.getElementsByClassName('hand-img'); const handImg = hands[index];
             if (handImg.dataset.opened === "true" || handImg.classList.contains('tension-shake')) return;
             

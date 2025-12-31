@@ -50,7 +50,9 @@
         header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
-        .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 20px; margin-top: 10px; transition: transform 0.3s; }
+        
+        /* 이미지 라운드 제거 및 고정 스타일 */
+        .title-image { width: 70vw; max-width: 330px; height: auto; margin: 20px 0; transition: none; border-radius: 0; }
         .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
 
         .setup-card {
@@ -409,9 +411,9 @@
             document.getElementById('shuffle-btn').disabled = false;
             updateText("Who will pay? Pick a hand!");
             
-            // [수정] 게임화면에서도 메인 이미지를 그대로 유지
+            // 이미지 크기와 위치는 초기화면 스타일(large)을 그대로 유지
             document.getElementById('main-img').src = 'cafe_counter.png'; 
-            document.getElementById('main-img').classList.remove('large');
+            document.getElementById('main-img').className = 'title-image large';
             renderHands();
         }
 
@@ -483,7 +485,7 @@
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 
-                // [수정] 당첨 시 감사 이미지로 변경
+                // 당첨 시 감사 이미지로 변경 (위치/크기는 동일 유지)
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
                 
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
@@ -510,7 +512,8 @@
 
         function resetToSetup() {
             document.getElementById('setup-view').classList.remove('hidden'); document.getElementById('game-view').classList.add('hidden');
-            document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
+            document.getElementById('main-img').src = 'cafe_counter.png'; 
+            document.getElementById('main-img').className = 'title-image large';
             updateText("Welcome to Lucky Bean Shop"); generateNameInputs(); 
         }
 

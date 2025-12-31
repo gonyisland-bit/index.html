@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>coffee game</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Coffee Game">
     <link rel="icon" type="image/png" href="coffeegame_icon.png">
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -19,6 +24,9 @@
             --tablet-border: #eeeeee;
             --point-red: #ff4d4d;
             --divider-color: #ebebeb;
+            /* 버튼 그림자 색상 */
+            --btn-shadow: #333333;
+            --btn-light-shadow: #e0e0e0;
         }
 
         html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
@@ -59,9 +67,11 @@
             flex: 1; padding: 14px; border: 1px solid #eee; border-radius: 16px; 
             background: white; font-weight: 700; font-size: 0.85rem; color: #333; cursor: pointer;
             display: flex; flex-direction: column; align-items: flex-start;
-            transition: all 0.2s; position: relative;
+            transition: all 0.1s; position: relative;
+            /* 입체적 피드백 */
+            box-shadow: 0 4px 0 var(--btn-light-shadow);
         }
-        .picker-btn:active { transform: scale(0.97); background: #fafafa; }
+        .picker-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--btn-light-shadow); }
         .picker-label { color: #bbb; font-size: 0.65rem; font-weight: 800; margin-bottom: 4px; letter-spacing: 0.5px; }
         .picker-value { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         .picker-value::after { content: '▾'; color: #ccc; font-size: 1rem; }
@@ -80,21 +90,17 @@
         }
         .name-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0,0,0,0.03); }
 
-        /* Donation List Problem Fixed */
         .stats-container { 
             width: 100%; background: #fff; padding: 15px; border-radius: 20px; 
             font-size: 0.8rem; box-sizing: border-box; border: 1px solid #eee; margin-top: 25px;
         }
-        #stats-list {
-            max-height: 120px; overflow-y: auto; padding-right: 5px;
-        }
+        #stats-list { max-height: 120px; overflow-y: auto; padding-right: 5px; }
         #stats-list::-webkit-scrollbar { width: 4px; }
         #stats-list::-webkit-scrollbar-thumb { background: #eee; border-radius: 10px; }
 
         .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #666; font-weight: 600; }
 
-        /* Game Elements */
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px 10px; width: 100%; box-sizing: border-box; position: relative; }
         .hand-wrapper { 
             display: flex; flex-direction: column; align-items: center; 
@@ -112,14 +118,23 @@
         
         .btn-shuffle {
             background-color: #fff; color: #333; border: 2px solid #333; padding: 10px 30px; font-size: 0.9rem; font-weight: 900;
-            border-radius: 50px; cursor: pointer; box-shadow: 0 4px 0 #333; transition: all 0.2s; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase;
+            border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #333; transition: all 0.1s; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase;
         }
-        .btn-shuffle:active { transform: translateY(3px); box-shadow: 0 1px 0 #333; }
+        .btn-shuffle:active { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
         .btn-shuffle:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: translateY(3px); filter: grayscale(1); }
 
         .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
 
-        .receipt { background: #fff; color: #333; width: 280px; padding: 35px 25px; font-family: 'Courier Prime', monospace; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 4px; position: relative; opacity: 0; margin: 0 auto; }
+        /* 영수증 디자인 보완 (지그재그 절취선) */
+        .receipt { 
+            background: #fff; color: #333; width: 280px; padding: 35px 25px 45px; font-family: 'Courier Prime', monospace; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; margin: 0 auto; 
+        }
+        .receipt::after {
+            content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 12px;
+            background: linear-gradient(-45deg, transparent 6px, #fff 6px), linear-gradient(45deg, transparent 6px, #fff 6px);
+            background-size: 12px 24px; transform: translateY(50%);
+        }
         .receipt.show { animation: slideUpReceipt 0.6s forwards; }
         @keyframes slideUpReceipt { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -132,8 +147,14 @@
         .value-customer { font-size: 2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; }
         .fortune-area { font-size: 0.75rem; line-height: 1.5; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; }
 
-        .btn-main { padding: 20px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px; cursor: pointer; width: 85%; max-width: 320px; transition: all 0.2s; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-transform: uppercase;}
-        .btn-main:active { transform: scale(0.96); }
+        /* 메인 버튼 물리적 피드백 보완 */
+        .btn-main { 
+            padding: 20px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px; 
+            cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; 
+            box-shadow: 0 8px 0 var(--btn-shadow); text-transform: uppercase;
+            position: relative; top: 0;
+        }
+        .btn-main:active { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
         .result-btn-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px; margin-top: 10px; }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 2px; }
@@ -209,7 +230,7 @@
                 <div id="lucky-area" class="hidden">
                     <div class="result-btn-group">
                         <button class="btn-main" onclick="startGame()">RESTART</button>
-                        <button class="btn-main" style="background:#555" onclick="resetToSetup()">GO BACK</button>
+                        <button class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="resetToSetup()">GO BACK</button>
                     </div>
                 </div>
 
@@ -235,13 +256,13 @@
                     </div>
                     <div class="result-btn-group">
                         <button class="btn-main" onclick="startGame()">RESTART</button>
-                        <button class="btn-main" style="background:#555" onclick="resetToSetup()">GO BACK</button>
+                        <button class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="resetToSetup()">GO BACK</button>
                         <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="margin-top:5px; font-size:0.8rem;">SHARE RECEIPT IMAGE</button>
                     </div>
                 </div>
                 
                 <div id="btn-reset-container" style="margin-top:30px; width:100%; display:flex; justify-content:center;">
-                    <button id="btn-reset-game" class="btn-main" style="background:#555" onclick="resetToSetup()">BACK TO SETUP</button>
+                    <button id="btn-reset-game" class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="resetToSetup()">BACK TO SETUP</button>
                 </div>
             </div>
         </main>
@@ -265,24 +286,38 @@
             typing();
         }
 
+        // [기술적 보완] 멤버 기억 기능 관련 로직
+        function saveLastMembers(names) {
+            localStorage.setItem('lastCoffeeMembers', JSON.stringify(names));
+        }
+
+        function loadLastMembers() {
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            return saved ? JSON.parse(saved) : null;
+        }
+
         function generateNameInputs(providedNames = null) {
             const container = document.getElementById('name-input-container');
+            // 1. 함수 호출 시 전달된 이름이 있으면 그것을 사용 (그룹 로드 시)
+            // 2. 없으면 로컬 스토리지에 저장된 마지막 멤버를 확인
+            // 3. 그것도 없으면 현재 입력창의 상태를 유지
+            const lastSaved = loadLastMembers();
             const currentInputs = Array.from(container.querySelectorAll('.name-input')).map(i => i.value);
+            
+            let namesToUse = providedNames || (lastSaved && lastSaved.length === currentMemberCount ? lastSaved : currentInputs);
+
             container.innerHTML = '';
             for (let i = 0; i < currentMemberCount; i++) {
                 const input = document.createElement('input'); 
                 input.type = 'text'; input.className = 'name-input';
                 input.placeholder = `User ${i+1}`; input.id = `input-name-${i}`;
-                if (providedNames && providedNames[i]) input.value = providedNames[i];
-                else if (!providedNames && currentInputs[i]) input.value = currentInputs[i];
-                else input.value = ""; // 빈 칸으로 시작하거나 필요 시 랜덤 채우기
+                if (namesToUse && namesToUse[i]) input.value = namesToUse[i];
                 container.appendChild(input);
             }
             document.getElementById('display-member-count').innerText = `${currentMemberCount} Members`;
             showStats();
         }
 
-        // UNIQUE RANDOM NAMES
         function fillRandomNames() {
             let shuffled = [...randomNicknames].sort(() => Math.random() - 0.5);
             document.querySelectorAll('.name-input').forEach((input, idx) => {
@@ -326,6 +361,7 @@
         }
 
         function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+        
         function loadTeam(name) {
             currentTeamName = name;
             document.getElementById('display-group-name').innerText = name;
@@ -336,6 +372,7 @@
             } else { generateNameInputs([]); }
             closeModal();
         }
+
         function deleteTeam(name) {
             if (!confirm(`Delete '${name}' group?`)) return;
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
@@ -344,6 +381,7 @@
             if (currentTeamName === name) loadTeam('Empty');
             openGroupModal();
         }
+
         function saveCurrentTeam() {
             const name = prompt("Group Name:");
             if (!name) return;
@@ -355,6 +393,7 @@
             currentTeamName = name;
             document.getElementById('display-group-name').innerText = name;
         }
+
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
         const AudioEngine = {
@@ -379,6 +418,10 @@
                 const val = inputs[i].value.trim();
                 memberNames.push(val || `Member ${i+1}`);
             }
+
+            // [기술적 보완] 게임 시작 시 현재 멤버 구성 저장
+            saveLastMembers(memberNames);
+
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * currentMemberCount);
             isLuckyRound = Math.random() < 0.20; 
@@ -392,7 +435,6 @@
             document.getElementById('btn-reset-game').classList.remove('hidden');
             document.getElementById('receipt').classList.remove('show');
             
-            // 셔플 버튼 항상 노출 및 초기화
             const sBtn = document.getElementById('shuffle-btn');
             sBtn.disabled = false;
             
@@ -471,7 +513,7 @@
             const hands = document.getElementsByClassName('hand-img');
             if (hands[index].dataset.opened === "true" || hands[index].classList.contains('tension-shake')) return;
             
-            document.getElementById('shuffle-btn').disabled = true; // Picking 시작 시 비활성화
+            document.getElementById('shuffle-btn').disabled = true; 
 
             hands[index].classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Checking your luck...");
             setTimeout(() => { hands[index].classList.remove('tension-shake'); openHand(index, total); }, 800);
@@ -485,7 +527,7 @@
                 updateText("LUCKY! Everyone is SAFE! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden'); 
                 document.getElementById('btn-reset-game').classList.add('hidden');
-                document.getElementById('shuffle-btn').disabled = true; // 종료 시에도 비활성화 유지
+                document.getElementById('shuffle-btn').disabled = true; 
                 return;
             }
             if (index === winnerIndex) {
@@ -514,7 +556,7 @@
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
             
-            document.getElementById('shuffle-btn').disabled = true; // 결과 시에도 비활성화
+            document.getElementById('shuffle-btn').disabled = true; 
 
             setTimeout(() => { 
                 document.getElementById('result-area').classList.remove('hidden'); 
@@ -533,12 +575,21 @@
         }
 
         function resetToTitle() { location.reload(); }
+        
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            if (splash) { splash.style.opacity = '0'; setTimeout(() => { splash.classList.add('hidden'); updateText("Welcome to Gony's Coffee Shop"); generateNameInputs(); }, 600); }
+            if (splash) { 
+                splash.style.opacity = '0'; 
+                setTimeout(() => { 
+                    splash.classList.add('hidden'); 
+                    updateText("Welcome to Gony's Coffee Shop"); 
+                    generateNameInputs(); // 시작 시 멤버 로드 실행
+                }, 600); 
+            }
         }
 
         function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); stats[name] = (stats[name] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
+        
         function showStats() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); const dashboard = document.getElementById('stats-dashboard');
             const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
@@ -546,6 +597,7 @@
             dashboard.classList.remove('hidden');
             document.getElementById('stats-list').innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
         }
+        
         function resetStats() { if(confirm("통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
 
         async function shareAsImage() {

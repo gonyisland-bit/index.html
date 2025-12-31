@@ -117,7 +117,6 @@
         .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #666; font-weight: 600; }
 
-        /* [복구] 역동적인 애니메이션 효과 */
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 10px 10px; width: 100%; box-sizing: border-box; position: relative; }
         .hand-wrapper { 
             display: flex; flex-direction: column; align-items: center; 
@@ -129,7 +128,6 @@
         
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         
-        /* [복구] 긴장감 흔들림 및 당첨자 흔들림 */
         .tension-shake { animation: tension-animation 0.1s infinite !important; }
         @keyframes tension-animation { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
         .shake { animation: winner-shake 0.15s infinite !important; }
@@ -172,13 +170,11 @@
             position: relative; top: 0; margin-bottom: 15px;
         }
         .btn-main:active { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
-        .result-btn-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px; margin-top: 10px; }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 1px; }
         .hidden { display: none !important; }
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #333; }
@@ -194,6 +190,10 @@
         <div class="loading-text">LOADING...</div>
         <div class="loading-bar-container"><div class="loading-bar-fill"></div></div>
     </div>
+
+    <audio id="bgm-player" loop>
+        <source src="cafe_music_bgm.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -224,7 +224,7 @@
                     </div>
                     <div id="no-stats-msg" style="font-size: 0.8rem; color: #ccc; font-weight: 700;">WELCOME TO THE CAFE!</div>
                 </div>
-                <button class="btn-main" onclick="goSetup()">ENTER SHOP</button>
+                <button class="btn-main" onclick="handleEntry()">ENTER SHOP</button>
             </div>
 
             <div id="setup-view" class="hidden">
@@ -299,7 +299,7 @@
                 </div>
             </div>
         </main>
-        <div class="footer">v1.1.1 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v1.1.2 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -311,11 +311,81 @@
         let isLuckyRound = false; let lastWasLucky = false;
         let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
 
+        /* [세련된 사운드 엔진] */
+        const AudioEngine = {
+            ctx: null,
+            bgm: null,
+            init() { 
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    this.bgm = document.getElementById('bgm-player');
+                    this.bgm.volume = 0.4;
+                }
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+            },
+            startBGM() {
+                if (this.bgm && this.bgm.paused) {
+                    this.bgm.play().catch(e => console.log("BGM Play Error:", e));
+                }
+            },
+            play(type) {
+                this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                
+                if (type === 'start') {
+                    // 세련된 알림음 (도-솔 화음 느낌)
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2);
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                }
+                else if (type === 'safe') {
+                    // 짧고 맑은 디지털 벨
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(987.77, now);
+                    gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now); osc.stop(now + 0.1);
+                }
+                else if (type === 'fail') {
+                    // 금전 등록기 '챙그랑' 느낌의 고음 노이즈 조합 (간소화)
+                    osc.type = 'square'; osc.frequency.setValueAtTime(880, now);
+                    osc.frequency.exponentialRampToValueAtTime(110, now + 0.5);
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                }
+                else if (type === 'tension') {
+                    // 낮은 심박음 (펄스)
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(60, now);
+                    gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 0.1);
+                    osc.start(now); osc.stop(now + 0.1);
+                }
+                else if (type === 'lucky') {
+                    // 마법 같은 상승음
+                    osc.frequency.setValueAtTime(523.25, now);
+                    [659, 783, 1046].forEach((f, i) => osc.frequency.setValueAtTime(f, now + (i+1)*0.08));
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                }
+                else if (type === 'whoosh') {
+                    // 부드러운 화이트 노이즈 느낌의 스윕
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(200, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.4);
+                    gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now); osc.stop(now + 0.4);
+                }
+            }
+        };
+
         function updateText(msg) {
             clearTimeout(typeTimeout);
             const content = document.getElementById('rpg-content'); content.innerText = ''; let i = 0;
             function typing() { if (i < msg.length) { content.innerText += msg.charAt(i); i++; typeTimeout = setTimeout(typing, 45); } }
             typing();
+        }
+
+        function handleEntry() {
+            AudioEngine.init();
+            AudioEngine.startBGM();
+            goSetup();
         }
 
         function goFront() {
@@ -336,12 +406,10 @@
             generateNameInputs();
         }
 
-        function saveLastMembers(names) { localStorage.setItem('lastCoffeeMembers', JSON.stringify(names)); }
-        function loadLastMembers() { const saved = localStorage.getItem('lastCoffeeMembers'); return saved ? JSON.parse(saved) : null; }
-
         function generateNameInputs(providedNames = null) {
             const container = document.getElementById('name-input-container');
-            const lastSaved = loadLastMembers();
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            const lastSaved = saved ? JSON.parse(saved) : null;
             const currentInputs = Array.from(container.querySelectorAll('.name-input')).map(i => i.value);
             let namesToUse = providedNames || (lastSaved && lastSaved.length === currentMemberCount ? lastSaved : currentInputs);
             container.innerHTML = '';
@@ -364,8 +432,7 @@
             const overlay = document.getElementById('modal-overlay');
             const container = document.getElementById('modal-list-container');
             document.getElementById('modal-title').innerText = "Select Group";
-            overlay.style.display = 'flex';
-            container.innerHTML = '';
+            overlay.style.display = 'flex'; container.innerHTML = '';
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
             const emptyDiv = document.createElement('div');
             emptyDiv.style = "display:flex; justify-content:space-between; padding:18px 5px; border-bottom:1px solid #f8f8f8;";
@@ -383,8 +450,7 @@
             const overlay = document.getElementById('modal-overlay');
             const container = document.getElementById('modal-list-container');
             document.getElementById('modal-title').innerText = "How many people?";
-            overlay.style.display = 'flex';
-            container.innerHTML = '';
+            overlay.style.display = 'flex'; container.innerHTML = '';
             for (let i = 2; i <= 9; i++) {
                 const div = document.createElement('div');
                 div.style = "padding:18px 5px; border-bottom:1px solid #f8f8f8; text-align:center; cursor:pointer; font-weight:600;";
@@ -395,10 +461,8 @@
         }
 
         function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-        
         function loadTeam(name) {
-            currentTeamName = name;
-            document.getElementById('display-group-name').innerText = name;
+            currentTeamName = name; document.getElementById('display-group-name').innerText = name;
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
             if (name !== 'Empty' && teams[name]) { currentMemberCount = teams[name].count; generateNameInputs(teams[name].names); } 
             else { generateNameInputs([]); }
@@ -425,26 +489,11 @@
 
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
-        const AudioEngine = {
-            ctx: null,
-            init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
-            play(type) {
-                this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
-                osc.connect(gain); gain.connect(this.ctx.destination);
-                if (type === 'start') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.3); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.3); }
-                else if (type === 'safe') { osc.frequency.setValueAtTime(880, now); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.1); }
-                else if (type === 'fail') { osc.frequency.setValueAtTime(349.23, now); osc.frequency.linearRampToValueAtTime(110, now + 0.6); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.6); }
-                else if (type === 'tension') { osc.frequency.setValueAtTime(220, now); osc.frequency.exponentialRampToValueAtTime(440, now + 0.6); gain.gain.setValueAtTime(0.05, now); osc.start(now); osc.stop(now + 0.6); }
-                else if (type === 'lucky') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now+0.1); osc.frequency.setValueAtTime(783.99, now+0.2); gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.4); }
-                else if (type === 'whoosh') { osc.type = 'triangle'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.3); gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(now); osc.stop(now + 0.3); }
-            }
-        };
-
         function startGame() {
             memberNames = [];
             const inputs = document.querySelectorAll('.name-input');
             for (let i = 0; i < currentMemberCount; i++) { memberNames.push(inputs[i].value.trim() || `Member ${i+1}`); }
-            saveLastMembers(memberNames);
+            localStorage.setItem('lastCoffeeMembers', JSON.stringify(memberNames));
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * currentMemberCount);
             isLuckyRound = !lastWasLucky && Math.random() < 0.20;
@@ -472,13 +521,11 @@
             }
         }
 
-        /* [복구] 역동적인 셔플 동작 */
         function shufflePositions() {
             if (isGameOver || isShuffling) return;
             isShuffling = true; document.getElementById('shuffle-btn').disabled = true;
             AudioEngine.play('whoosh'); updateText("Ready... Mix!");
             const wrappers = document.querySelectorAll('.hand-wrapper');
-            
             const firstRowWrappers = Array.from(wrappers).slice(0, Math.min(wrappers.length, 3));
             let totalX = 0, totalY = 0;
             firstRowWrappers.forEach(w => {
@@ -508,13 +555,21 @@
             }, 450);
         }
 
-        /* [복구] 긴장감 넘치는 클릭 연출 */
         function handleHandClick(index, total) {
             if (isGameOver || isShuffling) return;
             const hands = document.getElementsByClassName('hand-img');
             if (hands[index].dataset.opened === "true" || hands[index].classList.contains('tension-shake')) return;
             document.getElementById('shuffle-btn').disabled = true; 
-            hands[index].classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Checking your luck...");
+            hands[index].classList.add('tension-shake'); 
+            
+            // 긴장감 연출: 짧은 펄스 사운드 반복
+            let pulseCount = 0;
+            let pulseInterval = setInterval(() => {
+                AudioEngine.play('tension'); pulseCount++;
+                if (pulseCount >= 3) clearInterval(pulseInterval);
+            }, 200);
+
+            updateText("Checking your luck...");
             setTimeout(() => { hands[index].classList.remove('tension-shake'); openHand(index, total); }, 800);
         }
 
@@ -558,7 +613,6 @@
         }
 
         function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); stats[name] = (stats[name] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
-        
         function showStats() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
             const dashboard = document.getElementById('stats-dashboard');
@@ -568,7 +622,6 @@
             dashboard.classList.remove('hidden'); noStatsMsg.classList.add('hidden');
             document.getElementById('stats-list').innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
         }
-        
         function resetStats() { if(confirm("통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
 
         function hideSplash() {

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>coffee game</title>
+    <title>lucky bean</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Coffee Game">
+    <meta name="apple-mobile-web-app-title" content="Lucky Bean">
     <link rel="icon" type="image/png" href="coffeegame_icon.png">
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
     
@@ -48,8 +48,8 @@
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
         header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .title-coffee { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
-        .title-game { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
+        .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
+        .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         .title-image { width: 33vw; max-width: 150px; height: auto; border-radius: 20px; margin-top: 10px; transition: transform 0.3s; }
         .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
 
@@ -123,7 +123,6 @@
 
         .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
 
-        /* 영수증 지그재그 절취선 디자인 */
         .receipt { 
             background: #fff; color: #333; width: 280px; padding: 35px 25px 45px; font-family: 'Courier Prime', monospace; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; margin: 0 auto; 
@@ -145,7 +144,6 @@
         .value-customer { font-size: 2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; }
         .fortune-area { font-size: 0.75rem; line-height: 1.5; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; }
 
-        /* 입체적 버튼 피드백 */
         .btn-main { 
             padding: 20px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px; 
             cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; 
@@ -167,7 +165,7 @@
 
     <div id="splash-screen" onclick="hideSplash()">
         <img src="coffee.png" alt="Logo" style="width:110px; margin-bottom:20px;">
-        <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem; letter-spacing: 2px;">GONY'S COFFEE</div>
+        <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem; letter-spacing: 2px;">LUCKY BEAN</div>
     </div>
 
     <div id="modal-overlay" onclick="closeModal()">
@@ -181,7 +179,7 @@
     <div class="wrapper">
         <header onclick="resetToTitle()">
             <div class="title-container">
-                <span class="title-coffee">coffee</span><span class="title-game">game</span>
+                <span class="title-lucky">lucky</span><span class="title-bean">bean</span>
             </div>
             <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image large">
         </header>
@@ -236,7 +234,7 @@
                     <div id="capture-area" style="padding: 25px 0; background: transparent;">
                         <div class="receipt" id="receipt">
                             <div class="receipt-header">RECEIPT</div>
-                            <div class="receipt-subheader">GONY'S COFFEE SHOP</div>
+                            <div class="receipt-subheader">LUCKY BEAN SHOP</div>
                             <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
                             <div class="receipt-line"></div>
                             <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
@@ -275,7 +273,7 @@
         
         let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; 
         let isLuckyRound = false;
-        let lastWasLucky = false; // 럭키 연속 방지를 위한 변수
+        let lastWasLucky = false;
         
         let currentTeamName = 'Empty';
         let currentMemberCount = 3;
@@ -288,22 +286,14 @@
             typing();
         }
 
-        function saveLastMembers(names) {
-            localStorage.setItem('lastCoffeeMembers', JSON.stringify(names));
-        }
-
-        function loadLastMembers() {
-            const saved = localStorage.getItem('lastCoffeeMembers');
-            return saved ? JSON.parse(saved) : null;
-        }
+        function saveLastMembers(names) { localStorage.setItem('lastCoffeeMembers', JSON.stringify(names)); }
+        function loadLastMembers() { const saved = localStorage.getItem('lastCoffeeMembers'); return saved ? JSON.parse(saved) : null; }
 
         function generateNameInputs(providedNames = null) {
             const container = document.getElementById('name-input-container');
             const lastSaved = loadLastMembers();
             const currentInputs = Array.from(container.querySelectorAll('.name-input')).map(i => i.value);
-            
             let namesToUse = providedNames || (lastSaved && lastSaved.length === currentMemberCount ? lastSaved : currentInputs);
-
             container.innerHTML = '';
             for (let i = 0; i < currentMemberCount; i++) {
                 const input = document.createElement('input'); 
@@ -318,9 +308,7 @@
 
         function fillRandomNames() {
             let shuffled = [...randomNicknames].sort(() => Math.random() - 0.5);
-            document.querySelectorAll('.name-input').forEach((input, idx) => {
-                input.value = shuffled[idx % shuffled.length];
-            });
+            document.querySelectorAll('.name-input').forEach((input, idx) => { input.value = shuffled[idx % shuffled.length]; });
         }
 
         function openGroupModal() {
@@ -334,7 +322,6 @@
             emptyDiv.style = "display:flex; justify-content:space-between; padding:18px 5px; border-bottom:1px solid #f8f8f8;";
             emptyDiv.innerHTML = `<span style="flex:1; cursor:pointer; font-weight:600;" onclick="loadTeam('Empty')">Empty (Reset)</span>`;
             container.appendChild(emptyDiv);
-
             Object.keys(teams).forEach(name => {
                 const div = document.createElement('div');
                 div.style = "display:flex; justify-content:space-between; padding:18px 5px; border-bottom:1px solid #f8f8f8;";
@@ -364,32 +351,27 @@
             currentTeamName = name;
             document.getElementById('display-group-name').innerText = name;
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            if (name !== 'Empty' && teams[name]) {
-                currentMemberCount = teams[name].count;
-                generateNameInputs(teams[name].names);
-            } else { generateNameInputs([]); }
+            if (name !== 'Empty' && teams[name]) { currentMemberCount = teams[name].count; generateNameInputs(teams[name].names); } 
+            else { generateNameInputs([]); }
             closeModal();
         }
 
         function deleteTeam(name) {
             if (!confirm(`Delete '${name}' group?`)) return;
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            delete teams[name];
-            localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+            delete teams[name]; localStorage.setItem('coffeeTeams', JSON.stringify(teams));
             if (currentTeamName === name) loadTeam('Empty');
             openGroupModal();
         }
 
         function saveCurrentTeam() {
-            const name = prompt("Group Name:");
-            if (!name) return;
+            const name = prompt("Group Name:"); if (!name) return;
             const inputs = document.querySelectorAll('.name-input');
             const names = Array.from(inputs).map(i => i.value.trim() || `User`);
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
             teams[name] = { count: currentMemberCount, names: names };
             localStorage.setItem('coffeeTeams', JSON.stringify(teams));
-            currentTeamName = name;
-            document.getElementById('display-group-name').innerText = name;
+            currentTeamName = name; document.getElementById('display-group-name').innerText = name;
         }
 
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
@@ -412,45 +394,27 @@
         function startGame() {
             memberNames = [];
             const inputs = document.querySelectorAll('.name-input');
-            for (let i = 0; i < currentMemberCount; i++) {
-                const val = inputs[i].value.trim();
-                memberNames.push(val || `Member ${i+1}`);
-            }
-
+            for (let i = 0; i < currentMemberCount; i++) { memberNames.push(inputs[i].value.trim() || `Member ${i+1}`); }
             saveLastMembers(memberNames);
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * currentMemberCount);
-            
-            // [아이디어 적용] 럭키 연속 방지 로직
-            if (lastWasLucky) {
-                isLuckyRound = false; // 이전 판이 럭키였으면 이번엔 무조건 일반 게임
-            } else {
-                isLuckyRound = Math.random() < 0.20; // 20% 확률로 럭키 판
-            }
-
-            isGameOver = false;
-            isShuffling = false;
-
+            if (lastWasLucky) { isLuckyRound = false; } else { isLuckyRound = Math.random() < 0.20; }
+            isGameOver = false; isShuffling = false;
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
             document.getElementById('lucky-area').classList.add('hidden');
             document.getElementById('btn-reset-game').classList.remove('hidden');
             document.getElementById('receipt').classList.remove('show');
-            
-            const sBtn = document.getElementById('shuffle-btn');
-            sBtn.disabled = false;
-            
+            document.getElementById('shuffle-btn').disabled = false;
             updateText("Who will pay? Pick a hand!");
             document.getElementById('main-img').src = 'coffee.png'; 
             document.getElementById('main-img').classList.remove('large');
-
             renderHands();
         }
 
         function renderHands() {
-            const display = document.getElementById('hand-display'); 
-            display.innerHTML = ''; 
+            const display = document.getElementById('hand-display'); display.innerHTML = ''; 
             for (let i = 0; i < memberNames.length; i++) {
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
                 const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png'; handImg.className = 'hand-img'; 
@@ -462,52 +426,33 @@
 
         function shufflePositions() {
             if (isGameOver || isShuffling) return;
-            isShuffling = true;
-            document.getElementById('shuffle-btn').disabled = true;
-            
-            AudioEngine.play('whoosh');
-            updateText("Ready... Mix!");
-            
+            isShuffling = true; document.getElementById('shuffle-btn').disabled = true;
+            AudioEngine.play('whoosh'); updateText("Ready... Mix!");
             const wrappers = document.querySelectorAll('.hand-wrapper');
             const firstRowWrappers = Array.from(wrappers).slice(0, Math.min(wrappers.length, 3));
             let totalX = 0, totalY = 0;
             firstRowWrappers.forEach(w => {
-                const r = w.getBoundingClientRect();
-                totalX += (r.left + r.width / 2);
-                totalY += (r.top + r.height / 2);
+                const r = w.getBoundingClientRect(); totalX += (r.left + r.width / 2); totalY += (r.top + r.height / 2);
             });
             const targetX = totalX / (firstRowWrappers.length || 1);
             const targetY = totalY / (firstRowWrappers.length || 1);
-
             wrappers.forEach(w => {
                 const rect = w.getBoundingClientRect();
-                const dx = targetX - (rect.left + rect.width / 2);
-                const dy = targetY - (rect.top + rect.height / 2);
+                const dx = targetX - (rect.left + rect.width / 2); const dy = targetY - (rect.top + rect.height / 2);
                 w.style.transition = "transform 0.4s cubic-bezier(0.5, 0, 0.5, 1)";
                 w.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
             });
-
             setTimeout(() => {
                 for (let i = memberNames.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
+                    const j = Math.floor(Math.random() * (i + 1)); [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
                 }
                 winnerIndex = Math.floor(Math.random() * memberNames.length);
-
                 wrappers.forEach(w => {
-                    const randomX = (Math.random() - 0.5) * 150;
-                    const randomY = (Math.random() - 0.5) * 100;
-                    const randomRot = (Math.random() - 0.5) * 60;
+                    const randomX = (Math.random() - 0.5) * 150; const randomY = (Math.random() - 0.5) * 100; const randomRot = (Math.random() - 0.5) * 60;
                     w.style.transition = "transform 0.4s cubic-bezier(0.1, 0.9, 0.2, 1)";
                     w.style.transform = `translate(${randomX}px, ${randomY}px) scale(1.1) rotate(${randomRot}deg)`;
                 });
-
-                setTimeout(() => {
-                    renderHands();
-                    isShuffling = false;
-                    document.getElementById('shuffle-btn').disabled = false;
-                    updateText("Hands Mixed! Choose yours.");
-                }, 450);
+                setTimeout(() => { renderHands(); isShuffling = false; document.getElementById('shuffle-btn').disabled = false; updateText("Hands Mixed! Choose yours."); }, 450);
             }, 450);
         }
 
@@ -515,7 +460,6 @@
             if (isGameOver || isShuffling) return;
             const hands = document.getElementsByClassName('hand-img');
             if (hands[index].dataset.opened === "true" || hands[index].classList.contains('tension-shake')) return;
-            
             document.getElementById('shuffle-btn').disabled = true; 
             hands[index].classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Checking your luck...");
             setTimeout(() => { hands[index].classList.remove('tension-shake'); openHand(index, total); }, 800);
@@ -524,24 +468,20 @@
         function openHand(index, total) {
             const hands = document.getElementsByClassName('hand-img');
             if (isLuckyRound) {
-                isGameOver = true; AudioEngine.play('lucky');
-                lastWasLucky = true; // 럭키 상태 저장
+                isGameOver = true; AudioEngine.play('lucky'); lastWasLucky = true;
                 for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
                 updateText("LUCKY! Everyone is SAFE! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden'); 
                 document.getElementById('btn-reset-game').classList.add('hidden');
-                document.getElementById('shuffle-btn').disabled = true; 
-                return;
+                document.getElementById('shuffle-btn').disabled = true; return;
             }
             if (index === winnerIndex) {
-                isGameOver = true; AudioEngine.play('fail'); 
-                lastWasLucky = false; // 럭키 실패 상태 저장
+                isGameOver = true; AudioEngine.play('fail'); lastWasLucky = false;
                 hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'coffee_broken.png';
-                updateStats(memberNames[index]); 
-                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(total, memberNames[index]);
             } else {
                 AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true"; hands[index].style.animation = "none";
@@ -559,23 +499,14 @@
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
-            
             document.getElementById('shuffle-btn').disabled = true; 
-
-            setTimeout(() => { 
-                document.getElementById('result-area').classList.remove('hidden'); 
-                document.getElementById('receipt').classList.add('show'); 
-                document.getElementById('btn-reset-game').classList.add('hidden');
-            }, 600);
+            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); document.getElementById('btn-reset-game').classList.add('hidden'); }, 600);
         }
 
         function resetToSetup() {
-            document.getElementById('setup-view').classList.remove('hidden'); 
-            document.getElementById('game-view').classList.add('hidden');
-            document.getElementById('main-img').src = 'cafe_counter.png'; 
-            document.getElementById('main-img').classList.add('large');
-            updateText("Welcome to Gony's Coffee Shop"); 
-            generateNameInputs(); 
+            document.getElementById('setup-view').classList.remove('hidden'); document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('main-img').src = 'cafe_counter.png'; document.getElementById('main-img').classList.add('large');
+            updateText("Welcome to Lucky Bean Shop"); generateNameInputs(); 
         }
 
         function resetToTitle() { location.reload(); }
@@ -584,11 +515,7 @@
             const splash = document.getElementById('splash-screen');
             if (splash) { 
                 splash.style.opacity = '0'; 
-                setTimeout(() => { 
-                    splash.classList.add('hidden'); 
-                    updateText("Welcome to Gony's Coffee Shop"); 
-                    generateNameInputs();
-                }, 600); 
+                setTimeout(() => { splash.classList.add('hidden'); updateText("Welcome to Lucky Bean Shop"); generateNameInputs(); }, 600); 
             }
         }
 

@@ -24,7 +24,6 @@
             --tablet-border: #eeeeee;
             --point-red: #ff4d4d;
             --divider-color: #ebebeb;
-            /* 버튼 그림자 색상 */
             --btn-shadow: #333333;
             --btn-light-shadow: #e0e0e0;
         }
@@ -68,7 +67,6 @@
             background: white; font-weight: 700; font-size: 0.85rem; color: #333; cursor: pointer;
             display: flex; flex-direction: column; align-items: flex-start;
             transition: all 0.1s; position: relative;
-            /* 입체적 피드백 */
             box-shadow: 0 4px 0 var(--btn-light-shadow);
         }
         .picker-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--btn-light-shadow); }
@@ -147,7 +145,7 @@
         .value-customer { font-size: 2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; }
         .fortune-area { font-size: 0.75rem; line-height: 1.5; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; }
 
-        /* 메인 버튼 물리적 피드백 보완 */
+        /* 메인 버튼 물리적 피드백 */
         .btn-main { 
             padding: 20px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px; 
             cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; 
@@ -254,10 +252,11 @@
                             <p style="font-size: 0.65rem; text-align: center; margin-top: 25px; color:#aaa; letter-spacing: 2px;">*** THANK YOU ***</p>
                         </div>
                     </div>
+                    
                     <div class="result-btn-group">
+                        <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="margin: 5px 0 15px; font-size:0.9rem; font-weight:800; color:#555;">GET A RECEIPT</button>
                         <button class="btn-main" onclick="startGame()">RESTART</button>
                         <button class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="resetToSetup()">GO BACK</button>
-                        <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="margin-top:5px; font-size:0.8rem;">SHARE RECEIPT IMAGE</button>
                     </div>
                 </div>
                 
@@ -286,7 +285,6 @@
             typing();
         }
 
-        // [기술적 보완] 멤버 기억 기능 관련 로직
         function saveLastMembers(names) {
             localStorage.setItem('lastCoffeeMembers', JSON.stringify(names));
         }
@@ -298,9 +296,6 @@
 
         function generateNameInputs(providedNames = null) {
             const container = document.getElementById('name-input-container');
-            // 1. 함수 호출 시 전달된 이름이 있으면 그것을 사용 (그룹 로드 시)
-            // 2. 없으면 로컬 스토리지에 저장된 마지막 멤버를 확인
-            // 3. 그것도 없으면 현재 입력창의 상태를 유지
             const lastSaved = loadLastMembers();
             const currentInputs = Array.from(container.querySelectorAll('.name-input')).map(i => i.value);
             
@@ -419,9 +414,7 @@
                 memberNames.push(val || `Member ${i+1}`);
             }
 
-            // [기술적 보완] 게임 시작 시 현재 멤버 구성 저장
             saveLastMembers(memberNames);
-
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * currentMemberCount);
             isLuckyRound = Math.random() < 0.20; 
@@ -514,7 +507,6 @@
             if (hands[index].dataset.opened === "true" || hands[index].classList.contains('tension-shake')) return;
             
             document.getElementById('shuffle-btn').disabled = true; 
-
             hands[index].classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Checking your luck...");
             setTimeout(() => { hands[index].classList.remove('tension-shake'); openHand(index, total); }, 800);
         }
@@ -583,7 +575,7 @@
                 setTimeout(() => { 
                     splash.classList.add('hidden'); 
                     updateText("Welcome to Gony's Coffee Shop"); 
-                    generateNameInputs(); // 시작 시 멤버 로드 실행
+                    generateNameInputs();
                 }, 600); 
             }
         }
@@ -602,7 +594,7 @@
 
         async function shareAsImage() {
             const captureArea = document.getElementById('capture-area'); const receipt = document.getElementById('receipt'); const shareBtn = document.getElementById('id-share-btn');
-            shareBtn.innerText = "Generating..."; shareBtn.disabled = true;
+            shareBtn.innerText = "GETTING..."; shareBtn.disabled = true;
             const originalStyle = receipt.getAttribute('style') || "";
             receipt.style.animation = "none"; receipt.style.opacity = "1"; receipt.style.transform = "none";
             try {
@@ -612,9 +604,9 @@
                     const file = new File([blob], "receipt.png", { type: "image/png" });
                     if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); }
                     else { const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'receipt.png'; link.click(); }
-                    receipt.setAttribute('style', originalStyle); shareBtn.innerText = "Share Receipt Image"; shareBtn.disabled = false;
+                    receipt.setAttribute('style', originalStyle); shareBtn.innerText = "GET A RECEIPT"; shareBtn.disabled = false;
                 });
-            } catch (error) { shareBtn.disabled = false; }
+            } catch (error) { shareBtn.innerText = "GET A RECEIPT"; shareBtn.disabled = false; }
         }
 
         window.onload = () => { setTimeout(hideSplash, 1500); };

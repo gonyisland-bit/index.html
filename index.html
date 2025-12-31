@@ -42,14 +42,13 @@
         .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 2.8rem; letter-spacing: -1px; }
         .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.1rem; letter-spacing: -2px; margin-left: -5px; }
         
-        /* [수정] 게임 스크린: 그림자 제거 및 중앙 정렬 보장 */
         .game-screen {
             position: relative;
             width: 92%;
             max-width: 500px;
-            margin: 10px auto 25px; /* 상하 10/25px, 좌우 auto로 중앙 정렬 */
+            margin: 10px auto 25px;
             border: 6px solid #000; 
-            box-shadow: none; /* 그림자 제거 */
+            box-shadow: none;
             line-height: 0;
             overflow: hidden;
             background: #eee;
@@ -80,7 +79,8 @@
         }
         #rpg-content { font-size: 0.95rem; font-weight: 800; color: #000; min-height: 1.2rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
 
-        .setup-card {
+        /* 카드 공통 스타일 */
+        .card-container {
             width: 90%; max-width: 450px;
             background: var(--tablet-bg); border-radius: 30px;
             padding: 25px; box-sizing: border-box; 
@@ -101,26 +101,8 @@
         .picker-value { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         .picker-value::after { content: '▾'; color: #ccc; font-size: 1rem; }
 
-        /* [수정] 상단 바 버튼들 중앙 정렬 */
-        .name-mgmt-bar { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            gap: 10px; 
-            margin-bottom: 8px; 
-        }
-        .btn-text { 
-            background: none; 
-            border: none; 
-            color: #bbb; 
-            font-size: 0.7rem; 
-            font-weight: 800; 
-            cursor: pointer; 
-            padding: 5px 10px; 
-            transition: 0.2s; 
-            letter-spacing: 1px;
-            text-align: center; /* 텍스트 중앙 정렬 */
-        }
+        .name-mgmt-bar { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .btn-text { background: none; border: none; color: #bbb; font-size: 0.7rem; font-weight: 800; cursor: pointer; padding: 5px 10px; transition: 0.2s; letter-spacing: 1px; text-align: center; }
         .btn-text:hover { color: var(--primary-color); }
 
         .divider { width: 100%; height: 1px; background-color: var(--divider-color); margin-bottom: 20px; }
@@ -135,7 +117,7 @@
 
         .stats-container { 
             width: 100%; background: #fff; padding: 15px; border-radius: 20px; 
-            font-size: 0.8rem; box-sizing: border-box; border: 1px solid #eee; margin-top: 25px;
+            font-size: 0.8rem; box-sizing: border-box; border: 1px solid #eee;
         }
         #stats-list { max-height: 120px; overflow-y: auto; padding-right: 5px; }
         #stats-list::-webkit-scrollbar { width: 4px; }
@@ -154,10 +136,6 @@
         .hand-img { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
         
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .tension-shake { animation: tension-animation 0.1s infinite !important; }
-        @keyframes tension-animation { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
-        .shake { animation: winner-shake 0.15s infinite !important; }
-        @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         
         .btn-shuffle {
             background-color: #fff; color: #333; border: 2px solid #333; padding: 10px 30px; font-size: 0.9rem; font-weight: 900;
@@ -194,6 +172,7 @@
             cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; 
             box-shadow: 0 8px 0 var(--btn-shadow); text-transform: uppercase;
             position: relative; top: 0;
+            margin-bottom: 15px;
         }
         .btn-main:active { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
         .result-btn-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px; margin-top: 10px; }
@@ -203,14 +182,21 @@
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        /* 로딩창 연출 강화 */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
+        .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #333; }
+        .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .loading-bar-fill { height: 100%; width: 0%; background: #000; animation: fillBar 1.2s forwards ease-in-out; }
+        @keyframes fillBar { to { width: 100%; } }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen" onclick="hideSplash()">
-        <img src="coffee.png" alt="Logo" style="width:110px; margin-bottom:20px;">
-        <div style="font-family: 'Playfair Display'; font-style: italic; font-size: 1.2rem; letter-spacing: 2px;">LUCKY BEAN</div>
+    <div id="splash-screen">
+        <img src="coffee.png" alt="Logo" style="width:110px; animation: floating 2s ease-in-out infinite;">
+        <div class="loading-text">LOADING...</div>
+        <div class="loading-bar-container"><div class="loading-bar-fill"></div></div>
     </div>
 
     <div id="modal-overlay" onclick="closeModal()">
@@ -222,7 +208,7 @@
     </div>
 
     <div class="wrapper">
-        <header onclick="resetToTitle()">
+        <header onclick="goFront()">
             <div class="title-container">
                 <span class="title-lucky">lucky</span><span class="title-bean">bean</span>
             </div>
@@ -230,12 +216,23 @@
 
         <main id="main-content">
             <div class="game-screen">
-                <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image">
+                <img src="cafe_facade.png" alt="Cafe" id="main-img" class="title-image">
                 <div id="rpg-textbox"><div id="rpg-content"></div></div>
             </div>
 
-            <div id="setup-view">
-                <div class="setup-card">
+            <div id="front-view">
+                <div class="card-container">
+                    <div id="stats-dashboard" class="stats-container hidden">
+                        <div class="stats-title">🏆 TOTAL DONATIONS <button style="font-size:0.65rem; color:#aaa; border:none; background:none; cursor:pointer;" onclick="resetStats()">RESET</button></div>
+                        <div id="stats-list"></div>
+                    </div>
+                    <div id="no-stats-msg" style="font-size: 0.8rem; color: #ccc; font-weight: 700;">WELCOME TO THE CAFE!</div>
+                </div>
+                <button class="btn-main" onclick="goSetup()">ENTER SHOP</button>
+            </div>
+
+            <div id="setup-view" class="hidden">
+                <div class="card-container">
                     <div class="picker-group">
                         <div class="picker-btn" onclick="openGroupModal()">
                             <span class="picker-label">GROUP</span>
@@ -255,13 +252,9 @@
                     <div class="divider"></div>
 
                     <div id="name-input-container"></div>
-
-                    <div id="stats-dashboard" class="stats-container hidden">
-                        <div class="stats-title">🏆 TOTAL DONATIONS <button style="font-size:0.65rem; color:#aaa; border:none; background:none; cursor:pointer;" onclick="resetStats()">RESET</button></div>
-                        <div id="stats-list"></div>
-                    </div>
                 </div>
-                <button class="btn-main" onclick="startGame()">start game</button>
+                <button class="btn-main" onclick="startGame()">START GAME</button>
+                <button class="btn-text" style="width:100%; margin-top:5px;" onclick="goFront()">BACK TO FRONT</button>
             </div>
 
             <div id="game-view" class="hidden">
@@ -273,7 +266,7 @@
                 <div id="lucky-area" class="hidden">
                     <div class="result-btn-group">
                         <button class="btn-main" onclick="startGame()">RESTART</button>
-                        <button class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="resetToSetup()">GO BACK</button>
+                        <button class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="goSetup()">GO BACK</button>
                     </div>
                 </div>
 
@@ -301,16 +294,16 @@
                     <div class="result-btn-group">
                         <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="margin: 5px 0 15px; font-size:0.9rem; font-weight:800; color:#555;">GET A RECEIPT</button>
                         <button class="btn-main" onclick="startGame()">RESTART</button>
-                        <button class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="resetToSetup()">GO BACK</button>
+                        <button class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="goSetup()">GO BACK</button>
                     </div>
                 </div>
                 
                 <div id="btn-reset-container" style="margin-top:30px; width:100%; display:flex; justify-content:center;">
-                    <button id="btn-reset-game" class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="resetToSetup()">BACK TO SETUP</button>
+                    <button id="btn-reset-game" class="btn-main" style="background:#555; box-shadow: 0 8px 0 #333;" onclick="goSetup()">BACK TO SETUP</button>
                 </div>
             </div>
         </main>
-        <div class="footer">v1.0.0 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v1.1.0 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -319,12 +312,8 @@
         const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread", "Espresso Shot", "Milk Foam", "Muffin Man", "Cookie Monster", "Roast Master"];
         
         let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; 
-        let isLuckyRound = false;
-        let lastWasLucky = false;
-        
-        let currentTeamName = 'Empty';
-        let currentMemberCount = 3;
-        let isShuffling = false;
+        let isLuckyRound = false; let lastWasLucky = false;
+        let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
 
         function updateText(msg) {
             clearTimeout(typeTimeout);
@@ -333,6 +322,26 @@
             typing();
         }
 
+        /* 내비게이션 함수 */
+        function goFront() {
+            document.getElementById('front-view').classList.remove('hidden');
+            document.getElementById('setup-view').classList.add('hidden');
+            document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('main-img').src = 'cafe_facade.png';
+            updateText("Welcome to the Lucky Bean!");
+            showStats();
+        }
+
+        function goSetup() {
+            document.getElementById('front-view').classList.add('hidden');
+            document.getElementById('setup-view').classList.remove('hidden');
+            document.getElementById('game-view').classList.add('hidden');
+            document.getElementById('main-img').src = 'cafe_counter.png';
+            updateText("Who is visiting today?");
+            generateNameInputs();
+        }
+
+        /* 설정 로직 */
         function saveLastMembers(names) { localStorage.setItem('lastCoffeeMembers', JSON.stringify(names)); }
         function loadLastMembers() { const saved = localStorage.getItem('lastCoffeeMembers'); return saved ? JSON.parse(saved) : null; }
 
@@ -350,7 +359,6 @@
                 container.appendChild(input);
             }
             document.getElementById('display-member-count').innerText = `${currentMemberCount} Members`;
-            showStats();
         }
 
         function fillRandomNames() {
@@ -423,6 +431,7 @@
 
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
+        /* 오디오 및 게임 로직 */
         const AudioEngine = {
             ctx: null,
             init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
@@ -445,7 +454,7 @@
             saveLastMembers(memberNames);
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * currentMemberCount);
-            if (lastWasLucky) { isLuckyRound = false; } else { isLuckyRound = Math.random() < 0.20; }
+            isLuckyRound = !lastWasLucky && Math.random() < 0.20;
             isGameOver = false; isShuffling = false;
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('game-view').classList.remove('hidden');
@@ -455,7 +464,6 @@
             document.getElementById('receipt').classList.remove('show');
             document.getElementById('shuffle-btn').disabled = false;
             updateText("Who will pay? Pick a hand!");
-            
             document.getElementById('main-img').src = 'cafe_counter.png'; 
             renderHands();
         }
@@ -476,40 +484,22 @@
             isShuffling = true; document.getElementById('shuffle-btn').disabled = true;
             AudioEngine.play('whoosh'); updateText("Ready... Mix!");
             const wrappers = document.querySelectorAll('.hand-wrapper');
-            const firstRowWrappers = Array.from(wrappers).slice(0, Math.min(wrappers.length, 3));
-            let totalX = 0, totalY = 0;
-            firstRowWrappers.forEach(w => {
-                const r = w.getBoundingClientRect(); totalX += (r.left + r.width / 2); totalY += (r.top + r.height / 2);
-            });
-            const targetX = totalX / (firstRowWrappers.length || 1);
-            const targetY = totalY / (firstRowWrappers.length || 1);
-            wrappers.forEach(w => {
-                const rect = w.getBoundingClientRect();
-                const dx = targetX - (rect.left + rect.width / 2); const dy = targetY - (rect.top + rect.height / 2);
-                w.style.transition = "transform 0.4s cubic-bezier(0.5, 0, 0.5, 1)";
-                w.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
-            });
+            wrappers.forEach(w => { w.style.transition = "transform 0.4s ease"; w.style.transform = `scale(0.5) translate(0, 0)`; });
             setTimeout(() => {
                 for (let i = memberNames.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1)); [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
                 }
                 winnerIndex = Math.floor(Math.random() * memberNames.length);
-                wrappers.forEach(w => {
-                    const randomX = (Math.random() - 0.5) * 150; const randomY = (Math.random() - 0.5) * 100; const randomRot = (Math.random() - 0.5) * 60;
-                    w.style.transition = "transform 0.4s cubic-bezier(0.1, 0.9, 0.2, 1)";
-                    w.style.transform = `translate(${randomX}px, ${randomY}px) scale(1.1) rotate(${randomRot}deg)`;
-                });
-                setTimeout(() => { renderHands(); isShuffling = false; document.getElementById('shuffle-btn').disabled = false; updateText("Hands Mixed! Choose yours."); }, 450);
+                renderHands(); isShuffling = false; document.getElementById('shuffle-btn').disabled = false; updateText("Choose yours!");
             }, 450);
         }
 
         function handleHandClick(index, total) {
             if (isGameOver || isShuffling) return;
             const hands = document.getElementsByClassName('hand-img');
-            if (hands[index].dataset.opened === "true" || hands[index].classList.contains('tension-shake')) return;
-            document.getElementById('shuffle-btn').disabled = true; 
-            hands[index].classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Checking your luck...");
-            setTimeout(() => { hands[index].classList.remove('tension-shake'); openHand(index, total); }, 800);
+            if (hands[index].dataset.opened === "true") return;
+            AudioEngine.play('tension'); updateText("Checking your luck...");
+            setTimeout(() => { openHand(index, total); }, 600);
         }
 
         function openHand(index, total) {
@@ -525,14 +515,14 @@
             }
             if (index === winnerIndex) {
                 isGameOver = true; AudioEngine.play('fail'); lastWasLucky = false;
-                hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
+                hands[index].src = 'hand_money.png';
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(total, memberNames[index]);
             } else {
-                AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true"; hands[index].style.animation = "none";
+                AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true";
                 updateText(`${memberNames[index]} is Safe!`);
             }
         }
@@ -551,33 +541,34 @@
             setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); document.getElementById('btn-reset-game').classList.add('hidden'); }, 600);
         }
 
-        function resetToSetup() {
-            document.getElementById('setup-view').classList.remove('hidden'); document.getElementById('game-view').classList.add('hidden');
-            document.getElementById('main-img').src = 'cafe_counter.png'; 
-            updateText("Welcome to Lucky Bean Shop"); generateNameInputs(); 
-        }
-
-        function resetToTitle() { location.reload(); }
-        
-        function hideSplash() {
-            const splash = document.getElementById('splash-screen');
-            if (splash) { 
-                splash.style.opacity = '0'; 
-                setTimeout(() => { splash.classList.add('hidden'); updateText("Welcome to Lucky Bean Shop"); generateNameInputs(); }, 600); 
-            }
-        }
-
+        /* 통계 및 유틸 */
         function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); stats[name] = (stats[name] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
         
         function showStats() {
-            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); const dashboard = document.getElementById('stats-dashboard');
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const dashboard = document.getElementById('stats-dashboard');
+            const noStatsMsg = document.getElementById('no-stats-msg');
             const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
-            if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
+            
+            if (entries.length === 0) {
+                dashboard.classList.add('hidden');
+                noStatsMsg.classList.remove('hidden');
+                return;
+            }
             dashboard.classList.remove('hidden');
+            noStatsMsg.classList.add('hidden');
             document.getElementById('stats-list').innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
         }
         
         function resetStats() { if(confirm("통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
+
+        function hideSplash() {
+            const splash = document.getElementById('splash-screen');
+            if (splash) { 
+                splash.style.opacity = '0'; 
+                setTimeout(() => { splash.classList.add('hidden'); goFront(); }, 600); 
+            }
+        }
 
         async function shareAsImage() {
             const captureArea = document.getElementById('capture-area'); const receipt = document.getElementById('receipt'); const shareBtn = document.getElementById('id-share-btn');
@@ -596,7 +587,7 @@
             } catch (error) { shareBtn.innerText = "GET A RECEIPT"; shareBtn.disabled = false; }
         }
 
-        window.onload = () => { setTimeout(hideSplash, 1500); };
+        window.onload = () => { setTimeout(hideSplash, 1800); };
     </script>
 </body>
 </html>

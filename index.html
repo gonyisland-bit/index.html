@@ -51,7 +51,6 @@
         .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
         .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
         
-        /* 이미지 라운드 제거 및 고정 스타일 */
         .title-image { width: 70vw; max-width: 330px; height: auto; margin: 20px 0; transition: none; border-radius: 0; }
         .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
 
@@ -155,7 +154,7 @@
         .btn-main:active { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
         .result-btn-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px; margin-top: 10px; }
 
-        .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 2px; }
+        .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 1px; }
         .hidden { display: none !important; }
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -265,7 +264,7 @@
                 </div>
             </div>
         </main>
-        <div class="footer">DESIGNED BY GONY</div>
+        <div class="footer">v1.0.0 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -485,7 +484,7 @@
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 
-                // 당첨 시 감사 이미지로 변경 (위치/크기는 동일 유지)
+                // 당첨 시 감사 이미지로 변경
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
                 
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });

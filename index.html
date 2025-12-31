@@ -408,7 +408,9 @@
             document.getElementById('receipt').classList.remove('show');
             document.getElementById('shuffle-btn').disabled = false;
             updateText("Who will pay? Pick a hand!");
-            document.getElementById('main-img').src = 'coffee.png'; 
+            
+            // [수정] 게임화면에서도 메인 이미지를 그대로 유지
+            document.getElementById('main-img').src = 'cafe_counter.png'; 
             document.getElementById('main-img').classList.remove('large');
             renderHands();
         }
@@ -480,7 +482,10 @@
                 hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
-                document.getElementById('main-img').src = 'coffee_broken.png';
+                
+                // [수정] 당첨 시 감사 이미지로 변경
+                document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(total, memberNames[index]);
             } else {

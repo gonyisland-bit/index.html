@@ -43,42 +43,22 @@
         .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.1rem; letter-spacing: -2px; margin-left: -5px; }
         
         .game-screen {
-            position: relative;
-            width: 92%;
-            max-width: 500px;
-            margin: 10px auto 25px;
-            border: 6px solid #000; 
-            line-height: 0;
-            overflow: hidden;
-            background: #eee;
-            border-radius: 4px;
+            position: relative; width: 92%; max-width: 500px; margin: 10px auto 25px;
+            border: 6px solid #000; line-height: 0; overflow: hidden; background: #eee; border-radius: 4px;
         }
 
         .title-image { width: 100%; height: auto; display: block; transition: none; }
 
         #rpg-textbox {
-            position: absolute;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            background: rgba(255, 255, 255, 0.92);
-            border: 3px solid var(--rpg-border);
-            border-radius: 8px;
-            padding: 12px 15px;
-            box-sizing: border-box;
-            line-height: 1.4;
-            pointer-events: none;
-            z-index: 10;
+            position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); width: 90%;
+            background: rgba(255, 255, 255, 0.92); border: 3px solid var(--rpg-border);
+            border-radius: 8px; padding: 12px 15px; box-sizing: border-box; line-height: 1.4; pointer-events: none; z-index: 10;
         }
         #rpg-content { font-size: 0.95rem; font-weight: 800; color: #000; min-height: 1.2rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
 
         .card-container {
-            width: 90%; max-width: 450px;
-            background: var(--tablet-bg); border-radius: 30px;
-            padding: 25px; box-sizing: border-box; 
-            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.01), 0 15px 35px rgba(0,0,0,0.03); 
-            margin: 0 auto 25px;
+            width: 90%; max-width: 450px; background: var(--tablet-bg); border-radius: 30px;
+            padding: 25px; box-sizing: border-box; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.01), 0 15px 35px rgba(0,0,0,0.03); margin: 0 auto 25px;
         }
 
         .order-menu-header { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; color: #333; text-align: left; margin-bottom: 10px; letter-spacing: 1px; }
@@ -87,8 +67,7 @@
         .picker-btn { 
             flex: 1; padding: 14px; border: 1px solid #eee; border-radius: 16px; 
             background: white; font-weight: 700; font-size: 0.85rem; color: #333; cursor: pointer;
-            display: flex; flex-direction: column; align-items: flex-start;
-            transition: all 0.1s; position: relative;
+            display: flex; flex-direction: column; align-items: flex-start; transition: all 0.1s; position: relative;
             box-shadow: 0 4px 0 var(--btn-light-shadow);
         }
         .picker-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--btn-light-shadow); }
@@ -168,25 +147,26 @@
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #333; }
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .loading-bar-fill { height: 100%; width: 0%; background: #000; animation: fillBar 1.2s forwards ease-in-out; }
-        @keyframes fillBar { to { width: 100%; } }
-
-        /* 터치 유도 레이어 */
-        #entry-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 9998; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .loading-bar-fill { height: 100%; width: 0%; background: #000; transition: width 0.1s; }
+        
+        /* 스타트 버튼 컨테이너 */
+        #start-action-area { margin-top: 20px; display: none; flex-direction: column; align-items: center; }
     </style>
 </head>
-<body onclick="AudioEngine.initAndPlayBGM();">
+<body>
 
     <div id="splash-screen">
         <img src="coffee.png" alt="Logo" style="width:110px; animation: floating 2s ease-in-out infinite;">
-        <div class="loading-text">LOADING...</div>
-        <div class="loading-bar-container"><div class="loading-bar-fill"></div></div>
-    </div>
+        
+        <div id="loading-progress-area">
+            <div class="loading-text">LOADING...</div>
+            <div class="loading-bar-container"><div id="progress-fill" class="loading-bar-fill"></div></div>
+        </div>
 
-    <div id="entry-screen">
-        <img src="coffee.png" alt="Logo" style="width:80px; margin-bottom:30px;">
-        <button class="btn-main" onclick="startApp()">START YOUR ORDER</button>
-        <div style="font-size:0.7rem; color:#bbb; margin-top:10px;">Music will start after tap</div>
+        <div id="start-action-area">
+            <button class="btn-main" onclick="handleStartGame()">START GAME</button>
+            <div style="font-size:0.7rem; color:#bbb; margin-top:8px; letter-spacing:1px; font-weight:800;">TAP TO BREW LUCK</div>
+        </div>
     </div>
 
     <audio id="bgm-player" loop preload="auto">
@@ -279,17 +259,13 @@
                             </div>
                         </div>
                     </div>
-
-                    <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000;">
-                        🌟 EXTRA LUCK! ALL PASS! 🌟
-                    </div>
-
+                    <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
                     <button class="btn-main" onclick="goSetup()">REORDER</button>
                     <button class="btn-text" style="font-weight:800; color:#bbb; padding:10px;" onclick="goFront()">BACK TO HOME</button>
                 </div>
             </div>
         </main>
-        <div class="footer">v1.2.0 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v1.2.1 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -301,6 +277,7 @@
         let isLuckyRound = false; let lastWasLucky = false;
         let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
 
+        /* 오디오 시스템: 사용자 클릭 시에만 활성화됨 */
         const AudioEngine = {
             ctx: null, bgm: null,
             initAndPlayBGM() { 
@@ -310,15 +287,11 @@
                     this.bgm.volume = 0.35;
                 }
                 if (this.ctx.state === 'suspended') this.ctx.resume();
-                if (this.bgm && this.bgm.paused) {
-                    this.bgm.play().catch(() => {});
-                }
+                if (this.bgm && this.bgm.paused) this.bgm.play().catch(() => {});
             },
             play(type) {
-                this.initAndPlayBGM();
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                const now = this.ctx.currentTime;
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
                 if (type === 'start') {
                     osc.frequency.setValueAtTime(698.46, now); osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15);
@@ -340,25 +313,40 @@
             }
         };
 
+        /* 로딩 바 애니메이션 및 버튼 전환 */
+        window.onload = () => {
+            const fill = document.getElementById('progress-fill');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loading-progress-area').style.display = 'none';
+                        document.getElementById('start-action-area').style.display = 'flex';
+                    }, 500);
+                }
+                fill.style.width = progress + '%';
+            }, 50);
+        };
+
+        /* START 버튼 클릭 시 오디오 획득 및 홈 진입 */
+        function handleStartGame() {
+            AudioEngine.initAndPlayBGM();
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                goFront();
+            }, 600);
+        }
+
         function updateText(msg) {
             clearTimeout(typeTimeout);
             const content = document.getElementById('rpg-content'); content.innerText = ''; let i = 0;
             function typing() { if (i < msg.length) { content.innerText += msg.charAt(i); i++; typeTimeout = setTimeout(typing, 45); } }
             typing();
-        }
-
-        function hideSplash() {
-            document.getElementById('splash-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splash-screen').classList.add('hidden');
-                document.getElementById('entry-screen').style.display = 'flex';
-            }, 600);
-        }
-
-        function startApp() {
-            document.getElementById('entry-screen').style.display = 'none';
-            AudioEngine.initAndPlayBGM();
-            goFront();
         }
 
         function goFront() {
@@ -387,8 +375,7 @@
             let namesToUse = providedNames || (lastSaved && lastSaved.length === currentMemberCount ? lastSaved : currentInputs);
             container.innerHTML = '';
             for (let i = 0; i < currentMemberCount; i++) {
-                const input = document.createElement('input'); 
-                input.type = 'text'; input.className = 'name-input';
+                const input = document.createElement('input'); input.type = 'text'; input.className = 'name-input';
                 input.placeholder = `User ${i+1}`; input.id = `input-name-${i}`;
                 if (namesToUse && namesToUse[i]) input.value = namesToUse[i];
                 container.appendChild(input);
@@ -402,8 +389,7 @@
         }
 
         function openGroupModal() {
-            const overlay = document.getElementById('modal-overlay');
-            const container = document.getElementById('modal-list-container');
+            const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             document.getElementById('modal-title').innerText = "Select Group";
             overlay.style.display = 'flex'; container.innerHTML = '';
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
@@ -420,8 +406,7 @@
         }
 
         function openMemberModal() {
-            const overlay = document.getElementById('modal-overlay');
-            const container = document.getElementById('modal-list-container');
+            const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             document.getElementById('modal-title').innerText = "How many people?";
             overlay.style.display = 'flex'; container.innerHTML = '';
             for (let i = 2; i <= 9; i++) {
@@ -468,8 +453,7 @@
             const inputs = document.querySelectorAll('.name-input');
             for (let i = 0; i < currentMemberCount; i++) { memberNames.push(inputs[i].value.trim() || `Member ${i+1}`); }
             localStorage.setItem('lastCoffeeMembers', JSON.stringify(memberNames));
-            AudioEngine.play('start'); 
-            winnerIndex = Math.floor(Math.random() * currentMemberCount);
+            AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * currentMemberCount);
             isLuckyRound = !lastWasLucky && Math.random() < 0.20;
             isGameOver = false; isShuffling = false;
             document.getElementById('setup-view').classList.add('hidden');
@@ -504,16 +488,13 @@
             firstRowWrappers.forEach(w => {
                 const r = w.getBoundingClientRect(); totalX += (r.left + r.width / 2); totalY += (r.top + r.height / 2);
             });
-            const targetX = totalX / (firstRowWrappers.length || 1);
-            const targetY = totalY / (firstRowWrappers.length || 1);
-
+            const targetX = totalX / (firstRowWrappers.length || 1); const targetY = totalY / (firstRowWrappers.length || 1);
             wrappers.forEach(w => {
                 const rect = w.getBoundingClientRect();
                 const dx = targetX - (rect.left + rect.width / 2); const dy = targetY - (rect.top + rect.height / 2);
                 w.style.transition = "transform 0.4s cubic-bezier(0.5, 0, 0.5, 1)";
                 w.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
             });
-
             setTimeout(() => {
                 for (let i = memberNames.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1)); [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
@@ -579,8 +560,7 @@
         
         function showStats() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            const dashboard = document.getElementById('stats-dashboard');
-            const noStatsMsg = document.getElementById('no-stats-msg');
+            const dashboard = document.getElementById('stats-dashboard'); const noStatsMsg = document.getElementById('no-stats-msg');
             const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
             if (entries.length === 0) { dashboard.classList.add('hidden'); noStatsMsg.classList.remove('hidden'); return; }
             dashboard.classList.remove('hidden'); noStatsMsg.classList.add('hidden');
@@ -605,8 +585,6 @@
                 });
             } catch (error) { shareBtn.innerText = "GET A RECEIPT"; shareBtn.disabled = false; }
         }
-
-        window.onload = () => { setTimeout(hideSplash, 1800); };
     </script>
 </body>
 </html>

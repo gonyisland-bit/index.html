@@ -38,14 +38,14 @@
 
         .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 40px; }
 
+        /* RPG 텍스트 박스: 화살표 제거 및 비활성 스타일 */
         #rpg-textbox {
             width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
             border-radius: 12px; padding: 15px; margin: 20px auto 10px; box-sizing: border-box; position: relative;
             box-shadow: 4px 4px 0px rgba(0,0,0,0.05);
+            pointer-events: none; /* 클릭 불가 */
         }
         #rpg-content { font-size: 1.05rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
-        #rpg-textbox::after { content: '▼'; position: absolute; bottom: 8px; right: 12px; font-size: 0.7rem; color: var(--rpg-border); animation: bounce 0.8s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
         header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
@@ -410,7 +410,6 @@
             document.getElementById('shuffle-btn').disabled = false;
             updateText("Who will pay? Pick a hand!");
             
-            // 이미지 크기와 위치는 초기화면 스타일(large)을 그대로 유지
             document.getElementById('main-img').src = 'cafe_counter.png'; 
             document.getElementById('main-img').className = 'title-image large';
             renderHands();
@@ -474,6 +473,10 @@
                 isGameOver = true; AudioEngine.play('lucky'); lastWasLucky = true;
                 for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
                 updateText("LUCKY! Everyone is SAFE! 🌟");
+                
+                // 럭키 라운드 전용 이미지 적용
+                document.getElementById('main-img').src = 'cafe_counter_lucky.png';
+                
                 document.getElementById('lucky-area').classList.remove('hidden'); 
                 document.getElementById('btn-reset-game').classList.add('hidden');
                 document.getElementById('shuffle-btn').disabled = true; return;
@@ -484,7 +487,6 @@
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 
-                // 당첨 시 감사 이미지로 변경
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
                 
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });

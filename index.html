@@ -19,7 +19,7 @@
             --bg-color: #ffffff;
             --primary-color: #000000;
             --text-gray-70: #4d4d4d;
-            --rpg-border: #4d4d4d;
+            --rpg-border: #000000;
             --tablet-bg: #f8f8f8;
             --tablet-border: #eeeeee;
             --point-red: #ff4d4d;
@@ -38,21 +38,47 @@
 
         .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 40px; }
 
-        /* RPG 텍스트 박스: 화살표 제거 및 비활성 스타일 */
-        #rpg-textbox {
-            width: 90%; max-width: 450px; background: white; border: 4px solid var(--rpg-border);
-            border-radius: 12px; padding: 15px; margin: 20px auto 10px; box-sizing: border-box; position: relative;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.05);
-            pointer-events: none; /* 클릭 불가 */
-        }
-        #rpg-content { font-size: 1.05rem; font-weight: 700; color: var(--text-gray-70); min-height: 1.5rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
-
-        header { padding: 40px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 3.2rem; letter-spacing: -1px; }
-        .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.5rem; letter-spacing: -2px; margin-left: -5px; }
+        header { padding: 30px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 2.8rem; letter-spacing: -1px; }
+        .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.1rem; letter-spacing: -2px; margin-left: -5px; }
         
-        .title-image { width: 70vw; max-width: 330px; height: auto; margin: 20px 0; transition: none; border-radius: 0; }
-        .title-image.large { width: 70vw; max-width: 330px; margin: 20px 0; }
+        /* 게임 스크린 레이아웃 (이미지 + 대사창) */
+        .game-screen {
+            position: relative;
+            width: 92%;
+            max-width: 500px;
+            margin: 10px 0 25px;
+            border: 6px solid #000; /* 외곽선 강조 */
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+            line-height: 0; /* 이미지 하단 공백 제거 */
+            overflow: hidden;
+            background: #eee;
+        }
+
+        .title-image { 
+            width: 100%; 
+            height: auto; 
+            display: block;
+            transition: none;
+        }
+
+        /* 이미지 내부에 위치하는 대사창 */
+        #rpg-textbox {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            background: rgba(255, 255, 255, 0.92); /* 약간의 투명도 */
+            border: 3px solid var(--rpg-border);
+            border-radius: 8px;
+            padding: 12px 15px;
+            box-sizing: border-box;
+            line-height: 1.4;
+            pointer-events: none;
+            z-index: 10;
+        }
+        #rpg-content { font-size: 0.95rem; font-weight: 800; color: #000; min-height: 1.2rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
 
         .setup-card {
             width: 90%; max-width: 450px;
@@ -100,7 +126,7 @@
         .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #666; font-weight: 600; }
 
-        #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px 10px; width: 100%; box-sizing: border-box; position: relative; }
+        #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 10px 10px; width: 100%; box-sizing: border-box; position: relative; }
         .hand-wrapper { 
             display: flex; flex-direction: column; align-items: center; 
             flex: 0 0 calc(33.33% - 20px); min-width: 90px; 
@@ -182,11 +208,13 @@
             <div class="title-container">
                 <span class="title-lucky">lucky</span><span class="title-bean">bean</span>
             </div>
-            <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image large">
         </header>
 
         <main id="main-content">
-            <div id="rpg-textbox"><div id="rpg-content"></div></div>
+            <div class="game-screen">
+                <img src="cafe_counter.png" alt="Coffee" id="main-img" class="title-image">
+                <div id="rpg-textbox"><div id="rpg-content"></div></div>
+            </div>
 
             <div id="setup-view">
                 <div class="setup-card">
@@ -411,7 +439,6 @@
             updateText("Who will pay? Pick a hand!");
             
             document.getElementById('main-img').src = 'cafe_counter.png'; 
-            document.getElementById('main-img').className = 'title-image large';
             renderHands();
         }
 
@@ -473,10 +500,7 @@
                 isGameOver = true; AudioEngine.play('lucky'); lastWasLucky = true;
                 for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
                 updateText("LUCKY! Everyone is SAFE! 🌟");
-                
-                // 럭키 라운드 전용 이미지 적용
                 document.getElementById('main-img').src = 'cafe_counter_lucky.png';
-                
                 document.getElementById('lucky-area').classList.remove('hidden'); 
                 document.getElementById('btn-reset-game').classList.add('hidden');
                 document.getElementById('shuffle-btn').disabled = true; return;
@@ -486,9 +510,7 @@
                 hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
-                
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
-                
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(total, memberNames[index]);
             } else {
@@ -500,10 +522,10 @@
         function showFinish(total, payerName) {
             const now = new Date();
             document.getElementById('receipt-date').innerText = now.toLocaleDateString();
-            document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('receipt-qty').innerText = "x" + total;
-            document.getElementById('receipt-price').innerText = "$4.50";
-            document.getElementById('receipt-subtotal').innerText = "$" + (4.5 * total).toFixed(2);
+            document.getElementById('receipt-order-no').innerText = \"NO.\" + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('receipt-qty').innerText = \"x\" + total;
+            document.getElementById('receipt-price').innerText = \"$4.50\";
+            document.getElementById('receipt-subtotal').innerText = \"$\" + (4.5 * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
@@ -514,7 +536,6 @@
         function resetToSetup() {
             document.getElementById('setup-view').classList.remove('hidden'); document.getElementById('game-view').classList.add('hidden');
             document.getElementById('main-img').src = 'cafe_counter.png'; 
-            document.getElementById('main-img').className = 'title-image large';
             updateText("Welcome to Lucky Bean Shop"); generateNameInputs(); 
         }
 
@@ -535,26 +556,26 @@
             const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
             if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
             dashboard.classList.remove('hidden');
-            document.getElementById('stats-list').innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
+            document.getElementById('stats-list').innerHTML = entries.map(([name, count]) => `<div class=\"stats-row\"><span>${name}</span><span>${count} times</span></div>`).join('');
         }
         
-        function resetStats() { if(confirm("통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
+        function resetStats() { if(confirm(\"통계를 초기화할까요?\")) { localStorage.removeItem('coffeeStats'); showStats(); } }
 
         async function shareAsImage() {
             const captureArea = document.getElementById('capture-area'); const receipt = document.getElementById('receipt'); const shareBtn = document.getElementById('id-share-btn');
-            shareBtn.innerText = "GETTING..."; shareBtn.disabled = true;
-            const originalStyle = receipt.getAttribute('style') || "";
-            receipt.style.animation = "none"; receipt.style.opacity = "1"; receipt.style.transform = "none";
+            shareBtn.innerText = \"GETTING...\"; shareBtn.disabled = true;
+            const originalStyle = receipt.getAttribute('style') || \"\";
+            receipt.style.animation = \"none\"; receipt.style.opacity = \"1\"; receipt.style.transform = \"none\";
             try {
                 await new Promise(r => setTimeout(r, 200));
-                const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", scale: 3, useCORS: true });
+                const canvas = await html2canvas(captureArea, { backgroundColor: \"#ffffff\", scale: 3, useCORS: true });
                 canvas.toBlob(async (blob) => {
-                    const file = new File([blob], "receipt.png", { type: "image/png" });
+                    const file = new File([blob], \"receipt.png\", { type: \"image/png\" });
                     if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); }
                     else { const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'receipt.png'; link.click(); }
-                    receipt.setAttribute('style', originalStyle); shareBtn.innerText = "GET A RECEIPT"; shareBtn.disabled = false;
+                    receipt.setAttribute('style', originalStyle); shareBtn.innerText = \"GET A RECEIPT\"; shareBtn.disabled = false;
                 });
-            } catch (error) { shareBtn.innerText = "GET A RECEIPT"; shareBtn.disabled = false; }
+            } catch (error) { shareBtn.innerText = \"GET A RECEIPT\"; shareBtn.disabled = false; }
         }
 
         window.onload = () => { setTimeout(hideSplash, 1500); };

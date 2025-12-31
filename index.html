@@ -264,7 +264,7 @@
                 </div>
             </div>
         </main>
-        <div class="footer">v1.2.2 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v1.2.3 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -275,35 +275,43 @@
         let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; 
         let isLuckyRound = false; let lastWasLucky = false;
         let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
+        let isAudioStarted = false; // 오디오 시작 여부 플래그
 
-        /* 오디오 시스템: 밸런스 및 가시성 정책 반영 */
+        /* 오디오 시스템: Page Visibility API 연동 보강 */
         const AudioEngine = {
             ctx: null, bgm: null,
             initAndPlayBGM() { 
                 if (!this.ctx) {
                     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
                     this.bgm = document.getElementById('bgm-player');
-                    this.bgm.volume = 0.15; // 요청사항: 배경음 볼륨 0.15 설정 (은은하게)
+                    this.bgm.volume = 0.15; // 배경음 볼륨 0.15
                 }
                 if (this.ctx.state === 'suspended') this.ctx.resume();
-                if (this.bgm && this.bgm.paused) this.bgm.play().catch(() => {});
+                if (this.bgm && this.bgm.paused) {
+                    this.bgm.play().then(() => { isAudioStarted = true; }).catch(e => console.log("Audio Play Error:", e));
+                }
             },
-            stopAll() { // 요청사항: 백그라운드 전환 시 정지 정책
+            stopAll() { 
                 if (this.bgm) this.bgm.pause();
                 if (this.ctx && this.ctx.state !== 'closed') this.ctx.suspend();
             },
-            resumeBGM() {
-                if (this.bgm && !document.getElementById('splash-screen').classList.contains('hidden')) return; // 스플래시 중엔 재생 안함
-                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
-                if (this.bgm) this.bgm.play().catch(() => {});
+            resumeAll() {
+                // 사용자가 한 번이라도 START를 눌러 오디오 권한을 준 상태일 때만 재개
+                if (!isAudioStarted) return;
+                
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+                if (this.bgm && this.bgm.paused) {
+                    this.bgm.play().catch(e => console.log("Audio Resume Error:", e));
+                }
             },
             play(type) {
-                if (!this.ctx) return;
+                if (!this.ctx || this.ctx.state === 'suspended') return;
                 const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
                 
-                // 요청사항: 효과음 Gain 값을 0.5로 높여 크고 명확하게 설정
-                const effectVolume = 0.5;
+                const effectVolume = 0.5; // 효과음 볼륨 0.5
 
                 if (type === 'start') {
                     osc.frequency.setValueAtTime(698.46, now); osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15);
@@ -325,16 +333,12 @@
             }
         };
 
-        /* 요청사항: visibilitychange 이벤트 리스너 추가 (자동 정지/재개) */
+        /* Page Visibility API 이벤트 리스너 */
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 AudioEngine.stopAll();
             } else {
-                // 앱으로 돌아왔을 때 스플래시 화면을 이미 통과했다면 소리 재개
-                const splash = document.getElementById('splash-screen');
-                if (splash && splash.style.display === 'none') {
-                    AudioEngine.resumeBGM();
-                }
+                AudioEngine.resumeAll();
             }
         });
 

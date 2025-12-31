@@ -163,6 +163,8 @@
         .btn-main:active { transform: scale(0.96); }
         .btn-secondary { background-color: #fff; color: #000; border: 2px solid #000; padding: 12px 30px; font-size: 1rem; font-weight: 700; border-radius: 12px; margin-top: 10px; cursor: pointer; width: 85%; max-width: 300px; text-transform: uppercase;}
         
+        .result-btn-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px; margin-top: 10px; }
+
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 2px; }
         .hidden { display: none !important; }
 
@@ -230,7 +232,14 @@
                     <button class="btn-shuffle" id="shuffle-btn" onclick="shufflePositions()">SHUFFLE</button>
                 </div>
                 <div id="hand-display"></div>
-                <div id="lucky-area" class="hidden"><button class="btn-main" onclick="startGame()">Lucky Round! Restart</button></div>
+                
+                <div id="lucky-area" class="hidden">
+                    <div class="result-btn-group">
+                        <button class="btn-main" onclick="startGame()">RESTART</button>
+                        <button class="btn-main" style="background:#555" onclick="resetToSetup()">GO BACK</button>
+                    </div>
+                </div>
+
                 <div id="result-area" class="hidden">
                     <div id="capture-area" style="padding: 25px 0; background: transparent;">
                         <div class="receipt" id="receipt">
@@ -251,12 +260,16 @@
                             <p style="font-size: 0.65rem; text-align: center; margin-top: 25px; color:#aaa; letter-spacing: 2px;">*** THANK YOU ***</p>
                         </div>
                     </div>
-                    <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-                        <button class="btn-main" onclick="startGame()">Next Round</button>
-                        <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="margin-top:15px; font-size:0.8rem;">SHARE RECEIPT IMAGE</button>
+                    <div class="result-btn-group">
+                        <button class="btn-main" onclick="startGame()">RESTART</button>
+                        <button class="btn-main" style="background:#555" onclick="resetToSetup()">GO BACK</button>
+                        <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="margin-top:5px; font-size:0.8rem;">SHARE RECEIPT IMAGE</button>
                     </div>
                 </div>
-                <button id="btn-reset-game" class="btn-text" onclick="resetToSetup()" style="margin-top:30px; width:100%; color:#ccc;">BACK TO SETUP</button>
+                
+                <div id="btn-reset-container" style="margin-top:30px; width:100%; display:flex; justify-content:center;">
+                    <button id="btn-reset-game" class="btn-main" style="background:#555" onclick="resetToSetup()">BACK TO SETUP</button>
+                </div>
             </div>
         </main>
         <div class="footer">DESIGNED BY GONY</div>
@@ -388,7 +401,7 @@
             }
             AudioEngine.play('start'); 
             winnerIndex = Math.floor(Math.random() * currentMemberCount);
-            isLuckyRound = Math.random() < 0.08; 
+            isLuckyRound = Math.random() < 0.20; // LUCKY 확률 20%로 상향
             isGameOver = false;
             isShuffling = false;
 
@@ -399,7 +412,6 @@
             document.getElementById('btn-reset-game').classList.remove('hidden');
             document.getElementById('receipt').classList.remove('show');
             
-            // 셔플 버튼 활성화 상태로 노출
             const sBtn = document.getElementById('shuffle-btn');
             sBtn.disabled = false;
             document.getElementById('shuffle-container').classList.remove('hidden');
@@ -432,9 +444,6 @@
             updateText("Ready... Mix!");
             
             const wrappers = document.querySelectorAll('.hand-wrapper');
-            const displayRect = document.getElementById('hand-display').getBoundingClientRect();
-            
-            // 수정: 첫 번째 줄(상단 3개 기준) 손들의 중심 위치 계산
             const firstRowWrappers = Array.from(wrappers).slice(0, Math.min(wrappers.length, 3));
             let totalX = 0, totalY = 0;
             firstRowWrappers.forEach(w => {
@@ -445,7 +454,6 @@
             const targetX = totalX / firstRowWrappers.length;
             const targetY = totalY / firstRowWrappers.length;
 
-            // 1단계: 첫 번째 줄 중심으로 모이기
             wrappers.forEach(w => {
                 const rect = w.getBoundingClientRect();
                 const dx = targetX - (rect.left + rect.width / 2);
@@ -455,14 +463,12 @@
             });
 
             setTimeout(() => {
-                // 데이터 섞기
                 for (let i = memberNames.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
                 }
                 winnerIndex = Math.floor(Math.random() * memberNames.length);
 
-                // 2단계: 다시 새로운 위치로 퍼지기
                 wrappers.forEach(w => {
                     const randomX = (Math.random() - 0.5) * 150;
                     const randomY = (Math.random() - 0.5) * 100;
@@ -485,7 +491,6 @@
             const hands = document.getElementsByClassName('hand-img'); const handImg = hands[index];
             if (handImg.dataset.opened === "true" || handImg.classList.contains('tension-shake')) return;
             
-            // 수정: 손 선택 시 셔플 버튼을 삭제하지 않고 비활성화만 처리
             document.getElementById('shuffle-btn').disabled = true;
 
             handImg.classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Checking your luck...");
@@ -500,7 +505,7 @@
                 updateText("LUCKY! Everyone is SAFE! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden'); 
                 document.getElementById('btn-reset-game').classList.add('hidden');
-                document.getElementById('shuffle-container').classList.add('hidden'); // 결과 시엔 숨김
+                document.getElementById('shuffle-container').classList.add('hidden');
                 return;
             }
             if (index === winnerIndex) {
@@ -529,7 +534,6 @@
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
             
-            // 결과 영수증이 나오면 셔플 버튼 영역은 완전히 숨김
             document.getElementById('shuffle-container').classList.add('hidden');
 
             setTimeout(() => { 

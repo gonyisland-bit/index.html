@@ -127,7 +127,7 @@
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 4px 0 #333;
-            transition: all 0.1s;
+            transition: all 0.2s;
             margin-bottom: 15px;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -136,11 +136,13 @@
             transform: translateY(3px);
             box-shadow: 0 1px 0 #333;
         }
-        .btn-shuffle:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* 신규 중앙 집중 및 셔플 애니메이션 */
-        .shuffle-gather { transform: scale(0.6) translate(0, 0) !important; filter: blur(1px); }
-        .shuffle-scatter { transform: scale(1.1) translate(var(--tx), var(--ty)) rotate(var(--rot)) !important; filter: blur(0); }
+        .btn-shuffle:disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed; 
+            box-shadow: none; 
+            transform: translateY(3px);
+            filter: grayscale(1);
+        }
 
         .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
 
@@ -396,8 +398,11 @@
             document.getElementById('lucky-area').classList.add('hidden');
             document.getElementById('btn-reset-game').classList.remove('hidden');
             document.getElementById('receipt').classList.remove('show');
+            
+            // 셔플 버튼 활성화 상태로 노출
+            const sBtn = document.getElementById('shuffle-btn');
+            sBtn.disabled = false;
             document.getElementById('shuffle-container').classList.remove('hidden');
-            document.getElementById('shuffle-btn').disabled = false;
             
             updateText("Who will pay? Pick a hand!");
             document.getElementById('main-img').src = 'coffee.png'; 
@@ -418,7 +423,6 @@
             }
         }
 
-        // --- 중앙 집중 후 새로운 위치로 이동하는 셔플 로직 ---
         function shufflePositions() {
             if (isGameOver || isShuffling) return;
             isShuffling = true;
@@ -429,14 +433,23 @@
             
             const wrappers = document.querySelectorAll('.hand-wrapper');
             const displayRect = document.getElementById('hand-display').getBoundingClientRect();
-            const centerX = displayRect.width / 2;
-            const centerY = displayRect.height / 2;
+            
+            // 수정: 첫 번째 줄(상단 3개 기준) 손들의 중심 위치 계산
+            const firstRowWrappers = Array.from(wrappers).slice(0, Math.min(wrappers.length, 3));
+            let totalX = 0, totalY = 0;
+            firstRowWrappers.forEach(w => {
+                const r = w.getBoundingClientRect();
+                totalX += (r.left + r.width / 2);
+                totalY += (r.top + r.height / 2);
+            });
+            const targetX = totalX / firstRowWrappers.length;
+            const targetY = totalY / firstRowWrappers.length;
 
-            // 1단계: 가운데로 모이기
+            // 1단계: 첫 번째 줄 중심으로 모이기
             wrappers.forEach(w => {
                 const rect = w.getBoundingClientRect();
-                const dx = centerX - (rect.left + rect.width / 2);
-                const dy = centerY - (rect.top + rect.height / 2);
+                const dx = targetX - (rect.left + rect.width / 2);
+                const dy = targetY - (rect.top + rect.height / 2);
                 w.style.transition = "transform 0.4s cubic-bezier(0.5, 0, 0.5, 1)";
                 w.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
             });
@@ -472,7 +485,9 @@
             const hands = document.getElementsByClassName('hand-img'); const handImg = hands[index];
             if (handImg.dataset.opened === "true" || handImg.classList.contains('tension-shake')) return;
             
-            document.getElementById('shuffle-container').classList.add('hidden');
+            // 수정: 손 선택 시 셔플 버튼을 삭제하지 않고 비활성화만 처리
+            document.getElementById('shuffle-btn').disabled = true;
+
             handImg.classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Checking your luck...");
             setTimeout(() => { handImg.classList.remove('tension-shake'); openHand(index, total); }, 800);
         }
@@ -485,6 +500,7 @@
                 updateText("LUCKY! Everyone is SAFE! 🌟");
                 document.getElementById('lucky-area').classList.remove('hidden'); 
                 document.getElementById('btn-reset-game').classList.add('hidden');
+                document.getElementById('shuffle-container').classList.add('hidden'); // 결과 시엔 숨김
                 return;
             }
             if (index === winnerIndex) {
@@ -512,6 +528,10 @@
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
+            
+            // 결과 영수증이 나오면 셔플 버튼 영역은 완전히 숨김
+            document.getElementById('shuffle-container').classList.add('hidden');
+
             setTimeout(() => { 
                 document.getElementById('result-area').classList.remove('hidden'); 
                 document.getElementById('receipt').classList.add('show'); 

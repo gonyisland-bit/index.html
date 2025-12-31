@@ -79,7 +79,6 @@
         }
         #rpg-content { font-size: 0.95rem; font-weight: 800; color: #000; min-height: 1.2rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
 
-        /* 카드 공통 스타일 */
         .card-container {
             width: 90%; max-width: 450px;
             background: var(--tablet-bg); border-radius: 30px;
@@ -103,7 +102,6 @@
 
         .name-mgmt-bar { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px; }
         .btn-text { background: none; border: none; color: #bbb; font-size: 0.7rem; font-weight: 800; cursor: pointer; padding: 5px 10px; transition: 0.2s; letter-spacing: 1px; text-align: center; }
-        .btn-text:hover { color: var(--primary-color); }
 
         .divider { width: 100%; height: 1px; background-color: var(--divider-color); margin-bottom: 20px; }
 
@@ -113,19 +111,13 @@
             outline: none; text-align: center; width: 100%; box-sizing: border-box; background: white; 
             transition: all 0.2s; font-weight: 600;
         }
-        .name-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0,0,0,0.03); }
 
-        .stats-container { 
-            width: 100%; background: #fff; padding: 15px; border-radius: 20px; 
-            font-size: 0.8rem; box-sizing: border-box; border: 1px solid #eee;
-        }
+        .stats-container { width: 100%; background: #fff; padding: 15px; border-radius: 20px; font-size: 0.8rem; box-sizing: border-box; border: 1px solid #eee; }
         #stats-list { max-height: 120px; overflow-y: auto; padding-right: 5px; }
-        #stats-list::-webkit-scrollbar { width: 4px; }
-        #stats-list::-webkit-scrollbar-thumb { background: #eee; border-radius: 10px; }
-
         .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #666; font-weight: 600; }
 
+        /* [복구] 역동적인 애니메이션 효과 */
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 10px 10px; width: 100%; box-sizing: border-box; position: relative; }
         .hand-wrapper { 
             display: flex; flex-direction: column; align-items: center; 
@@ -136,6 +128,12 @@
         .hand-img { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
         
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        /* [복구] 긴장감 흔들림 및 당첨자 흔들림 */
+        .tension-shake { animation: tension-animation 0.1s infinite !important; }
+        @keyframes tension-animation { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
+        .shake { animation: winner-shake 0.15s infinite !important; }
+        @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         
         .btn-shuffle {
             background-color: #fff; color: #333; border: 2px solid #333; padding: 10px 30px; font-size: 0.9rem; font-weight: 900;
@@ -171,8 +169,7 @@
             padding: 20px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px; 
             cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; 
             box-shadow: 0 8px 0 var(--btn-shadow); text-transform: uppercase;
-            position: relative; top: 0;
-            margin-bottom: 15px;
+            position: relative; top: 0; margin-bottom: 15px;
         }
         .btn-main:active { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
         .result-btn-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px; margin-top: 10px; }
@@ -183,7 +180,6 @@
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        /* 로딩창 연출 강화 */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #333; }
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
@@ -303,7 +299,7 @@
                 </div>
             </div>
         </main>
-        <div class="footer">v1.1.0 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v1.1.1 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -322,7 +318,6 @@
             typing();
         }
 
-        /* 내비게이션 함수 */
         function goFront() {
             document.getElementById('front-view').classList.remove('hidden');
             document.getElementById('setup-view').classList.add('hidden');
@@ -341,7 +336,6 @@
             generateNameInputs();
         }
 
-        /* 설정 로직 */
         function saveLastMembers(names) { localStorage.setItem('lastCoffeeMembers', JSON.stringify(names)); }
         function loadLastMembers() { const saved = localStorage.getItem('lastCoffeeMembers'); return saved ? JSON.parse(saved) : null; }
 
@@ -431,7 +425,6 @@
 
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
-        /* 오디오 및 게임 로직 */
         const AudioEngine = {
             ctx: null,
             init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
@@ -479,27 +472,50 @@
             }
         }
 
+        /* [복구] 역동적인 셔플 동작 */
         function shufflePositions() {
             if (isGameOver || isShuffling) return;
             isShuffling = true; document.getElementById('shuffle-btn').disabled = true;
             AudioEngine.play('whoosh'); updateText("Ready... Mix!");
             const wrappers = document.querySelectorAll('.hand-wrapper');
-            wrappers.forEach(w => { w.style.transition = "transform 0.4s ease"; w.style.transform = `scale(0.5) translate(0, 0)`; });
+            
+            const firstRowWrappers = Array.from(wrappers).slice(0, Math.min(wrappers.length, 3));
+            let totalX = 0, totalY = 0;
+            firstRowWrappers.forEach(w => {
+                const r = w.getBoundingClientRect(); totalX += (r.left + r.width / 2); totalY += (r.top + r.height / 2);
+            });
+            const targetX = totalX / (firstRowWrappers.length || 1);
+            const targetY = totalY / (firstRowWrappers.length || 1);
+
+            wrappers.forEach(w => {
+                const rect = w.getBoundingClientRect();
+                const dx = targetX - (rect.left + rect.width / 2); const dy = targetY - (rect.top + rect.height / 2);
+                w.style.transition = "transform 0.4s cubic-bezier(0.5, 0, 0.5, 1)";
+                w.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
+            });
+
             setTimeout(() => {
                 for (let i = memberNames.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1)); [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
                 }
                 winnerIndex = Math.floor(Math.random() * memberNames.length);
-                renderHands(); isShuffling = false; document.getElementById('shuffle-btn').disabled = false; updateText("Choose yours!");
+                wrappers.forEach(w => {
+                    const randomX = (Math.random() - 0.5) * 150; const randomY = (Math.random() - 0.5) * 100; const randomRot = (Math.random() - 0.5) * 60;
+                    w.style.transition = "transform 0.4s cubic-bezier(0.1, 0.9, 0.2, 1)";
+                    w.style.transform = `translate(${randomX}px, ${randomY}px) scale(1.1) rotate(${randomRot}deg)`;
+                });
+                setTimeout(() => { renderHands(); isShuffling = false; document.getElementById('shuffle-btn').disabled = false; updateText("Hands Mixed! Choose yours."); }, 450);
             }, 450);
         }
 
+        /* [복구] 긴장감 넘치는 클릭 연출 */
         function handleHandClick(index, total) {
             if (isGameOver || isShuffling) return;
             const hands = document.getElementsByClassName('hand-img');
-            if (hands[index].dataset.opened === "true") return;
-            AudioEngine.play('tension'); updateText("Checking your luck...");
-            setTimeout(() => { openHand(index, total); }, 600);
+            if (hands[index].dataset.opened === "true" || hands[index].classList.contains('tension-shake')) return;
+            document.getElementById('shuffle-btn').disabled = true; 
+            hands[index].classList.add('tension-shake'); AudioEngine.play('tension'); updateText("Checking your luck...");
+            setTimeout(() => { hands[index].classList.remove('tension-shake'); openHand(index, total); }, 800);
         }
 
         function openHand(index, total) {
@@ -515,14 +531,14 @@
             }
             if (index === winnerIndex) {
                 isGameOver = true; AudioEngine.play('fail'); lastWasLucky = false;
-                hands[index].src = 'hand_money.png';
+                hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
                 for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                 updateText(`Oh! ${memberNames[index]} will pay!`);
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(total, memberNames[index]);
             } else {
-                AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true";
+                AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true"; hands[index].style.animation = "none";
                 updateText(`${memberNames[index]} is Safe!`);
             }
         }
@@ -541,7 +557,6 @@
             setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); document.getElementById('btn-reset-game').classList.add('hidden'); }, 600);
         }
 
-        /* 통계 및 유틸 */
         function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); stats[name] = (stats[name] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
         
         function showStats() {
@@ -549,14 +564,8 @@
             const dashboard = document.getElementById('stats-dashboard');
             const noStatsMsg = document.getElementById('no-stats-msg');
             const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
-            
-            if (entries.length === 0) {
-                dashboard.classList.add('hidden');
-                noStatsMsg.classList.remove('hidden');
-                return;
-            }
-            dashboard.classList.remove('hidden');
-            noStatsMsg.classList.add('hidden');
+            if (entries.length === 0) { dashboard.classList.add('hidden'); noStatsMsg.classList.remove('hidden'); return; }
+            dashboard.classList.remove('hidden'); noStatsMsg.classList.add('hidden');
             document.getElementById('stats-list').innerHTML = entries.map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
         }
         
@@ -564,10 +573,7 @@
 
         function hideSplash() {
             const splash = document.getElementById('splash-screen');
-            if (splash) { 
-                splash.style.opacity = '0'; 
-                setTimeout(() => { splash.classList.add('hidden'); goFront(); }, 600); 
-            }
+            if (splash) { splash.style.opacity = '0'; setTimeout(() => { splash.classList.add('hidden'); goFront(); }, 600); }
         }
 
         async function shareAsImage() {

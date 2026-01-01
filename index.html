@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean</title>
+    <title>lucky bean - v0.2.2</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -101,12 +101,26 @@
         .shake { animation: winner-shake 0.15s infinite !important; }
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         
-        .btn-shuffle {
-            background-color: #fff; color: #333; border: 2px solid #333; padding: 10px 30px; font-size: 0.9rem; font-weight: 900;
-            border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #333; transition: all 0.1s; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase;
+        /* SHUFFLE & AGAIN 버튼 레이아웃 - 중앙 정렬 수정 */
+        .game-header-btns { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            gap: 12px; 
+            width: 100%; 
+            max-width: 450px; 
+            margin: 0 auto 20px; 
+            padding: 0 15px;
+            box-sizing: border-box;
         }
-        .btn-shuffle:active { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
-        .btn-shuffle:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: translateY(3px); filter: grayscale(1); }
+        .btn-pixel-game {
+            flex: 1; 
+            max-width: 160px;
+            background-color: #fff; color: #333; border: 2px solid #333; padding: 12px 0; font-size: 0.9rem; font-weight: 900;
+            border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #333; transition: all 0.1s; letter-spacing: 1px; text-transform: uppercase;
+        }
+        .btn-pixel-game:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
+        .btn-pixel-game:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: translateY(3px); filter: grayscale(1); }
 
         .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
 
@@ -139,29 +153,39 @@
         }
         .btn-main:active { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
 
+        .btn-sub {
+            padding: 16px; font-size: 0.9rem; font-weight: 800; background: #fff; color: #000; border: 2px solid #000; border-radius: 20px;
+            cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s;
+            box-shadow: 0 6px 0 var(--btn-shadow); text-transform: uppercase; margin-bottom: 12px;
+        }
+        .btn-sub:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--btn-shadow); }
+
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 1px; }
         .hidden { display: none !important; }
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #333; }
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .loading-bar-fill { height: 100%; width: 0%; background: #000; transition: width 0.1s; }
         
         #start-action-area { margin-top: 20px; display: none; flex-direction: column; align-items: center; }
+
+        .about-text { font-size: 0.85rem; color: #666; line-height: 1.6; text-align: left; word-break: keep-all; }
+        .about-label { font-weight: 800; color: #000; margin-top: 15px; display: block; }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
         <img src="coffee.png" alt="Logo" style="width:110px; animation: floating 2s ease-in-out infinite;">
-        
         <div id="loading-progress-area">
             <div class="loading-text">LOADING...</div>
             <div class="loading-bar-container"><div id="progress-fill" class="loading-bar-fill"></div></div>
         </div>
-
         <div id="start-action-area">
             <button class="btn-main" onclick="handleStartGame()">START GAME</button>
             <div style="font-size:0.7rem; color:#bbb; margin-top:8px; letter-spacing:1px; font-weight:800;">TAP TO BREW LUCK</div>
@@ -181,7 +205,7 @@
     </div>
 
     <div class="wrapper">
-        <header onclick="goFront()">
+        <header onclick="confirmGoFront()">
             <div class="title-container">
                 <span class="title-lucky">lucky</span><span class="title-bean">bean</span>
             </div>
@@ -201,12 +225,16 @@
                     </div>
                     <div id="no-stats-msg" style="font-size: 0.8rem; color: #ccc; font-weight: 700;">WELCOME TO THE CAFE!</div>
                 </div>
-                <button class="btn-main" onclick="goSetup()">ENTER SHOP</button>
+                <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                    <button class="btn-main" onclick="startGame()">ENTER SHOP</button>
+                    <button class="btn-sub" onclick="goSetup()">SETTINGS</button>
+                    <button class="btn-sub" onclick="goAbout()">ABOUT</button>
+                </div>
             </div>
 
             <div id="setup-view" class="hidden">
                 <div class="card-container">
-                    <div class="order-menu-header">📋 <b>ORDER MENU</b></div>
+                    <div class="order-menu-header">📋 <b>ORDER MENU SETTING</b></div>
                     <div class="divider" style="margin-bottom: 15px;"></div>
                     <div class="picker-group">
                         <div class="picker-btn" onclick="openGroupModal()">
@@ -226,13 +254,13 @@
                     <div class="divider"></div>
                     <div id="name-input-container"></div>
                 </div>
-                <button class="btn-main" onclick="startGame()">START GAME</button>
-                <button class="btn-text" style="width:100%; margin-top:5px;" onclick="goFront()">BACK TO HOME</button>
+                <button class="btn-main" onclick="saveAndGoHome()">SAVE & EXIT</button>
             </div>
 
             <div id="game-view" class="hidden">
-                <div id="shuffle-container">
-                    <button class="btn-shuffle" id="shuffle-btn" onclick="shufflePositions()">SHUFFLE</button>
+                <div class="game-header-btns">
+                    <button class="btn-pixel-game" id="shuffle-btn" onclick="shufflePositions()">SHUFFLE</button>
+                    <button class="btn-pixel-game" id="again-btn" onclick="startGame()" disabled>AGAIN</button>
                 </div>
                 <div id="hand-display"></div>
                 
@@ -259,12 +287,28 @@
                         </div>
                     </div>
                     <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
-                    <button class="btn-main" onclick="goSetup()">REORDER</button>
-                    <button class="btn-text" style="font-weight:800; color:#bbb; padding:10px;" onclick="goFront()">BACK TO HOME</button>
+                    <button class="btn-main" onclick="confirmGoFront()">BACK TO MENU</button>
                 </div>
             </div>
+
+            <div id="about-view" class="hidden">
+                <div class="card-container" style="text-align: left;">
+                    <div class="order-menu-header">☕ <b>ABOUT LUCKY BEAN</b></div>
+                    <div class="divider"></div>
+                    <div class="about-text">
+                        Lucky Bean은 커피 내기 결제자를 정하는 귀여운 미니 게임입니다. 동료들과 함께 오늘의 행운을 시험해보세요!
+                        
+                        <span class="about-label">HOW TO PLAY</span>
+                        1. SETTINGS에서 멤버 이름을 입력하세요.<br>
+                        2. ENTER SHOP을 눌러 입장합니다.<br>
+                        3. 섞여있는 손들 중 하나를 고르세요.<br>
+                        4. '돈'을 쥔 사람이 오늘의 커피 당첨!
+                    </div>
+                </div>
+                <button class="btn-main" onclick="goFront()">BACK TO HOME</button>
+            </div>
         </main>
-        <div class="footer">v1.2.3 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.2.2 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -275,16 +319,15 @@
         let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; 
         let isLuckyRound = false; let lastWasLucky = false;
         let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
-        let isAudioStarted = false; // 오디오 시작 여부 플래그
+        let isAudioStarted = false;
 
-        /* 오디오 시스템: Page Visibility API 연동 보강 */
         const AudioEngine = {
             ctx: null, bgm: null,
             initAndPlayBGM() { 
                 if (!this.ctx) {
                     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
                     this.bgm = document.getElementById('bgm-player');
-                    this.bgm.volume = 0.15; // 배경음 볼륨 0.15
+                    this.bgm.volume = 0.15;
                 }
                 if (this.ctx.state === 'suspended') this.ctx.resume();
                 if (this.bgm && this.bgm.paused) {
@@ -296,23 +339,15 @@
                 if (this.ctx && this.ctx.state !== 'closed') this.ctx.suspend();
             },
             resumeAll() {
-                // 사용자가 한 번이라도 START를 눌러 오디오 권한을 준 상태일 때만 재개
                 if (!isAudioStarted) return;
-                
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-                if (this.bgm && this.bgm.paused) {
-                    this.bgm.play().catch(e => console.log("Audio Resume Error:", e));
-                }
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+                if (this.bgm && this.bgm.paused) this.bgm.play().catch(e => console.log("Audio Resume Error:", e));
             },
             play(type) {
                 if (!this.ctx || this.ctx.state === 'suspended') return;
                 const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
-                
-                const effectVolume = 0.5; // 효과음 볼륨 0.5
-
+                const effectVolume = 0.5;
                 if (type === 'start') {
                     osc.frequency.setValueAtTime(698.46, now); osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15);
                     gain.gain.setValueAtTime(effectVolume, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
@@ -333,23 +368,17 @@
             }
         };
 
-        /* Page Visibility API 이벤트 리스너 */
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                AudioEngine.stopAll();
-            } else {
-                AudioEngine.resumeAll();
-            }
+            if (document.hidden) AudioEngine.stopAll(); else AudioEngine.resumeAll();
         });
 
         window.onload = () => {
             const fill = document.getElementById('progress-fill');
             let progress = 0;
             const interval = setInterval(() => {
-                progress += Math.random() * 5;
+                progress += Math.random() * 10;
                 if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
+                    progress = 100; clearInterval(interval);
                     setTimeout(() => {
                         document.getElementById('loading-progress-area').style.display = 'none';
                         document.getElementById('start-action-area').style.display = 'flex';
@@ -363,10 +392,7 @@
             AudioEngine.initAndPlayBGM();
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
-            setTimeout(() => {
-                splash.style.display = 'none';
-                goFront();
-            }, 600);
+            setTimeout(() => { splash.style.display = 'none'; goFront(); }, 600);
         }
 
         function updateText(msg) {
@@ -376,22 +402,47 @@
             typing();
         }
 
+        function confirmGoFront() {
+            const gameView = document.getElementById('game-view');
+            if (!gameView.classList.contains('hidden')) {
+                if (confirm("Are you sure? 메뉴로 돌아가시겠습니까?")) { goFront(); }
+            } else { goFront(); }
+        }
+
         function goFront() {
+            hideAllViews();
             document.getElementById('front-view').classList.remove('hidden');
-            document.getElementById('setup-view').classList.add('hidden');
-            document.getElementById('game-view').classList.add('hidden');
             document.getElementById('main-img').src = 'cafe_facade.png';
             updateText("Welcome to the Lucky Bean!");
             showStats();
         }
 
         function goSetup() {
-            document.getElementById('front-view').classList.add('hidden');
+            hideAllViews();
             document.getElementById('setup-view').classList.remove('hidden');
-            document.getElementById('game-view').classList.add('hidden');
             document.getElementById('main-img').src = 'cafe_counter.png';
-            updateText("Who is visiting today?");
+            updateText("Settings: Manage your team.");
             generateNameInputs();
+        }
+
+        function goAbout() {
+            hideAllViews();
+            document.getElementById('about-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_facade.png';
+            updateText("About this game...");
+        }
+
+        function hideAllViews() {
+            const views = ['front-view', 'setup-view', 'game-view', 'about-view'];
+            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+        }
+
+        function saveAndGoHome() {
+            const inputs = document.querySelectorAll('.name-input');
+            const tempNames = [];
+            for (let i = 0; i < currentMemberCount; i++) { tempNames.push(inputs[i].value.trim() || `User ${i+1}`); }
+            localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
+            goFront();
         }
 
         function generateNameInputs(providedNames = null) {
@@ -476,19 +527,18 @@
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
         function startGame() {
-            memberNames = [];
-            const inputs = document.querySelectorAll('.name-input');
-            for (let i = 0; i < currentMemberCount; i++) { memberNames.push(inputs[i].value.trim() || `Member ${i+1}`); }
-            localStorage.setItem('lastCoffeeMembers', JSON.stringify(memberNames));
-            AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * currentMemberCount);
-            isLuckyRound = !lastWasLucky && Math.random() < 0.20;
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
+            AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * memberNames.length);
+            isLuckyRound = !lastWasLucky && Math.random() < 0.15;
             isGameOver = false; isShuffling = false;
-            document.getElementById('setup-view').classList.add('hidden');
+            hideAllViews();
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('result-area').classList.add('hidden');
             document.getElementById('lucky-area').classList.add('hidden');
             document.getElementById('receipt').classList.remove('show');
             document.getElementById('shuffle-btn').disabled = false;
+            document.getElementById('again-btn').disabled = true;
             updateText("Who will pay? Pick a hand!");
             document.getElementById('main-img').src = 'cafe_counter.png'; 
             renderHands();
@@ -553,7 +603,7 @@
                 updateText("LUCKY! Everyone is SAFE! 🌟");
                 document.getElementById('main-img').src = 'cafe_counter_lucky.png';
                 document.getElementById('lucky-area').classList.remove('hidden'); 
-                document.getElementById('shuffle-btn').disabled = true; return;
+                document.getElementById('again-btn').disabled = false; return;
             }
             if (index === winnerIndex) {
                 isGameOver = true; AudioEngine.play('fail'); lastWasLucky = false;
@@ -563,6 +613,7 @@
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(total, memberNames[index]);
+                document.getElementById('again-btn').disabled = false;
             } else {
                 AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true"; hands[index].style.animation = "none";
                 updateText(`${memberNames[index]} is Safe!`);
@@ -579,7 +630,6 @@
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
-            document.getElementById('shuffle-btn').disabled = true; 
             setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); }, 600);
         }
 

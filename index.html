@@ -2,15 +2,16 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.2.3 (Stats Edition)</title>
-    
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>lucky bean - Ultimate Edition (v0.3.8)</title>
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Lucky Bean">
     <link rel="icon" type="image/png" href="coffeegame_icon.png">
     <link rel="apple-touch-icon" href="coffeegame_icon.png">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -26,6 +27,7 @@
             --divider-color: #ebebeb;
             --btn-shadow: #333333;
             --btn-light-shadow: #e0e0e0;
+            --roulette-gold: #f1c40f;
         }
 
         html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
@@ -41,7 +43,7 @@
         header { padding: 30px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; }
         .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 2.8rem; letter-spacing: -1px; }
         .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.1rem; letter-spacing: -2px; margin-left: -5px; }
-        
+
         .game-screen {
             position: relative; width: 92%; max-width: 500px; margin: 10px auto 25px;
             border: 6px solid #000; line-height: 0; overflow: hidden; background: #eee; border-radius: 4px;
@@ -64,8 +66,8 @@
         .order-menu-header { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; color: #333; text-align: left; margin-bottom: 10px; letter-spacing: 1px; }
 
         .picker-group { width: 100%; display: flex; gap: 12px; margin-bottom: 20px; }
-        .picker-btn { 
-            flex: 1; padding: 14px; border: 1px solid #eee; border-radius: 16px; 
+        .picker-btn {
+            flex: 1; padding: 14px; border: 1px solid #eee; border-radius: 16px;
             background: white; font-weight: 700; font-size: 0.85rem; color: #333; cursor: pointer;
             display: flex; flex-direction: column; align-items: flex-start; transition: all 0.1s; position: relative;
             box-shadow: 0 4px 0 var(--btn-light-shadow);
@@ -75,15 +77,27 @@
         .picker-value { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         .picker-value::after { content: '▾'; color: #ccc; font-size: 1rem; }
 
+        /* Icon Selector UI */
+        .icon-selector-grid { display: flex; justify-content: center; gap: 20px; width: 100%; margin-top: 10px; }
+        .icon-btn-item { flex: 1; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
+        .icon-btn-item:active { transform: scale(0.95); }
+        .icon-square {
+            width: 100%; aspect-ratio: 1/1; border: 3px solid #000; border-radius: 20px;
+            background: #fff; overflow: hidden; margin-bottom: 10px; box-shadow: 0 6px 0 #333;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icon-square img { width: 85%; height: 85%; object-fit: contain; }
+        .icon-label { font-size: 0.75rem; font-weight: 900; color: #000; letter-spacing: 0.5px; text-transform: uppercase; }
+
         .name-mgmt-bar { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px; }
         .btn-text { background: none; border: none; color: #bbb; font-size: 0.7rem; font-weight: 800; cursor: pointer; padding: 5px 10px; transition: 0.2s; letter-spacing: 1px; text-align: center; }
 
         .divider { width: 100%; height: 1px; background-color: var(--divider-color); margin-bottom: 20px; }
 
         #name-input-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; margin-bottom: 10px; }
-        .name-input { 
-            padding: 14px 5px; border: 1px solid #eee; border-radius: 14px; font-size: 0.85rem; 
-            outline: none; text-align: center; width: 100%; box-sizing: border-box; background: white; 
+        .name-input {
+            padding: 14px 5px; border: 1px solid #eee; border-radius: 14px; font-size: 0.85rem;
+            outline: none; text-align: center; width: 100%; box-sizing: border-box; background: white;
             transition: all 0.2s; font-weight: 600;
         }
 
@@ -94,15 +108,15 @@
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 10px 10px; width: 100%; box-sizing: border-box; position: relative; margin-bottom: 20px; }
         .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 20px); min-width: 90px; transition: transform 0.4s ease; z-index: 1; }
         .hand-img { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
-        
+
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .tension-shake { animation: tension-animation 0.1s infinite !important; }
         @keyframes tension-animation { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
         .shake { animation: winner-shake 0.15s infinite !important; }
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
-        
-        .game-header-btns { 
-            display: flex; justify-content: center; align-items: center; gap: 12px; 
+
+        .game-header-btns {
+            display: flex; justify-content: center; align-items: center; gap: 12px;
             width: 100%; max-width: 450px; margin: 0 auto 20px; padding: 0 15px; box-sizing: border-box;
         }
         .btn-pixel-game {
@@ -114,9 +128,10 @@
 
         .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
 
-        .receipt { 
-            background: #fff; color: #333; width: 280px; padding: 35px 25px 25px; font-family: 'Courier Prime', monospace; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; margin: 0 auto; 
+        /* RECEIPT UI */
+        .receipt {
+            background: #fff; color: #333; width: 280px; padding: 35px 25px 25px; font-family: 'Courier Prime', monospace;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; margin: 0 auto;
         }
         .receipt::after {
             content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 12px;
@@ -135,9 +150,9 @@
         .value-customer { font-size: 2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; }
         .fortune-area { font-size: 0.75rem; line-height: 1.5; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; }
 
-        .btn-main { 
-            padding: 20px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px; 
-            cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; 
+        .btn-main {
+            padding: 20px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px;
+            cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s;
             box-shadow: 0 8px 0 var(--btn-shadow); text-transform: uppercase;
             position: relative; top: 0; margin-bottom: 15px;
         }
@@ -150,24 +165,28 @@
         }
         .btn-sub:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--btn-shadow); }
 
+        .btn-spin {
+            padding: 18px; font-size: 1.2rem; font-weight: 900; background: #e74c3c; color: white; border: 3px solid #000; border-radius: 50px;
+            cursor: pointer; width: 80%; max-width: 280px; transition: all 0.1s;
+            box-shadow: 0 6px 0 #333; text-transform: uppercase; margin: 20px auto;
+        }
+        .btn-spin:active { transform: translateY(4px); box-shadow: 0 2px 0 #333; }
+
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 1px; }
         .hidden { display: none !important; }
+
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #333; }
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .loading-bar-fill { height: 100%; width: 0%; background: #000; transition: width 0.1s; }
-        
-        #start-action-area { margin-top: 20px; display: none; flex-direction: column; align-items: center; }
 
         .about-text { font-size: 0.85rem; color: #666; line-height: 1.6; text-align: left; word-break: keep-all; }
         .about-label { font-weight: 800; color: #000; margin-top: 15px; display: block; }
 
-        /* 월간 왕관 아이콘 스타일 추가 */
         .monthly-king-badge {
             background: #fff8e1; border: 1.5px solid #ffca28; border-radius: 15px;
             padding: 10px 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
@@ -176,6 +195,13 @@
         .king-info { text-align: left; }
         .king-name { font-weight: 900; font-size: 1rem; color: #333; }
         .king-tag { font-size: 0.65rem; font-weight: 800; color: #ffca28; letter-spacing: 1px; }
+
+        /* ROULETTE ELEMENTS */
+        #roulette-container { position: relative; width: 100%; max-width: 320px; margin: 20px auto; }
+        .roulette-pin {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 40px; z-index: 20; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
     </style>
 </head>
 <body>
@@ -186,7 +212,7 @@
             <div class="loading-text">LOADING...</div>
             <div class="loading-bar-container"><div id="progress-fill" class="loading-bar-fill"></div></div>
         </div>
-        <div id="start-action-area">
+        <div id="start-action-area" style="display:none; flex-direction:column; align-items:center; margin-top:20px;">
             <button class="btn-main" onclick="handleStartGame()">START GAME</button>
             <div style="font-size:0.7rem; color:#bbb; margin-top:8px; letter-spacing:1px; font-weight:800;">TAP TO BREW LUCK</div>
         </div>
@@ -205,7 +231,7 @@
     </div>
 
     <div class="wrapper">
-        <header onclick="confirmGoFront()">
+        <header onclick="goFront()">
             <div class="title-container">
                 <span class="title-lucky">lucky</span><span class="title-bean">bean</span>
             </div>
@@ -220,17 +246,34 @@
             <div id="front-view">
                 <div class="card-container">
                     <div id="stats-dashboard" class="stats-container hidden">
-                        <div class="stats-title">🏆 TOTAL DONATIONS <button style="font-size:0.65rem; color:#aaa; border:none; background:none; cursor:pointer;" onclick="resetStats()">RESET</button></div>
+                        <div class="stats-title">🏆 DONATION KINGS <button style="font-size:0.65rem; color:#aaa; border:none; background:none; cursor:pointer;" onclick="resetStats()">RESET</button></div>
                         <div id="stats-list"></div>
                     </div>
                     <div id="no-stats-msg" style="font-size: 0.8rem; color: #ccc; font-weight: 700;">WELCOME TO THE CAFE!</div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-                    <button class="btn-main" onclick="startGame()">ENTER SHOP</button>
+                    <button class="btn-main" onclick="showGameSelector()">ENTER SHOP</button>
                     <button class="btn-sub" onclick="goSetup()">SETTINGS</button>
-                    <button class="btn-sub" onclick="goAbout()">ABOUT</button>
                     <button class="btn-sub" onclick="goHistory()">HISTORY</button>
+                    <button class="btn-sub" onclick="goAbout()">ABOUT</button>
                 </div>
+            </div>
+
+            <div id="selector-view" class="hidden">
+                <div class="card-container">
+                    <div class="order-menu-header" style="text-align: center; margin-bottom: 25px;">CHOOSE YOUR LUCK</div>
+                    <div class="icon-selector-grid">
+                        <div class="icon-btn-item" onclick="startGame()">
+                            <div class="icon-square"><img src="random_hand.png" alt="Hand"></div>
+                            <div class="icon-label">Random Hand</div>
+                        </div>
+                        <div class="icon-btn-item" onclick="goRoulette()">
+                            <div class="icon-square"><img src="lucky_roulette.png" alt="Roulette"></div>
+                            <div class="icon-label">Lucky Roulette</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-main" onclick="goFront()" style="background:#eee; color:#999; box-shadow:0 8px 0 #ddd;">BACK TO MENU</button>
             </div>
 
             <div id="setup-view" class="hidden">
@@ -256,6 +299,7 @@
                     <div id="name-input-container"></div>
                 </div>
                 <button class="btn-main" onclick="saveAndGoHome()">SAVE & EXIT</button>
+                <button class="btn-text" onclick="goFront()" style="color:#bbb; font-weight:800; margin-top:5px;">BACK TO HOME</button>
             </div>
 
             <div id="game-view" class="hidden">
@@ -264,31 +308,48 @@
                     <button class="btn-pixel-game" id="again-btn" onclick="startGame()" disabled>AGAIN</button>
                 </div>
                 <div id="hand-display"></div>
-                
                 <div id="game-btn-group" style="display:flex; flex-direction:column; align-items:center; gap:8px; width:100%;">
-                    <div id="result-area" class="hidden">
-                        <div id="capture-area" style="padding: 15px 0; background: transparent;">
-                            <div class="receipt" id="receipt">
-                                <div class="receipt-header">RECEIPT</div>
-                                <div class="receipt-subheader">LUCKY BEAN SHOP</div>
-                                <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
-                                <div class="receipt-line"></div>
-                                <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
-                                <div class="receipt-item"><span>UNIT PRICE</span><span id="receipt-price"></span></div>
-                                <div class="receipt-line"></div>
-                                <div class="receipt-item" style="font-weight:800;"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
-                                <div class="receipt-total">
-                                    <span class="label-customer">SELECTED CUSTOMER</span>
-                                    <span id="receipt-payer" class="value-customer"></span>
-                                </div>
-                                <div class="receipt-line"></div>
-                                <div class="fortune-area" id="receipt-fortune"></div>
-                                <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="width:100%; margin-top: 15px; color:#ccc; border:1px solid #eee; border-radius:10px; padding:8px; font-size:0.6rem;">GET A RECEIPT</button>
-                            </div>
-                        </div>
-                    </div>
                     <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
-                    <button class="btn-main" onclick="confirmGoFront()">BACK TO MENU</button>
+                    <button class="btn-main" id="hand-back-btn" onclick="goFront()">BACK TO MENU</button>
+                </div>
+            </div>
+
+            <div id="roulette-view" class="hidden">
+                <div class="card-container" style="text-align:center;">
+                    <div class="order-menu-header">🎡 <b>LUCKY ROULETTE</b></div>
+                    <div class="divider"></div>
+                    <div id="roulette-container">
+                        <svg class="roulette-pin" viewBox="0 0 30 40">
+                            <path d="M15 0 L30 20 L15 40 L0 20 Z" fill="#e74c3c" stroke="#000" stroke-width="2"/>
+                        </svg>
+                        <canvas id="rouletteCanvas" width="400" height="400" style="width:100%; max-width:320px; border-radius:50%; border:6px solid #333;"></canvas>
+                    </div>
+                    <button id="roulette-spin-btn" class="btn-spin" onclick="spinRoulette()">SPIN</button>
+                </div>
+                <div id="roulette-action-area" style="display:flex; flex-direction:column; align-items:center; width:100%; gap:8px;">
+                     <button class="btn-main" id="roulette-back-btn" onclick="goFront()">BACK TO MENU</button>
+                </div>
+            </div>
+
+            <div id="result-shared-root" class="hidden">
+                <div id="capture-area" style="padding: 15px 0; background: transparent; width:100%;">
+                    <div class="receipt" id="receipt">
+                        <div class="receipt-header">RECEIPT</div>
+                        <div class="receipt-subheader">LUCKY BEAN SHOP</div>
+                        <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
+                        <div class="receipt-line"></div>
+                        <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
+                        <div class="receipt-item"><span>UNIT PRICE</span><span id="receipt-price"></span></div>
+                        <div class="receipt-line"></div>
+                        <div class="receipt-item" style="font-weight:800;"><span>SUBTOTAL</span><span id="receipt-subtotal"></span></div>
+                        <div class="receipt-total">
+                            <span class="label-customer">SELECTED CUSTOMER</span>
+                            <span id="receipt-payer" class="value-customer"></span>
+                        </div>
+                        <div class="receipt-line"></div>
+                        <div class="fortune-area" id="receipt-fortune"></div>
+                        <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="width:100%; margin-top: 15px; color:#ccc; border:1px solid #eee; border-radius:10px; padding:8px; font-size:0.6rem;">GET A RECEIPT</button>
+                    </div>
                 </div>
             </div>
 
@@ -297,13 +358,12 @@
                     <div class="order-menu-header">☕ <b>ABOUT LUCKY BEAN</b></div>
                     <div class="divider"></div>
                     <div class="about-text">
-                        Lucky Bean은 커피 내기 결제자를 정하는 귀여운 미니 게임입니다. 동료들과 함께 오늘의 행운을 시험해보세요!
-                        
+                        Lucky Bean은 커피 내기 결제자를 정하는 귀여운 미니 게임입니다.<br><br>
                         <span class="about-label">HOW TO PLAY</span>
                         1. SETTINGS에서 멤버 이름을 입력하세요.<br>
-                        2. ENTER SHOP을 눌러 입장합니다.<br>
-                        3. 섞여있는 손들 중 하나를 고르세요.<br>
-                        4. '돈'을 쥔 사람이 오늘의 커피 당첨!
+                        2. ENTER SHOP을 눌러 입장하여 모드를 고르세요.<br>
+                        3. 손을 고르거나 룰렛을 돌려 결과를 확인하세요.<br>
+                        4. '돈'을 쥔 사람이 오늘의 결제 당첨!
                     </div>
                 </div>
                 <button class="btn-main" onclick="goFront()">BACK TO HOME</button>
@@ -320,76 +380,62 @@
                 <button class="btn-main" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.2.3 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.3.8 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
-        /* v0.2.3 (Stats Edition) 코어 로직 완벽 보존 및 확장 */
         const fortunes = ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"];
         const randomMenus = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"];
-        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread", "Espresso Shot", "Milk Foam", "Muffin Man", "Cookie Monster", "Roast Master"];
-        
-        let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1; 
+        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread"];
+
+        let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1;
         let isLuckyRound = false; let lastWasLucky = false;
         let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
         let isAudioStarted = false;
 
+        /* ROULETTE VARS */
+        let rouletteAngle = 0; let rouletteSpinning = false; let currentRouletteItems = [];
+
         const AudioEngine = {
             ctx: null, bgm: null,
-            initAndPlayBGM() { 
+            initAndPlayBGM() {
                 if (!this.ctx) {
                     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
                     this.bgm = document.getElementById('bgm-player');
                     this.bgm.volume = 0.15;
                 }
                 if (this.ctx.state === 'suspended') this.ctx.resume();
-                if (this.bgm && this.bgm.paused) {
-                    this.bgm.play().then(() => { isAudioStarted = true; }).catch(e => console.log("Audio Play Error:", e));
-                }
-            },
-            stopAll() { 
-                if (this.bgm) this.bgm.pause();
-                if (this.ctx && this.ctx.state !== 'closed') this.ctx.suspend();
-            },
-            resumeAll() {
-                if (!isAudioStarted) return;
-                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
-                if (this.bgm && this.bgm.paused) this.bgm.play().catch(e => console.log("Audio Resume Error:", e));
+                if (this.bgm && this.bgm.paused) this.bgm.play().then(() => { isAudioStarted = true; }).catch(e => console.log(e));
             },
             play(type) {
                 if (!this.ctx || this.ctx.state === 'suspended') return;
                 const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
                 osc.connect(gain); gain.connect(this.ctx.destination);
-                const effectVolume = 0.5;
                 if (type === 'start') {
                     osc.frequency.setValueAtTime(698.46, now); osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15);
-                    gain.gain.setValueAtTime(effectVolume, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    gain.gain.setValueAtTime(0.5, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
                     osc.start(now); osc.stop(now + 0.2);
                 } else if (type === 'safe') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(1174.66, now);
-                    gain.gain.setValueAtTime(effectVolume * 0.6, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
                     osc.start(now); osc.stop(now + 0.1);
                 } else if (type === 'fail') {
                     osc.frequency.setValueAtTime(880, now); osc.frequency.exponentialRampToValueAtTime(110, now + 0.5);
-                    gain.gain.setValueAtTime(effectVolume, now); gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                    gain.gain.setValueAtTime(0.5, now); gain.gain.linearRampToValueAtTime(0, now + 0.5);
                     osc.start(now); osc.stop(now + 0.5);
                 } else if (type === 'whoosh') {
                     osc.type = 'triangle'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
-                    gain.gain.setValueAtTime(effectVolume * 0.5, now); gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                    gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 0.3);
                     osc.start(now); osc.stop(now + 0.3);
                 }
             }
         };
 
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) AudioEngine.stopAll(); else AudioEngine.resumeAll();
-        });
-
         window.onload = () => {
             const fill = document.getElementById('progress-fill');
             let progress = 0;
             const interval = setInterval(() => {
-                progress += Math.random() * 10;
+                progress += Math.random() * 15;
                 if (progress >= 100) {
                     progress = 100; clearInterval(interval);
                     setTimeout(() => {
@@ -411,15 +457,8 @@
         function updateText(msg) {
             clearTimeout(typeTimeout);
             const content = document.getElementById('rpg-content'); content.innerText = ''; let i = 0;
-            function typing() { if (i < msg.length) { content.innerText += msg.charAt(i); i++; typeTimeout = setTimeout(typing, 45); } }
+            function typing() { if (i < msg.length) { content.innerText += msg.charAt(i); i++; typeTimeout = setTimeout(typing, 40); } }
             typing();
-        }
-
-        function confirmGoFront() {
-            const gameView = document.getElementById('game-view');
-            if (!gameView.classList.contains('hidden')) {
-                if (confirm("Are you sure? 메뉴로 돌아가시겠습니까?")) { goFront(); }
-            } else { goFront(); }
         }
 
         function goFront() {
@@ -428,6 +467,13 @@
             document.getElementById('main-img').src = 'cafe_facade.png';
             updateText("Welcome to the Lucky Bean!");
             showStats();
+        }
+
+        function showGameSelector() {
+            hideAllViews();
+            document.getElementById('selector-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_facade.png';
+            updateText("Choose your luckiest game!");
         }
 
         function goSetup() {
@@ -442,7 +488,7 @@
             hideAllViews();
             document.getElementById('about-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_facade.png';
-            updateText("About this game...");
+            updateText("How to play this game.");
         }
 
         function goHistory() {
@@ -454,10 +500,17 @@
         }
 
         function hideAllViews() {
-            const views = ['front-view', 'setup-view', 'game-view', 'about-view', 'history-view'];
-            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById('result-shared-root').classList.add('hidden');
+            document.getElementById('receipt').classList.remove('show');
+            document.getElementById('lucky-area').classList.add('hidden');
+            const captureArea = document.getElementById('capture-area');
+            if(captureArea.parentElement.id === 'roulette-action-area' || captureArea.parentElement.id === 'game-btn-group') {
+                document.getElementById('result-shared-root').appendChild(captureArea);
+            }
         }
 
+        /* --- SETTINGS LOGIC --- */
         function saveAndGoHome() {
             const inputs = document.querySelectorAll('.name-input');
             const tempNames = [];
@@ -492,10 +545,6 @@
             document.getElementById('modal-title').innerText = "Select Group";
             overlay.style.display = 'flex'; container.innerHTML = '';
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            const emptyDiv = document.createElement('div');
-            emptyDiv.style = "display:flex; justify-content:space-between; padding:18px 5px; border-bottom:1px solid #f8f8f8;";
-            emptyDiv.innerHTML = `<span style="flex:1; cursor:pointer; font-weight:600;" onclick="loadTeam('Empty')">Empty (Reset)</span>`;
-            container.appendChild(emptyDiv);
             Object.keys(teams).forEach(name => {
                 const div = document.createElement('div');
                 div.style = "display:flex; justify-content:space-between; padding:18px 5px; border-bottom:1px solid #f8f8f8;";
@@ -506,70 +555,54 @@
 
         function openMemberModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
-            document.getElementById('modal-title').innerText = "How many people?";
+            document.getElementById('modal-title').innerText = "How many?";
             overlay.style.display = 'flex'; container.innerHTML = '';
-            for (let i = 2; i <= 9; i++) {
+            for (let i = 2; i <= 12; i++) {
                 const div = document.createElement('div');
                 div.style = "padding:18px 5px; border-bottom:1px solid #f8f8f8; text-align:center; cursor:pointer; font-weight:600;";
-                div.innerText = `${i} Members`;
-                div.onclick = () => { currentMemberCount = i; generateNameInputs(); closeModal(); };
+                div.innerText = `${i} Members`; div.onclick = () => { currentMemberCount = i; generateNameInputs(); closeModal(); };
                 container.appendChild(div);
             }
         }
 
         function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-        
         function loadTeam(name) {
             currentTeamName = name; document.getElementById('display-group-name').innerText = name;
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            if (name !== 'Empty' && teams[name]) { currentMemberCount = teams[name].count; generateNameInputs(teams[name].names); } 
-            else { generateNameInputs([]); }
+            if (teams[name]) { currentMemberCount = teams[name].count; generateNameInputs(teams[name].names); }
             closeModal();
         }
-
-        function deleteTeam(name) {
-            if (!confirm(`Delete '${name}' group?`)) return;
-            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-            delete teams[name]; localStorage.setItem('coffeeTeams', JSON.stringify(teams));
-            if (currentTeamName === name) loadTeam('Empty');
-            openGroupModal();
-        }
-
         function saveCurrentTeam() {
             const name = prompt("Group Name:"); if (!name) return;
-            const inputs = document.querySelectorAll('.name-input');
-            const names = Array.from(inputs).map(i => i.value.trim() || `User`);
+            const names = Array.from(document.querySelectorAll('.name-input')).map(i => i.value.trim() || `User`);
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
             teams[name] = { count: currentMemberCount, names: names };
             localStorage.setItem('coffeeTeams', JSON.stringify(teams));
             currentTeamName = name; document.getElementById('display-group-name').innerText = name;
         }
-
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
+        /* --- HAND PICK GAME LOGIC --- */
         function startGame() {
             const saved = localStorage.getItem('lastCoffeeMembers');
             memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
             AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * memberNames.length);
             isLuckyRound = !lastWasLucky && Math.random() < 0.15;
-            isGameOver = false; isShuffling = false;
-            hideAllViews();
+            isGameOver = false; hideAllViews();
             document.getElementById('game-view').classList.remove('hidden');
-            document.getElementById('result-area').classList.add('hidden');
-            document.getElementById('lucky-area').classList.add('hidden');
-            document.getElementById('receipt').classList.remove('show');
             document.getElementById('shuffle-btn').disabled = false;
             document.getElementById('again-btn').disabled = true;
+            document.getElementById('hand-back-btn').classList.remove('hidden');
             updateText("Who will pay? Pick a hand!");
-            document.getElementById('main-img').src = 'cafe_counter.png'; 
+            document.getElementById('main-img').src = 'cafe_counter.png';
             renderHands();
         }
 
         function renderHands() {
-            const display = document.getElementById('hand-display'); display.innerHTML = ''; 
+            const display = document.getElementById('hand-display'); display.innerHTML = '';
             for (let i = 0; i < memberNames.length; i++) {
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
-                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png'; handImg.className = 'hand-img'; 
+                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png'; handImg.className = 'hand-img';
                 handImg.onclick = () => handleHandClick(i, memberNames.length);
                 const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
                 wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
@@ -578,71 +611,129 @@
 
         function shufflePositions() {
             if (isGameOver || isShuffling) return;
-            isShuffling = true; document.getElementById('shuffle-btn').disabled = true;
-            AudioEngine.play('whoosh'); updateText("Ready... Mix!");
+            isShuffling = true; AudioEngine.play('whoosh');
             const wrappers = document.querySelectorAll('.hand-wrapper');
-            const firstRowWrappers = Array.from(wrappers).slice(0, Math.min(wrappers.length, 3));
-            let totalX = 0, totalY = 0;
-            firstRowWrappers.forEach(w => {
-                const r = w.getBoundingClientRect(); totalX += (r.left + r.width / 2); totalY += (r.top + r.height / 2);
-            });
-            const targetX = totalX / (firstRowWrappers.length || 1); const targetY = totalY / (firstRowWrappers.length || 1);
-            wrappers.forEach(w => {
-                const rect = w.getBoundingClientRect();
-                const dx = targetX - (rect.left + rect.width / 2); const dy = targetY - (rect.top + rect.height / 2);
-                w.style.transition = "transform 0.4s cubic-bezier(0.5, 0, 0.5, 1)";
-                w.style.transform = `translate(${dx}px, ${dy}px) scale(0.5)`;
-            });
+            wrappers.forEach(w => { w.style.transition = "transform 0.4s"; w.style.transform = `scale(0.5) translate(0, 50px)`; });
             setTimeout(() => {
                 for (let i = memberNames.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1)); [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
                 }
                 winnerIndex = Math.floor(Math.random() * memberNames.length);
-                wrappers.forEach(w => {
-                    const randomX = (Math.random() - 0.5) * 150; const randomY = (Math.random() - 0.5) * 100; const randomRot = (Math.random() - 0.5) * 60;
-                    w.style.transition = "transform 0.4s cubic-bezier(0.1, 0.9, 0.2, 1)";
-                    w.style.transform = `translate(${randomX}px, ${randomY}px) scale(1.1) rotate(${randomRot}deg)`;
-                });
-                setTimeout(() => { renderHands(); isShuffling = false; document.getElementById('shuffle-btn').disabled = false; updateText("Hands Mixed! Choose yours."); }, 450);
+                wrappers.forEach(w => { w.style.transform = `translate(${(Math.random()-0.5)*100}px, ${(Math.random()-0.5)*100}px) scale(1)`; });
+                setTimeout(() => { renderHands(); isShuffling = false; updateText("Hands Mixed!"); }, 450);
             }, 450);
         }
 
         function handleHandClick(index, total) {
             if (isGameOver || isShuffling) return;
             const hands = document.getElementsByClassName('hand-img');
-            if (hands[index].dataset.opened === "true" || hands[index].classList.contains('tension-shake')) return;
-            document.getElementById('shuffle-btn').disabled = true; 
-            hands[index].classList.add('tension-shake'); updateText("Checking your luck...");
-            setTimeout(() => { hands[index].classList.remove('tension-shake'); openHand(index, total); }, 800);
+            if (hands[index].dataset.opened === "true") return;
+            hands[index].classList.add('tension-shake');
+            setTimeout(() => {
+                hands[index].classList.remove('tension-shake');
+                if (isLuckyRound) {
+                    isGameOver = true; lastWasLucky = true; AudioEngine.play('start');
+                    for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
+                    updateText("LUCKY! Everyone is SAFE! 🌟");
+                    document.getElementById('main-img').src = 'cafe_counter_lucky.png';
+                    document.getElementById('lucky-area').classList.remove('hidden');
+                    document.getElementById('again-btn').disabled = false;
+                } else if (index === winnerIndex) {
+                    isGameOver = true; lastWasLucky = false; AudioEngine.play('fail');
+                    hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
+                    for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
+                    updateText(`Oh! ${memberNames[index]} will pay!`);
+                    document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                    updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                    showFinish(total, memberNames[index], 'game-view');
+                } else {
+                    AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true";
+                    updateText(`${memberNames[index]} is Safe!`);
+                }
+            }, 800);
         }
 
-        function openHand(index, total) {
-            const hands = document.getElementsByClassName('hand-img');
-            if (isLuckyRound) {
-                isGameOver = true; AudioEngine.play('start'); lastWasLucky = true;
-                for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
-                updateText("LUCKY! Everyone is SAFE! 🌟");
+        /* --- ROULETTE LOGIC --- */
+        function goRoulette() {
+            hideAllViews();
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
+            currentRouletteItems = [...members, "🌟 ALL PASS 🌟"];
+            document.getElementById('roulette-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_counter.png';
+            document.getElementById('roulette-spin-btn').innerText = "SPIN";
+            document.getElementById('roulette-back-btn').classList.remove('hidden');
+            updateText("Spin the wheel for luck!");
+            rouletteAngle = 0; drawRoulette();
+        }
+
+        function drawRoulette() {
+            const canvas = document.getElementById('rouletteCanvas'); const ctx = canvas.getContext('2d');
+            const cx = 200, cy = 200, r = 190;
+            const weights = currentRouletteItems.map(item => item.includes("ALL PASS") ? 0.2 : 1);
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            ctx.clearRect(0, 0, 400, 400);
+            let startAngle = rouletteAngle;
+            for (let i = 0; i < currentRouletteItems.length; i++) {
+                const sliceAngle = (weights[i] / totalWeight) * Math.PI * 2;
+                ctx.beginPath(); ctx.fillStyle = currentRouletteItems[i].includes("ALL PASS") ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
+                ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, startAngle, startAngle + sliceAngle); ctx.fill();
+                ctx.strokeStyle = "#333"; ctx.lineWidth = 2; ctx.stroke();
+                ctx.save(); ctx.translate(cx, cy); ctx.rotate(startAngle + sliceAngle / 2); ctx.textAlign = "right";
+                ctx.fillStyle = currentRouletteItems[i].includes("ALL PASS") ? "#f1c40f" : "#333";
+                ctx.font = "bold 14px Montserrat"; ctx.fillText(currentRouletteItems[i], r - 30, 5); ctx.restore();
+                startAngle += sliceAngle;
+            }
+            ctx.beginPath(); ctx.arc(cx, cy, 15, 0, Math.PI * 2); ctx.fillStyle = "#333"; ctx.fill();
+        }
+
+        function spinRoulette() {
+            if (rouletteSpinning) return;
+            if (document.getElementById('roulette-spin-btn').innerText === "AGAIN") { goRoulette(); return; }
+            rouletteSpinning = true; AudioEngine.play('whoosh');
+            const duration = 4000; const startTS = performance.now(); const startRot = rouletteAngle;
+            const targetRot = startRot + (Math.random() * 5 + 5) * Math.PI * 2;
+            function animate(now) {
+                const elapsed = now - startTS; const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                rouletteAngle = startRot + (targetRot - startRot) * easeOut;
+                drawRoulette();
+                if (progress < 1) requestAnimationFrame(animate);
+                else { rouletteSpinning = false; finishSpin(); }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function finishSpin() {
+            const weights = currentRouletteItems.map(item => item.includes("ALL PASS") ? 0.2 : 1);
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            let normalizedAngle = (rouletteAngle % (Math.PI * 2)); if (normalizedAngle < 0) normalizedAngle += Math.PI * 2;
+            const pinPos = (Math.PI * 1.5); let checkAngle = normalizedAngle, winnerIdx = 0;
+            for (let i = 0; i < currentRouletteItems.length; i++) {
+                const sliceAngle = (weights[i] / totalWeight) * Math.PI * 2;
+                const start = checkAngle % (Math.PI * 2); const end = (checkAngle + sliceAngle) % (Math.PI * 2);
+                if (end < start) { if (pinPos >= start || pinPos <= end) { winnerIdx = i; break; } }
+                else { if (pinPos >= start && pinPos <= end) { winnerIdx = i; break; } }
+                checkAngle += sliceAngle;
+            }
+            const winnerName = currentRouletteItems[winnerIdx];
+            document.getElementById('roulette-spin-btn').innerText = "AGAIN";
+            if (winnerName.includes("ALL PASS")) {
+                AudioEngine.play('start'); updateText("🌟 UNBELIEVABLE! ALL PASS! 🌟");
                 document.getElementById('main-img').src = 'cafe_counter_lucky.png';
-                document.getElementById('lucky-area').classList.remove('hidden'); 
-                document.getElementById('again-btn').disabled = false; return;
-            }
-            if (index === winnerIndex) {
-                isGameOver = true; AudioEngine.play('fail'); lastWasLucky = false;
-                hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
-                for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
-                updateText(`Oh! ${memberNames[index]} will pay!`);
-                document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
-                updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-                showFinish(total, memberNames[index]);
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] });
+                showFinish(currentRouletteItems.length - 1, "🌟 ALL PASS 🌟", 'roulette-view');
             } else {
-                AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true"; hands[index].style.animation = "none";
-                updateText(`${memberNames[index]} is Safe!`);
+                AudioEngine.play('fail'); updateText(`It's ${winnerName}!`);
+                document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                updateStats(winnerName); confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } });
+                showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-view');
             }
         }
 
-        function showFinish(total, payerName) {
-            const now = new Date();
-            const randomPrice = (Math.random() * (8.5 - 3.5) + 3.5).toFixed(2); // 가격 랜덤화 확장 적용
+        /* --- SHARED RESULT UI --- */
+        function showFinish(total, payerName, viewId) {
+            const now = new Date(); const randomPrice = (Math.random() * (8.5 - 3.5) + 3.5).toFixed(2);
             document.getElementById('receipt-date').innerText = now.toLocaleDateString();
             document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
             document.getElementById('receipt-qty').innerText = "x" + total;
@@ -651,102 +742,77 @@
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
-            setTimeout(() => { 
-                document.getElementById('result-area').classList.remove('hidden'); 
-                document.getElementById('receipt').classList.add('show'); 
-                setTimeout(() => { document.getElementById('again-btn').disabled = false; }, 650);
-            }, 600);
+            
+            if(payerName.includes("ALL PASS")) {
+                document.getElementById('receipt-payer').innerText = "FREE";
+                document.getElementById('receipt-payer').style.color = "var(--roulette-gold)";
+            } else {
+                document.getElementById('receipt-payer').style.color = "var(--point-red)";
+            }
+
+            const resRoot = document.getElementById('result-shared-root');
+            const captureArea = document.getElementById('capture-area');
+            resRoot.classList.remove('hidden');
+
+            if(viewId === 'game-view') {
+                document.getElementById('game-btn-group').prepend(captureArea);
+                document.getElementById('again-btn').disabled = false;
+            } else {
+                document.getElementById('roulette-action-area').prepend(captureArea);
+            }
+            setTimeout(() => document.getElementById('receipt').classList.add('show'), 200);
         }
 
-        /* 통계 및 3번 아이디어 확장 로직 */
-        function updateStats(name) { 
-            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
-            const now = new Date();
-            const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-            
-            if(!stats[name]) stats[name] = { total: 0, monthly: {} };
-            // 기존에 단순 숫자였던 경우 객체로 변환 (무결성 보존)
-            if(typeof stats[name] === 'number') { stats[name] = { total: stats[name], monthly: {} }; }
-            
+        /* --- STATS & HISTORY --- */
+        function updateStats(name) {
+            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const monthKey = new Date().toISOString().slice(0, 7);
+            if(!stats[name] || typeof stats[name] !== 'object') {
+                stats[name] = { total: 0, monthly: {} };
+            }
             stats[name].total += 1;
             stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1;
-            localStorage.setItem('coffeeStats', JSON.stringify(stats)); 
+            localStorage.setItem('coffeeStats', JSON.stringify(stats));
         }
-        
+
         function showStats() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            const dashboard = document.getElementById('stats-dashboard'); const noStatsMsg = document.getElementById('no-stats-msg');
-            const entries = Object.entries(stats).map(([name, data]) => {
-                const count = typeof data === 'object' ? data.total : data;
-                return [name, count];
-            }).sort((a, b) => b[1] - a[1]);
-            
-            if (entries.length === 0) { dashboard.classList.add('hidden'); noStatsMsg.classList.remove('hidden'); return; }
-            dashboard.classList.remove('hidden'); noStatsMsg.classList.add('hidden');
+            const entries = Object.entries(stats).map(([name, data]) => [name, data.total || 0]).sort((a, b) => b[1] - a[1]);
+            const dashboard = document.getElementById('stats-dashboard');
+            if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
+            dashboard.classList.remove('hidden');
             document.getElementById('stats-list').innerHTML = entries.slice(0, 3).map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
         }
 
         function renderHistoryPage() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            const container = document.getElementById('history-list-content');
+            const monthKey = new Date().toISOString().slice(0, 7);
+            const entries = Object.entries(stats).map(([name, data]) => ({ name, total: data.total || 0, monthly: (data.monthly && data.monthly[monthKey]) || 0 }))
+                            .sort((a, b) => b.total - a.total);
             const kingArea = document.getElementById('monthly-king-area');
-            const now = new Date();
-            const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-            
-            const entries = Object.entries(stats).map(([name, data]) => {
-                const total = typeof data === 'object' ? data.total : data;
-                const monthly = (typeof data === 'object' && data.monthly) ? (data.monthly[monthKey] || 0) : 0;
-                return { name, total, monthly };
-            }).sort((a, b) => b.total - a.total);
-
-            if (entries.length === 0) {
-                kingArea.innerHTML = "";
-                container.innerHTML = "<div style='text-align:center; padding:20px; color:#ccc;'>기록이 없습니다.</div>";
-                return;
-            }
-
-            // 월간 명예의 전당 (Monthly King) 선정
+            const content = document.getElementById('history-list-content');
+            if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = "No Data."; return; }
             const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0];
             if(king && king.monthly > 0) {
-                kingArea.innerHTML = `
-                    <div class="monthly-king-badge">
-                        <div class="king-crown">👑</div>
-                        <div class="king-info">
-                            <div class="king-tag">MONTHLY KING (${monthKey})</div>
-                            <div class="king-name">${king.name}</div>
-                        </div>
-                        <div style="margin-left:auto; font-weight:800; color:#ffca28;">${king.monthly} PAY</div>
-                    </div>
-                `;
-            } else { kingArea.innerHTML = ""; }
-
-            let html = "";
-            entries.forEach((item) => {
-                html += `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f0f0f0;">
-                            <span style="font-weight:800; color:#333;">${item.name}</span>
-                            <span style="font-family:'Montserrat', sans-serif; color:var(--point-red); font-weight:800;">${item.total} PAYMENTS</span>
-                         </div>`;
-            });
-            container.innerHTML = html;
+                kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">MONTHLY KING (${monthKey})</div><div class="king-name">${king.name}</div></div><div style="margin-left:auto; font-weight:800; color:#ffca28;">${king.monthly} PAY</div></div>`;
+            }
+            content.innerHTML = entries.map(item => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f0f0f0;"><span style="font-weight:800;">${item.name}</span><span style="color:var(--point-red); font-weight:800;">${item.total} PAYMENTS</span></div>`).join('');
         }
 
-        function resetStats() { if(confirm("모든 결제 기록을 삭제할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); renderHistoryPage(); } }
+        function resetStats() { if(confirm("Clear all?")) { localStorage.removeItem('coffeeStats'); goFront(); } }
 
         async function shareAsImage() {
-            const captureArea = document.getElementById('capture-area'); const receipt = document.getElementById('receipt'); const shareBtn = document.getElementById('id-share-btn');
-            shareBtn.innerText = "GETTING..."; shareBtn.disabled = true;
-            const originalStyle = receipt.getAttribute('style') || "";
-            receipt.style.animation = "none"; receipt.style.opacity = "1"; receipt.style.transform = "none";
+            const captureArea = document.getElementById('capture-area');
+            const btn = document.getElementById('id-share-btn'); btn.innerText = "WAIT...";
             try {
-                await new Promise(r => setTimeout(r, 200));
-                const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", scale: 3, useCORS: true });
+                const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", scale: 3 });
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], "receipt.png", { type: "image/png" });
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); }
-                    else { const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'receipt.png'; link.click(); }
-                    receipt.setAttribute('style', originalStyle); shareBtn.innerText = "GET A RECEIPT"; shareBtn.disabled = false;
+                    if (navigator.share) await navigator.share({ files: [file] });
+                    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'receipt.png'; a.click(); }
+                    btn.innerText = "GET A RECEIPT";
                 });
-            } catch (error) { shareBtn.innerText = "GET A RECEIPT"; shareBtn.disabled = false; }
+            } catch (e) { btn.innerText = "ERROR"; }
         }
     </script>
 </body>

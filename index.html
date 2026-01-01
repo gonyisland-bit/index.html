@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.2.2</title>
+    <title>lucky bean - v0.2.3 (Stats Edition)</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -101,22 +101,12 @@
         .shake { animation: winner-shake 0.15s infinite !important; }
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
         
-        /* SHUFFLE & AGAIN 버튼 레이아웃 - 중앙 정렬 수정 */
         .game-header-btns { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            gap: 12px; 
-            width: 100%; 
-            max-width: 450px; 
-            margin: 0 auto 20px; 
-            padding: 0 15px;
-            box-sizing: border-box;
+            display: flex; justify-content: center; align-items: center; gap: 12px; 
+            width: 100%; max-width: 450px; margin: 0 auto 20px; padding: 0 15px; box-sizing: border-box;
         }
         .btn-pixel-game {
-            flex: 1; 
-            max-width: 160px;
-            background-color: #fff; color: #333; border: 2px solid #333; padding: 12px 0; font-size: 0.9rem; font-weight: 900;
+            flex: 1; max-width: 160px; background-color: #fff; color: #333; border: 2px solid #333; padding: 12px 0; font-size: 0.9rem; font-weight: 900;
             border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #333; transition: all 0.1s; letter-spacing: 1px; text-transform: uppercase;
         }
         .btn-pixel-game:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
@@ -176,6 +166,16 @@
 
         .about-text { font-size: 0.85rem; color: #666; line-height: 1.6; text-align: left; word-break: keep-all; }
         .about-label { font-weight: 800; color: #000; margin-top: 15px; display: block; }
+
+        /* 월간 왕관 아이콘 스타일 추가 */
+        .monthly-king-badge {
+            background: #fff8e1; border: 1.5px solid #ffca28; border-radius: 15px;
+            padding: 10px 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+        }
+        .king-crown { font-size: 1.4rem; }
+        .king-info { text-align: left; }
+        .king-name { font-weight: 900; font-size: 1rem; color: #333; }
+        .king-tag { font-size: 0.65rem; font-weight: 800; color: #ffca28; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -229,6 +229,7 @@
                     <button class="btn-main" onclick="startGame()">ENTER SHOP</button>
                     <button class="btn-sub" onclick="goSetup()">SETTINGS</button>
                     <button class="btn-sub" onclick="goAbout()">ABOUT</button>
+                    <button class="btn-sub" onclick="goHistory()">HISTORY</button>
                 </div>
             </div>
 
@@ -307,11 +308,23 @@
                 </div>
                 <button class="btn-main" onclick="goFront()">BACK TO HOME</button>
             </div>
+
+            <div id="history-view" class="hidden">
+                <div class="card-container" style="text-align: left;">
+                    <div class="order-menu-header">🏆 <b>DONATION HISTORY</b></div>
+                    <div class="divider"></div>
+                    <div id="monthly-king-area"></div>
+                    <div id="history-list-content" class="about-text"></div>
+                    <button class="btn-text" onclick="resetStats()" style="width:100%; margin-top:15px; color:var(--point-red);">RESET ALL DATA</button>
+                </div>
+                <button class="btn-main" onclick="goFront()">BACK TO HOME</button>
+            </div>
         </main>
-        <div class="footer">v0.2.2 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.2.3 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
+        /* v0.2.3 (Stats Edition) 코어 로직 완벽 보존 및 확장 */
         const fortunes = ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 잠시 비었지만, 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 동료들이 당신을 존경하고 있어요.", "행운의 팁: 다음엔 누가 살지 미리 정해두세요!"];
         const randomMenus = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"];
         const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread", "Espresso Shot", "Milk Foam", "Muffin Man", "Cookie Monster", "Roast Master"];
@@ -432,8 +445,16 @@
             updateText("About this game...");
         }
 
+        function goHistory() {
+            hideAllViews();
+            document.getElementById('history-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_facade.png';
+            updateText("Donation History...");
+            renderHistoryPage();
+        }
+
         function hideAllViews() {
-            const views = ['front-view', 'setup-view', 'game-view', 'about-view'];
+            const views = ['front-view', 'setup-view', 'game-view', 'about-view', 'history-view'];
             views.forEach(v => document.getElementById(v).classList.add('hidden'));
         }
 
@@ -613,7 +634,6 @@
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
                 updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(total, memberNames[index]);
-                document.getElementById('again-btn').disabled = false;
             } else {
                 AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true"; hands[index].style.animation = "none";
                 updateText(`${memberNames[index]} is Safe!`);
@@ -622,29 +642,95 @@
 
         function showFinish(total, payerName) {
             const now = new Date();
+            const randomPrice = (Math.random() * (8.5 - 3.5) + 3.5).toFixed(2); // 가격 랜덤화 확장 적용
             document.getElementById('receipt-date').innerText = now.toLocaleDateString();
             document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
             document.getElementById('receipt-qty').innerText = "x" + total;
-            document.getElementById('receipt-price').innerText = "$4.50";
-            document.getElementById('receipt-subtotal').innerText = "$" + (4.5 * total).toFixed(2);
+            document.getElementById('receipt-price').innerText = "$" + randomPrice;
+            document.getElementById('receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2);
             document.getElementById('receipt-payer').innerText = payerName;
             document.getElementById('receipt-fortune').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
             document.getElementById('receipt-menu').innerText = randomMenus[Math.floor(Math.random() * randomMenus.length)];
-            setTimeout(() => { document.getElementById('result-area').classList.remove('hidden'); document.getElementById('receipt').classList.add('show'); }, 600);
+            setTimeout(() => { 
+                document.getElementById('result-area').classList.remove('hidden'); 
+                document.getElementById('receipt').classList.add('show'); 
+                setTimeout(() => { document.getElementById('again-btn').disabled = false; }, 650);
+            }, 600);
         }
 
-        function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); stats[name] = (stats[name] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
+        /* 통계 및 3번 아이디어 확장 로직 */
+        function updateStats(name) { 
+            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
+            const now = new Date();
+            const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            
+            if(!stats[name]) stats[name] = { total: 0, monthly: {} };
+            // 기존에 단순 숫자였던 경우 객체로 변환 (무결성 보존)
+            if(typeof stats[name] === 'number') { stats[name] = { total: stats[name], monthly: {} }; }
+            
+            stats[name].total += 1;
+            stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1;
+            localStorage.setItem('coffeeStats', JSON.stringify(stats)); 
+        }
         
         function showStats() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
             const dashboard = document.getElementById('stats-dashboard'); const noStatsMsg = document.getElementById('no-stats-msg');
-            const entries = Object.entries(stats).sort((a, b) => b[1] - a[1]);
+            const entries = Object.entries(stats).map(([name, data]) => {
+                const count = typeof data === 'object' ? data.total : data;
+                return [name, count];
+            }).sort((a, b) => b[1] - a[1]);
+            
             if (entries.length === 0) { dashboard.classList.add('hidden'); noStatsMsg.classList.remove('hidden'); return; }
             dashboard.classList.remove('hidden'); noStatsMsg.classList.add('hidden');
             document.getElementById('stats-list').innerHTML = entries.slice(0, 3).map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} times</span></div>`).join('');
         }
 
-        function resetStats() { if(confirm("통계를 초기화할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); } }
+        function renderHistoryPage() {
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const container = document.getElementById('history-list-content');
+            const kingArea = document.getElementById('monthly-king-area');
+            const now = new Date();
+            const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            
+            const entries = Object.entries(stats).map(([name, data]) => {
+                const total = typeof data === 'object' ? data.total : data;
+                const monthly = (typeof data === 'object' && data.monthly) ? (data.monthly[monthKey] || 0) : 0;
+                return { name, total, monthly };
+            }).sort((a, b) => b.total - a.total);
+
+            if (entries.length === 0) {
+                kingArea.innerHTML = "";
+                container.innerHTML = "<div style='text-align:center; padding:20px; color:#ccc;'>기록이 없습니다.</div>";
+                return;
+            }
+
+            // 월간 명예의 전당 (Monthly King) 선정
+            const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0];
+            if(king && king.monthly > 0) {
+                kingArea.innerHTML = `
+                    <div class="monthly-king-badge">
+                        <div class="king-crown">👑</div>
+                        <div class="king-info">
+                            <div class="king-tag">MONTHLY KING (${monthKey})</div>
+                            <div class="king-name">${king.name}</div>
+                        </div>
+                        <div style="margin-left:auto; font-weight:800; color:#ffca28;">${king.monthly} PAY</div>
+                    </div>
+                `;
+            } else { kingArea.innerHTML = ""; }
+
+            let html = "";
+            entries.forEach((item) => {
+                html += `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f0f0f0;">
+                            <span style="font-weight:800; color:#333;">${item.name}</span>
+                            <span style="font-family:'Montserrat', sans-serif; color:var(--point-red); font-weight:800;">${item.total} PAYMENTS</span>
+                         </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function resetStats() { if(confirm("모든 결제 기록을 삭제할까요?")) { localStorage.removeItem('coffeeStats'); showStats(); renderHistoryPage(); } }
 
         async function shareAsImage() {
             const captureArea = document.getElementById('capture-area'); const receipt = document.getElementById('receipt'); const shareBtn = document.getElementById('id-share-btn');

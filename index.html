@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.4.5</title>
+    <title>lucky bean - v0.4.6</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -185,14 +185,18 @@
         .about-text { font-size: 0.85rem; color: #666; line-height: 1.6; text-align: left; word-break: keep-all; }
         .about-label { font-weight: 800; color: #000; margin-top: 15px; display: block; }
 
+        /* 히스토리 모바일 최적화 수정 */
         .monthly-king-badge {
             background: #fff8e1; border: 1.5px solid #ffca28; border-radius: 15px;
             padding: 10px 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+            flex-wrap: nowrap; /* 줄바꿈 방지 */
+            overflow: hidden;
         }
-        .king-crown { font-size: 1.4rem; }
-        .king-info { text-align: left; }
-        .king-name { font-weight: 900; font-size: 1rem; color: #333; }
-        .king-tag { font-size: 0.65rem; font-weight: 800; color: #ffca28; letter-spacing: 1px; }
+        .king-crown { font-size: 1.4rem; flex-shrink: 0; }
+        .king-info { text-align: left; flex: 1; min-width: 0; }
+        .king-name { font-weight: 900; font-size: 1rem; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .king-tag { font-size: 0.65rem; font-weight: 800; color: #ffca28; letter-spacing: 1px; white-space: nowrap; }
+        .king-count-area { margin-left: auto; font-weight: 800; color: #ffca28; white-space: nowrap; flex-shrink: 0; }
 
         #roulette-container { position: relative; width: 100%; max-width: 320px; margin: 20px auto; }
         .roulette-pin {
@@ -317,7 +321,8 @@
                 <div id="hand-display"></div>
                 <div id="game-btn-group" style="display:flex; flex-direction:column; align-items:center; gap:8px; width:100%;">
                     <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
-                    <button class="btn-main" id="btn-back-menu-hand" onclick="goFront()">BACK TO MENU</button>
+                    <button class="btn-main" id="btn-back-selector-hand" onclick="showGameSelector()">CHANGE GAME</button>
+                    <button class="btn-sub" id="btn-back-menu-hand" onclick="goFront()" style="color:#bbb; border-color:#eee; box-shadow:0 6px 0 #f8f8f8;">BACK TO MENU</button>
                 </div>
             </div>
 
@@ -334,7 +339,8 @@
                     <button id="roulette-spin-btn" class="btn-spin" onclick="spinRoulette()">SPIN</button>
                 </div>
                 <div id="roulette-action-area" style="display:flex; flex-direction:column; align-items:center; width:100%; gap:8px;">
-                     <button class="btn-main" id="btn-back-menu-roulette" onclick="goFront()">BACK TO MENU</button>
+                     <button class="btn-main" id="btn-back-selector-roulette" onclick="showGameSelector()">CHANGE GAME</button>
+                     <button class="btn-sub" id="btn-back-menu-roulette" onclick="goFront()" style="color:#bbb; border-color:#eee; box-shadow:0 6px 0 #f8f8f8;">BACK TO MENU</button>
                 </div>
             </div>
 
@@ -380,7 +386,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.4.5 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.4.6 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -410,6 +416,7 @@
                 btn_shuffle: "SHUFFLE",
                 btn_again: "AGAIN",
                 btn_spin: "SPIN",
+                btn_change_game: "CHANGE GAME",
                 lbl_group: "GROUP",
                 lbl_members: "MEMBERS",
                 lbl_random: "RANDOM",
@@ -461,6 +468,7 @@
                 btn_shuffle: "섞기",
                 btn_again: "다시하기",
                 btn_spin: "돌리기",
+                btn_change_game: "게임 변경",
                 lbl_group: "그룹",
                 lbl_members: "인원",
                 lbl_random: "랜덤",
@@ -587,6 +595,11 @@
             document.getElementById('btn-shuffle').innerText = t.btn_shuffle;
             document.getElementById('btn-again-hand').innerText = t.btn_again;
             document.getElementById('roulette-spin-btn').innerText = t.btn_spin;
+            
+            // 추가된 다국어 매핑
+            document.getElementById('btn-back-selector-hand').innerText = t.btn_change_game;
+            document.getElementById('btn-back-selector-roulette').innerText = t.btn_change_game;
+
             document.getElementById('lbl-group').innerText = t.lbl_group;
             document.getElementById('lbl-members').innerText = t.lbl_members;
             document.getElementById('btn-random').innerText = t.lbl_random;
@@ -635,7 +648,7 @@
         function showGameSelector() {
             hideAllViews();
             document.getElementById('selector-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_facade_zoom.png'; // 줌인 이미지 적용
+            document.getElementById('main-img').src = 'cafe_facade_zoom.png';
             updateText('choose_luck');
         }
 
@@ -663,13 +676,19 @@
         }
 
         function hideAllViews() {
-            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view'].forEach(v => {
+                const el = document.getElementById(v);
+                if(el) el.classList.add('hidden');
+            });
             document.getElementById('result-shared-root').classList.add('hidden');
             document.getElementById('receipt').classList.remove('show');
             document.getElementById('lucky-area').classList.add('hidden');
+            
+            // 캡처 영역 원위치
             const captureArea = document.getElementById('capture-area');
-            if(captureArea.parentElement.id === 'roulette-action-area' || captureArea.parentElement.id === 'game-btn-group') {
-                document.getElementById('result-shared-root').appendChild(captureArea);
+            const rootContainer = document.getElementById('result-shared-root');
+            if(captureArea && rootContainer && captureArea.parentElement !== rootContainer) {
+                rootContainer.appendChild(captureArea);
             }
         }
 
@@ -713,6 +732,15 @@
                 div.innerHTML = `<span style="flex:1; cursor:pointer; font-weight:600;" onclick="loadTeam('${name}')">${name}</span><span style="color:#eee; font-size:1.5rem; cursor:pointer; padding:0 10px;" onclick="deleteTeam('${name}')">×</span>`;
                 container.appendChild(div);
             });
+        }
+
+        function deleteTeam(name) {
+            if(confirm(`${name} 팀을 삭제할까요?`)) {
+                const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+                delete teams[name];
+                localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+                openGroupModal();
+            }
         }
 
         function openMemberModal() {
@@ -792,7 +820,6 @@
             const hands = document.getElementsByClassName('hand-img');
             if (hands[index].dataset.opened === "true") return;
 
-            // 손 클릭 시 셔플 버튼 비활성화 (공정성 유지)
             document.getElementById('btn-shuffle').disabled = true;
 
             hands[index].classList.add('tension-shake');
@@ -909,12 +936,13 @@
             document.getElementById('receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
             document.getElementById('receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
             
+            const payerEl = document.getElementById('receipt-payer');
             if(payerName.includes(i18n.en.all_pass) || payerName.includes(i18n.ko.all_pass)) {
-                document.getElementById('receipt-payer').innerText = "FREE";
-                document.getElementById('receipt-payer').style.color = "var(--roulette-gold)";
+                payerEl.innerText = "FREE";
+                payerEl.style.color = "var(--roulette-gold)";
             } else {
-                document.getElementById('receipt-payer').innerText = payerName;
-                document.getElementById('receipt-payer').style.color = "var(--point-red)";
+                payerEl.innerText = payerName;
+                payerEl.style.color = "var(--point-red)";
             }
 
             const resRoot = document.getElementById('result-shared-root');
@@ -943,9 +971,13 @@
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
             const entries = Object.entries(stats).map(([name, data]) => [name, data.total || 0]).sort((a, b) => b[1] - a[1]);
             const dashboard = document.getElementById('stats-dashboard');
-            if (entries.length === 0) { dashboard.classList.add('hidden'); return; }
-            dashboard.classList.remove('hidden');
-            document.getElementById('stats-list').innerHTML = entries.slice(0, 3).map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} ${i18n[currentLang].lbl_times}</span></div>`).join('');
+            if (entries.length === 0) {
+                if(dashboard) dashboard.classList.add('hidden');
+                return;
+            }
+            if(dashboard) dashboard.classList.remove('hidden');
+            const list = document.getElementById('stats-list');
+            if(list) list.innerHTML = entries.slice(0, 3).map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} ${i18n[currentLang].lbl_times}</span></div>`).join('');
         }
 
         function renderHistoryPage() {
@@ -957,10 +989,25 @@
             const content = document.getElementById('history-list-content');
             if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = "No Data."; return; }
             const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0];
+            
+            // 이달의 킹 디자인 수정 (한 줄 고정)
             if(king && king.monthly > 0) {
-                kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king} (${monthKey})</div><div class="king-name">${king.name}</div></div><div style="margin-left:auto; font-weight:800; color:#ffca28;">${king.monthly} ${i18n[currentLang].lbl_times}</div></div>`;
+                kingArea.innerHTML = `
+                    <div class="monthly-king-badge">
+                        <div class="king-crown">👑</div>
+                        <div class="king-info">
+                            <div class="king-tag">${i18n[currentLang].lbl_monthly_king} (${monthKey})</div>
+                            <div class="king-name">${king.name}</div>
+                        </div>
+                        <div class="king-count-area">
+                            ${king.monthly} ${i18n[currentLang].lbl_times}
+                        </div>
+                    </div>`;
+            } else {
+                kingArea.innerHTML = "";
             }
-            content.innerHTML = entries.map(item => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f0f0f0;"><span style="font-weight:800;">${item.name}</span><span style="color:var(--point-red); font-weight:800;">${item.total} ${i18n[currentLang].lbl_times}</span></div>`).join('');
+            
+            content.innerHTML = entries.map(item => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f0f0f0;"><span style="font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</span><span style="color:var(--point-red); font-weight:800; flex-shrink:0; margin-left:10px;">${item.total} ${i18n[currentLang].lbl_times}</span></div>`).join('');
         }
 
         function resetStats() { if(confirm(currentLang === 'ko' ? "모든 데이터를 삭제할까요?" : "Clear all?")) { localStorage.removeItem('coffeeStats'); goFront(); } }

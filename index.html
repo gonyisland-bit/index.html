@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.4.6</title>
+    <title>lucky bean - v0.5.5</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -77,16 +77,16 @@
         .picker-value { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         .picker-value::after { content: '▾'; color: #ccc; font-size: 1rem; }
 
-        .icon-selector-grid { display: flex; justify-content: center; gap: 20px; width: 100%; margin-top: 10px; }
-        .icon-btn-item { flex: 1; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
+        .icon-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
+        .icon-btn-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
         .icon-btn-item:active { transform: scale(0.95); }
         .icon-square {
-            width: 100%; aspect-ratio: 1/1; border: 3px solid #000; border-radius: 20px;
-            background: #fff; overflow: hidden; margin-bottom: 10px; box-shadow: 0 6px 0 #333;
+            width: 100%; aspect-ratio: 1/1; border: 3px solid #000; border-radius: 15px;
+            background: #fff; overflow: hidden; margin-bottom: 8px; box-shadow: 0 4px 0 #333;
             display: flex; align-items: center; justify-content: center;
         }
-        .icon-square img { width: 85%; height: 85%; object-fit: contain; }
-        .icon-label { font-size: 0.75rem; font-weight: 900; color: #000; letter-spacing: 0.5px; text-transform: uppercase; }
+        .icon-square img { width: 80%; height: 80%; object-fit: contain; }
+        .icon-label { font-size: 0.65rem; font-weight: 900; color: #000; letter-spacing: 0px; text-transform: uppercase; line-height: 1.2; height: 2.4em; display: flex; align-items: center; }
 
         .name-mgmt-bar { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px; }
         .btn-text { background: none; border: none; color: #bbb; font-size: 0.7rem; font-weight: 800; cursor: pointer; padding: 5px 10px; transition: 0.2s; letter-spacing: 1px; text-align: center; }
@@ -113,6 +113,13 @@
         @keyframes tension-animation { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
         .shake { animation: winner-shake 0.15s infinite !important; }
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+
+        /* 고양이 게임 애니메이션 및 레이어 설정 */
+        @keyframes cat-walk { 0% { transform: translateX(-5px) rotate(-1deg); } 50% { transform: translateX(5px) rotate(1deg); } 100% { transform: translateX(-5px) rotate(-1deg); } }
+        .cat-moving { animation: cat-walk 0.4s infinite; }
+        
+        .bowl-highlight { transform: scale(1.2); z-index: 10 !important; filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
+        .bowl-dimmed { opacity: 0.2; filter: blur(2px); z-index: 1 !important; }
 
         .game-header-btns {
             display: flex; justify-content: center; align-items: center; gap: 12px;
@@ -154,21 +161,24 @@
             box-shadow: 0 8px 0 var(--btn-shadow); text-transform: uppercase;
             position: relative; top: 0; margin-bottom: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .btn-main:active { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
+        .btn-main:active:not(:disabled) { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
+        .btn-main:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; top: 4px; }
 
         .btn-sub {
             padding: 16px; font-size: 0.9rem; font-weight: 800; background: #fff; color: #000; border: 2px solid #000; border-radius: 20px;
             cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s;
             box-shadow: 0 6px 0 var(--btn-shadow); text-transform: uppercase; margin-bottom: 12px;
         }
-        .btn-sub:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--btn-shadow); }
+        .btn-sub:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 3px 0 var(--btn-shadow); }
+        .btn-sub:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(1); }
 
         .btn-spin {
             padding: 18px; font-size: 1.2rem; font-weight: 900; background: #e74c3c; color: white; border: 3px solid #000; border-radius: 50px;
             cursor: pointer; width: 80%; max-width: 280px; transition: all 0.1s;
             box-shadow: 0 6px 0 #333; text-transform: uppercase; margin: 20px auto;
         }
-        .btn-spin:active { transform: translateY(4px); box-shadow: 0 2px 0 #333; }
+        .btn-spin:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #333; }
+        .btn-spin:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: translateY(4px); }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 1px; }
         .hidden { display: none !important; }
@@ -185,12 +195,10 @@
         .about-text { font-size: 0.85rem; color: #666; line-height: 1.6; text-align: left; word-break: keep-all; }
         .about-label { font-weight: 800; color: #000; margin-top: 15px; display: block; }
 
-        /* 히스토리 모바일 최적화 수정 */
         .monthly-king-badge {
             background: #fff8e1; border: 1.5px solid #ffca28; border-radius: 15px;
             padding: 10px 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
-            flex-wrap: nowrap; /* 줄바꿈 방지 */
-            overflow: hidden;
+            flex-wrap: nowrap; overflow: hidden;
         }
         .king-crown { font-size: 1.4rem; flex-shrink: 0; }
         .king-info { text-align: left; flex: 1; min-width: 0; }
@@ -207,6 +215,17 @@
         .lang-toggle-container { display: flex; justify-content: flex-end; width: 100%; margin-bottom: 15px; }
         .lang-btn { background: #eee; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: 800; border-radius: 8px; cursor: pointer; color: #999; transition: 0.2s; }
         .lang-btn.active { background: #000; color: #fff; }
+
+        /* 고양이 게임 스타일링 */
+        #cat-game-area { width: 100%; height: 320px; position: relative; margin: 15px 0; overflow: hidden; background: #fff; border: 2px solid #eee; border-radius: 20px; }
+        .cat-bowl { position: absolute; bottom: 25px; width: 60px; text-align: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bowl-img { width: 44px; height: auto; display: block; margin: 0 auto; transition: transform 0.3s; }
+        .bowl-name { font-size: 0.65rem; font-weight: 800; color: #888; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        #moving-cat { 
+            position: absolute; width: 85px; height: auto; z-index: 15; 
+            transition: left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
     </style>
 </head>
 <body>
@@ -276,6 +295,10 @@
                             <div class="icon-square"><img src="lucky_roulette.png" alt="Roulette"></div>
                             <div class="icon-label" id="txt-game-roulette">Lucky Roulette</div>
                         </div>
+                        <div class="icon-btn-item" onclick="goCatGame()">
+                            <div class="icon-square"><img src="cat_icon.png" alt="Cat" style="width:70%;"></div>
+                            <div class="icon-label" id="txt-game-cat">Cat's Choice</div>
+                        </div>
                     </div>
                 </div>
                 <button class="btn-main" id="btn-back-menu-selector" onclick="goFront()" style="background:#eee; color:#999; box-shadow:0 8px 0 #ddd;">BACK TO MENU</button>
@@ -344,6 +367,22 @@
                 </div>
             </div>
 
+            <div id="cat-view" class="hidden">
+                <div class="card-container" style="text-align:center;">
+                    <div class="order-menu-header" id="txt-cat-title">🐈 <b>CAT'S CHOICE</b></div>
+                    <div class="divider"></div>
+                    <div id="cat-game-area">
+                        <img src="cat_stand.png" id="moving-cat" alt="Cat" style="left: 50%; top: 12%; transform: translateX(-50%);">
+                        <div id="bowls-container"></div>
+                    </div>
+                    <button id="cat-start-btn" class="btn-spin" onclick="startCatGame()">START</button>
+                </div>
+                <div id="cat-action-area" style="display:flex; flex-direction:column; align-items:center; width:100%; gap:8px;">
+                    <button class="btn-main" id="btn-back-selector-cat" onclick="showGameSelector()">CHANGE GAME</button>
+                    <button class="btn-sub" id="btn-back-menu-cat" onclick="goFront()" style="color:#bbb; border-color:#eee; box-shadow:0 6px 0 #f8f8f8;">BACK TO MENU</button>
+                </div>
+            </div>
+
             <div id="result-shared-root" class="hidden">
                 <div id="capture-area" style="padding: 15px 0; background: transparent; width:100%;">
                     <div class="receipt" id="receipt">
@@ -386,7 +425,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.4.6 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.5.5 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -403,6 +442,8 @@
                 pay_msg: " will pay!",
                 lucky_round: "LUCKY! Everyone is SAFE! 🌟",
                 spin_msg: "Spin the wheel for luck!",
+                cat_msg: "Wait for the cat's choice...",
+                cat_start: "Who will the cat visit?",
                 all_pass: "🌟 ALL PASS 🌟",
                 all_pass_unbelievable: "🌟 UNBELIEVABLE! ALL PASS! 🌟",
                 btn_start: "START GAME",
@@ -434,13 +475,12 @@
                 txt_about_content: `<span class="about-label">HOW TO PLAY</span>
                         1. Enter names in SETTINGS.<br>
                         2. Go to ENTER SHOP and pick a game.<br>
-                        3. Pick a hand or spin the wheel.<br>
-                        4. The one with 'MONEY' pays!<br>
+                        3. Pick a hand, spin the wheel, or wait for the cat.<br>
+                        4. The one chosen pays!<br>
                         <span class="about-label">HISTORY & RANKING</span>
                         - Every win is recorded in HISTORY.<br>
-                        - Check the 'DONATION KINGS' to see who paid the most.<br>
-                        - 'MONTHLY KING' resets every month. Be generous!`,
-                fortunes: ["Great luck will come to you!", "Kindness returns to you.", "Small loss, big luck later!", "This coffee is on luck!", "Your team respects you!", "Tip: Choose the next payer!"],
+                        - Check the 'DONATION KINGS' to see who paid the most.`,
+                fortunes: ["Great luck will come to you!", "Kindness returns to you.", "Small loss, big luck later!", "Your team respects you!", "Tip: Choose the next payer!"],
                 menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"]
             },
             ko: {
@@ -455,6 +495,8 @@
                 pay_msg: "님이 당첨되었습니다!",
                 lucky_round: "럭키! 모두 생존했습니다! 🌟",
                 spin_msg: "룰렛을 돌려 운을 시험하세요!",
+                cat_msg: "고양이가 고민 중입니다...",
+                cat_start: "고양이는 누구에게 갈까요?",
                 all_pass: "🌟 전원 통과 🌟",
                 all_pass_unbelievable: "🌟 대박! 전원 통과입니다! 🌟",
                 btn_start: "게임 시작",
@@ -486,13 +528,12 @@
                 txt_about_content: `<span class="about-label">게임 방법</span>
                         1. SETTINGS에서 멤버 이름을 입력하세요.<br>
                         2. ENTER SHOP을 눌러 게임을 고르세요.<br>
-                        3. 손을 고르거나 룰렛을 돌리세요.<br>
-                        4. '돈'을 쥔 사람이 오늘의 결제 당첨!<br>
+                        3. 손 뽑기, 룰렛, 혹은 고양이의 선택을 기다리세요.<br>
+                        4. 선택된 사람이 오늘의 결제 당첨!<br>
                         <span class="about-label">히스토리 및 랭킹</span>
                         - 결제 당첨 내역은 HISTORY에 자동 기록됩니다.<br>
-                        - 메인 화면과 히스토리에서 누가 가장 많이 냈는지 확인하세요.<br>
-                        - 매달 가장 많이 기부한 '이달의 기부왕'을 뽑습니다.`,
-                fortunes: ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 비었어도 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 팀원들이 당신을 존경합니다.", "다음엔 누가 살지 미리 정해두세요!"],
+                        - 메인 화면과 히스토리에서 누가 가장 많이 냈는지 확인하세요.`,
+                fortunes: ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 비었어도 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 팀원들이 당신을 존경합니다."],
                 menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루", "아인슈페너", "돌체라떼", "카라멜 마키아또"]
             }
         };
@@ -505,6 +546,7 @@
         let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
         let isAudioStarted = false;
         let rouletteAngle = 0; let rouletteSpinning = false; let currentRouletteItems = [];
+        let catRunning = false;
 
         const AudioEngine = {
             ctx: null, bgm: null,
@@ -588,6 +630,7 @@
             document.getElementById('btn-back-menu-selector').innerText = t.btn_back_menu;
             document.getElementById('btn-back-menu-hand').innerText = t.btn_back_menu;
             document.getElementById('btn-back-menu-roulette').innerText = t.btn_back_menu;
+            document.getElementById('btn-back-menu-cat').innerText = t.btn_back_menu;
             document.getElementById('btn-back-home').innerText = t.btn_back_home;
             document.getElementById('btn-back-home-about').innerText = t.btn_back_home;
             document.getElementById('btn-back-home-history').innerText = t.btn_back_home;
@@ -595,10 +638,11 @@
             document.getElementById('btn-shuffle').innerText = t.btn_shuffle;
             document.getElementById('btn-again-hand').innerText = t.btn_again;
             document.getElementById('roulette-spin-btn').innerText = t.btn_spin;
+            document.getElementById('cat-start-btn').innerText = t.btn_start;
             
-            // 추가된 다국어 매핑
             document.getElementById('btn-back-selector-hand').innerText = t.btn_change_game;
             document.getElementById('btn-back-selector-roulette').innerText = t.btn_change_game;
+            document.getElementById('btn-back-selector-cat').innerText = t.btn_change_game;
 
             document.getElementById('lbl-group').innerText = t.lbl_group;
             document.getElementById('lbl-members').innerText = t.lbl_members;
@@ -613,8 +657,11 @@
             document.getElementById('txt-choose-luck').innerText = t.choose_luck;
             document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
             document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : "Lucky Roulette";
+            document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : "Cat's Choice";
+            
             document.getElementById('txt-setting-title').innerHTML = `📋 <b>${currentLang === 'ko' ? "주문 메뉴 설정" : "ORDER MENU SETTING"}</b>`;
             document.getElementById('txt-roulette-title').innerHTML = `🎡 <b>${currentLang === 'ko' ? "행운의 룰렛" : "LUCKY ROULETTE"}</b>`;
+            document.getElementById('txt-cat-title').innerHTML = `🐈 <b>${currentLang === 'ko' ? "고양이의 선택" : "CAT'S CHOICE"}</b>`;
             document.getElementById('txt-about-title').innerHTML = `☕ <b>${currentLang === 'ko' ? "럭키빈 정보" : "ABOUT LUCKY BEAN"}</b>`;
             document.getElementById('txt-history-title').innerHTML = `🏆 <b>${currentLang === 'ko' ? "기부 히스토리" : "DONATION HISTORY"}</b>`;
             document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
@@ -676,15 +723,15 @@
         }
 
         function hideAllViews() {
-            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view'].forEach(v => {
+            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view', 'cat-view'].forEach(v => {
                 const el = document.getElementById(v);
                 if(el) el.classList.add('hidden');
             });
             document.getElementById('result-shared-root').classList.add('hidden');
             document.getElementById('receipt').classList.remove('show');
             document.getElementById('lucky-area').classList.add('hidden');
-            
-            // 캡처 영역 원위치
+            document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+
             const captureArea = document.getElementById('capture-area');
             const rootContainer = document.getElementById('result-shared-root');
             if(captureArea && rootContainer && captureArea.parentElement !== rootContainer) {
@@ -775,6 +822,7 @@
 
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
+        /* --- 핸드 게임 로직 --- */
         function startGame() {
             const saved = localStorage.getItem('lastCoffeeMembers');
             memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
@@ -819,9 +867,7 @@
             if (isGameOver || isShuffling) return;
             const hands = document.getElementsByClassName('hand-img');
             if (hands[index].dataset.opened === "true") return;
-
             document.getElementById('btn-shuffle').disabled = true;
-
             hands[index].classList.add('tension-shake');
             setTimeout(() => {
                 hands[index].classList.remove('tension-shake');
@@ -847,6 +893,7 @@
             }, 800);
         }
 
+        /* --- 룰렛 게임 로직 --- */
         function goRoulette() {
             hideAllViews();
             const saved = localStorage.getItem('lastCoffeeMembers');
@@ -883,6 +930,11 @@
             if (rouletteSpinning) return;
             if (document.getElementById('roulette-spin-btn').innerText === i18n[currentLang].btn_again) { goRoulette(); return; }
             rouletteSpinning = true; AudioEngine.play('whoosh');
+            
+            document.getElementById('roulette-spin-btn').disabled = true;
+            document.getElementById('btn-back-selector-roulette').disabled = true;
+            document.getElementById('btn-back-menu-roulette').disabled = true;
+
             const duration = 4000; const startTS = performance.now(); const startRot = rouletteAngle;
             const targetRot = startRot + (Math.random() * 5 + 5) * Math.PI * 2;
             function animate(now) {
@@ -909,6 +961,10 @@
                 checkAngle += sliceAngle;
             }
             const winnerName = currentRouletteItems[winnerIdx];
+            
+            document.getElementById('roulette-spin-btn').disabled = false;
+            document.getElementById('btn-back-selector-roulette').disabled = false;
+            document.getElementById('btn-back-menu-roulette').disabled = false;
             document.getElementById('roulette-spin-btn').innerText = i18n[currentLang].btn_again;
             
             if (winnerName.includes(i18n.en.all_pass) || winnerName.includes(i18n.ko.all_pass)) {
@@ -917,14 +973,122 @@
                 confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] });
                 showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-view');
             } else {
-                AudioEngine.play('fail'); 
-                updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true);
+                AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true);
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
                 updateStats(winnerName); confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } });
                 showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-view');
             }
         }
 
+        /* --- 고양이의 선택 로직 --- */
+        function goCatGame() {
+            hideAllViews();
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
+            document.getElementById('cat-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_counter.png';
+            document.getElementById('cat-start-btn').disabled = false;
+            document.getElementById('cat-start-btn').innerText = i18n[currentLang].btn_start;
+            updateText('cat_start');
+            
+            const cat = document.getElementById('moving-cat');
+            cat.src = 'cat_stand.png'; cat.style.left = '50%'; cat.style.top = '12%'; cat.style.transform = 'translateX(-50%)';
+            cat.className = '';
+            
+            renderCatBowls();
+        }
+
+        function renderCatBowls() {
+            const container = document.getElementById('bowls-container');
+            container.innerHTML = '';
+            const count = memberNames.length;
+            const areaWidth = document.getElementById('cat-game-area').clientWidth;
+            
+            memberNames.forEach((name, i) => {
+                const bowl = document.createElement('div');
+                bowl.className = 'cat-bowl';
+                bowl.id = `bowl-${i}`;
+                const xPos = (areaWidth / (count + 1)) * (i + 1) - 30;
+                bowl.style.left = `${xPos}px`;
+                bowl.style.opacity = '1';
+                bowl.style.filter = 'none';
+                bowl.innerHTML = `<img src="cat_bowl_full.png" class="bowl-img" id="img-bowl-${i}"><div class="bowl-name">${name}</div>`;
+                container.appendChild(bowl);
+            });
+        }
+
+        function startCatGame() {
+            if (catRunning) return;
+            if (document.getElementById('cat-start-btn').innerText === i18n[currentLang].btn_again) { goCatGame(); return; }
+            
+            catRunning = true;
+            document.getElementById('cat-start-btn').disabled = true;
+            document.getElementById('btn-back-selector-cat').disabled = true;
+            document.getElementById('btn-back-menu-cat').disabled = true;
+            
+            updateText('cat_msg');
+            AudioEngine.play('whoosh');
+            
+            const cat = document.getElementById('moving-cat');
+            cat.src = 'cat_walk.gif'; cat.style.transform = 'none'; cat.classList.add('cat-moving');
+            
+            const winnerIdx = Math.floor(Math.random() * memberNames.length);
+            const bowlEls = document.querySelectorAll('.cat-bowl');
+            
+            let visits = 0;
+            const maxVisits = 6 + Math.floor(Math.random() * 4);
+            
+            function moveCat() {
+                if (visits < maxVisits) {
+                    const randomBowlIdx = Math.floor(Math.random() * memberNames.length);
+                    const targetBowl = bowlEls[randomBowlIdx];
+                    cat.style.left = (parseInt(targetBowl.style.left) - 10) + 'px';
+                    cat.style.top = (10 + Math.random() * 5) + '%';
+                    visits++;
+                    setTimeout(moveCat, 400 + Math.random() * 300);
+                } else {
+                    const finalBowl = bowlEls[winnerIdx];
+                    cat.style.left = (parseInt(finalBowl.style.left) - 10) + 'px';
+                    
+                    setTimeout(() => {
+                        cat.classList.remove('cat-moving');
+                        cat.src = 'cat_eat.png';
+                        // 변경사항 반영: 당첨 시 높이 top 32%로 하강
+                        cat.style.top = '32%';
+                        
+                        // 변경사항 반영: 선택 안된 보울 흐리게 및 z-index 조정
+                        bowlEls.forEach((b, idx) => {
+                            if(idx !== winnerIdx) {
+                                b.classList.add('bowl-dimmed');
+                            } else {
+                                b.classList.add('bowl-highlight');
+                                // 고양이가 먹는 시점에 당첨 보울을 빈 보울로 변경
+                                setTimeout(() => {
+                                    document.getElementById(`img-bowl-${winnerIdx}`).src = 'cat_bowl_empty.png';
+                                }, 500);
+                            }
+                        });
+                        
+                        AudioEngine.play('fail');
+                        updateText(`${memberNames[winnerIdx]}${i18n[currentLang].pay_msg}`, true);
+                        document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                        updateStats(memberNames[winnerIdx]);
+                        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                        
+                        showFinish(memberNames.length, memberNames[winnerIdx], 'cat-view');
+                        
+                        document.getElementById('cat-start-btn').disabled = false;
+                        document.getElementById('btn-back-selector-cat').disabled = false;
+                        document.getElementById('btn-back-menu-cat').disabled = false;
+                        document.getElementById('cat-start-btn').innerText = i18n[currentLang].btn_again;
+                        catRunning = false;
+                    }, 500);
+                }
+            }
+            moveCat();
+        }
+
+        /* --- 공통 유틸리티 --- */
         function showFinish(total, payerName, viewId) {
             const now = new Date(); const randomPrice = (Math.random() * (8.5 - 3.5) + 3.5).toFixed(2);
             const t = i18n[currentLang];
@@ -938,11 +1102,9 @@
             
             const payerEl = document.getElementById('receipt-payer');
             if(payerName.includes(i18n.en.all_pass) || payerName.includes(i18n.ko.all_pass)) {
-                payerEl.innerText = "FREE";
-                payerEl.style.color = "var(--roulette-gold)";
+                payerEl.innerText = "FREE"; payerEl.style.color = "var(--roulette-gold)";
             } else {
-                payerEl.innerText = payerName;
-                payerEl.style.color = "var(--point-red)";
+                payerEl.innerText = payerName; payerEl.style.color = "var(--point-red)";
             }
 
             const resRoot = document.getElementById('result-shared-root');
@@ -951,9 +1113,10 @@
 
             if(viewId === 'game-view') {
                 document.getElementById('game-btn-group').prepend(captureArea);
-                document.getElementById('btn-again-hand').disabled = false;
-            } else {
+            } else if(viewId === 'roulette-view') {
                 document.getElementById('roulette-action-area').prepend(captureArea);
+            } else if(viewId === 'cat-view') {
+                document.getElementById('cat-action-area').prepend(captureArea);
             }
             setTimeout(() => document.getElementById('receipt').classList.add('show'), 200);
         }
@@ -971,10 +1134,7 @@
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
             const entries = Object.entries(stats).map(([name, data]) => [name, data.total || 0]).sort((a, b) => b[1] - a[1]);
             const dashboard = document.getElementById('stats-dashboard');
-            if (entries.length === 0) {
-                if(dashboard) dashboard.classList.add('hidden');
-                return;
-            }
+            if (entries.length === 0) { if(dashboard) dashboard.classList.add('hidden'); return; }
             if(dashboard) dashboard.classList.remove('hidden');
             const list = document.getElementById('stats-list');
             if(list) list.innerHTML = entries.slice(0, 3).map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} ${i18n[currentLang].lbl_times}</span></div>`).join('');
@@ -990,22 +1150,9 @@
             if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = "No Data."; return; }
             const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0];
             
-            // 이달의 킹 디자인 수정 (한 줄 고정)
             if(king && king.monthly > 0) {
-                kingArea.innerHTML = `
-                    <div class="monthly-king-badge">
-                        <div class="king-crown">👑</div>
-                        <div class="king-info">
-                            <div class="king-tag">${i18n[currentLang].lbl_monthly_king} (${monthKey})</div>
-                            <div class="king-name">${king.name}</div>
-                        </div>
-                        <div class="king-count-area">
-                            ${king.monthly} ${i18n[currentLang].lbl_times}
-                        </div>
-                    </div>`;
-            } else {
-                kingArea.innerHTML = "";
-            }
+                kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king} (${monthKey})</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly} ${i18n[currentLang].lbl_times}</div></div>`;
+            } else { kingArea.innerHTML = ""; }
             
             content.innerHTML = entries.map(item => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f0f0f0;"><span style="font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</span><span style="color:var(--point-red); font-weight:800; flex-shrink:0; margin-left:10px;">${item.total} ${i18n[currentLang].lbl_times}</span></div>`).join('');
         }

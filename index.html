@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.5.5 (Stable)</title>
+    <title>lucky bean - v0.5.5</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -59,19 +59,11 @@
         #rpg-content { font-size: 0.95rem; font-weight: 800; color: #000; min-height: 1.2rem; word-break: keep-all; white-space: pre-wrap; text-align: left; }
 
         .card-container {
-            position: relative;
             width: 90%; max-width: 450px; background: var(--tablet-bg); border-radius: 30px;
             padding: 25px; box-sizing: border-box; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.01), 0 15px 35px rgba(0,0,0,0.03); margin: 0 auto 25px;
         }
 
         .order-menu-header { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; color: #333; text-align: left; margin-bottom: 10px; letter-spacing: 1px; }
-
-        /* 설정 버튼 (게임 내 상단 우측) */
-        .btn-mini-setup {
-            position: absolute; top: 20px; right: 20px; font-size: 0.8rem; background: #fff; border: 1px solid #ddd;
-            border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 100;
-        }
 
         .picker-group { width: 100%; display: flex; gap: 12px; margin-bottom: 20px; }
         .picker-btn {
@@ -110,15 +102,11 @@
 
         .stats-container { width: 100%; background: #fff; padding: 15px; border-radius: 20px; font-size: 0.8rem; box-sizing: border-box; border: 1px solid #eee; }
         .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
-        
-        /* 랜덤 핸드 게임 내부 스타일 적용 */
-        .hand-game-inner-card {
-            background: #fff; border-radius: 20px; padding: 20px 10px; border: 1px solid #eee; min-height: 200px;
-        }
+        .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #666; font-weight: 600; }
 
-        #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 10px 0; width: 100%; position: relative; }
-        .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 10px); min-width: 80px; transition: transform 0.4s ease; z-index: 1; }
-        .hand-img { width: 100%; max-width: 100px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
+        #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 10px 10px; width: 100%; box-sizing: border-box; position: relative; margin-bottom: 20px; }
+        .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 20px); min-width: 90px; transition: transform 0.4s ease; z-index: 1; }
+        .hand-img { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
 
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .tension-shake { animation: tension-animation 0.1s infinite !important; }
@@ -135,16 +123,8 @@
 
         .game-header-btns {
             display: flex; justify-content: center; align-items: center; gap: 12px;
-            width: 100%; max-width: 450px; margin: 0 auto 10px; padding: 0 15px; box-sizing: border-box;
+            width: 100%; max-width: 450px; margin: 0 auto 20px; padding: 0 15px; box-sizing: border-box;
         }
-        /* 셔플 버튼 빨간색 스타일 요청 반영 */
-        .btn-shuffle-red {
-            flex: 1; max-width: 160px; background-color: var(--point-red); color: #fff; border: 2px solid #000; padding: 12px 0; font-size: 0.9rem; font-weight: 900;
-            border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #333; transition: all 0.1s; letter-spacing: 1px; text-transform: uppercase;
-        }
-        .btn-shuffle-red:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
-        .btn-shuffle-red:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: translateY(3px); filter: grayscale(1); }
-
         .btn-pixel-game {
             flex: 1; max-width: 160px; background-color: #fff; color: #333; border: 2px solid #333; padding: 12px 0; font-size: 0.9rem; font-weight: 900;
             border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #333; transition: all 0.1s; letter-spacing: 1px; text-transform: uppercase;
@@ -152,7 +132,7 @@
         .btn-pixel-game:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
         .btn-pixel-game:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: translateY(3px); filter: grayscale(1); }
 
-        .member-name { font-size: 0.75rem; font-weight: 800; margin-top: 5px; color: #555; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
 
         .receipt {
             background: #fff; color: #333; width: 280px; padding: 35px 25px 25px; font-family: 'Courier Prime', monospace;
@@ -236,11 +216,11 @@
         .lang-btn { background: #eee; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: 800; border-radius: 8px; cursor: pointer; color: #999; transition: 0.2s; }
         .lang-btn.active { background: #000; color: #fff; }
 
-        /* 고양이 게임 스타일링: 6개 한 줄 레이어 조정 */
+        /* 고양이 게임 스타일링 */
         #cat-game-area { width: 100%; height: 320px; position: relative; margin: 15px 0; overflow: hidden; background: #fff; border: 2px solid #eee; border-radius: 20px; }
-        .cat-bowl { position: absolute; bottom: 25px; width: 50px; text-align: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .bowl-img { width: 38px; height: auto; display: block; margin: 0 auto; transition: transform 0.3s; }
-        .bowl-name { font-size: 0.6rem; font-weight: 800; color: #888; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cat-bowl { position: absolute; bottom: 25px; width: 60px; text-align: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bowl-img { width: 44px; height: auto; display: block; margin: 0 auto; transition: transform 0.3s; }
+        .bowl-name { font-size: 0.65rem; font-weight: 800; color: #888; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         #moving-cat { 
             position: absolute; width: 85px; height: auto; z-index: 15; 
@@ -251,7 +231,7 @@
 <body>
 
     <div id="splash-screen">
-        <img src="coffee.png" alt="Logo" id="splash-logo" style="width:110px;">
+        <img src="coffee.png" alt="Logo" style="width:110px; animation: floating 2s ease-in-out infinite;">
         <div id="loading-progress-area">
             <div class="loading-text">LOADING...</div>
             <div class="loading-bar-container"><div id="progress-fill" class="loading-bar-fill"></div></div>
@@ -352,23 +332,16 @@
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <button class="btn-main" id="btn-save-exit" onclick="saveAndGoHome()">SAVE & EXIT</button>
-                    <button class="btn-sub" id="btn-back-home" onclick="goBackFromSetup()" style="background:#fff; color:#bbb; border:2px solid #eee; box-shadow:0 6px 0 #f8f8f8;">BACK</button>
+                    <button class="btn-sub" id="btn-back-home" onclick="goFront()" style="background:#fff; color:#bbb; border:2px solid #eee; box-shadow:0 6px 0 #f8f8f8;">BACK TO HOME</button>
                 </div>
             </div>
 
             <div id="game-view" class="hidden">
-                <div class="card-container">
-                    <div class="btn-mini-setup" onclick="goSetupFromGame('hand')">⚙️</div>
-                    <div class="order-menu-header" id="txt-hand-game-title">✋ <b>RANDOM HAND</b></div>
-                    <div class="divider"></div>
-                    <div class="hand-game-inner-card">
-                        <div id="hand-display"></div>
-                    </div>
-                    <div style="margin-top:20px;">
-                        <button class="btn-shuffle-red" id="btn-shuffle" onclick="shufflePositions()">SHUFFLE</button>
-                        <button class="btn-pixel-game hidden" id="btn-again-hand" onclick="startGame()">AGAIN</button>
-                    </div>
+                <div class="game-header-btns">
+                    <button class="btn-pixel-game" id="btn-shuffle" onclick="shufflePositions()">SHUFFLE</button>
+                    <button class="btn-pixel-game" id="btn-again-hand" onclick="startGame()" disabled>AGAIN</button>
                 </div>
+                <div id="hand-display"></div>
                 <div id="game-btn-group" style="display:flex; flex-direction:column; align-items:center; gap:8px; width:100%;">
                     <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
                     <button class="btn-main" id="btn-back-selector-hand" onclick="showGameSelector()">CHANGE GAME</button>
@@ -378,7 +351,6 @@
 
             <div id="roulette-view" class="hidden">
                 <div class="card-container" style="text-align:center;">
-                    <div class="btn-mini-setup" onclick="goSetupFromGame('roulette')">⚙️</div>
                     <div class="order-menu-header" id="txt-roulette-title">🎡 <b>LUCKY ROULETTE</b></div>
                     <div class="divider"></div>
                     <div id="roulette-container">
@@ -397,7 +369,6 @@
 
             <div id="cat-view" class="hidden">
                 <div class="card-container" style="text-align:center;">
-                    <div class="btn-mini-setup" onclick="goSetupFromGame('cat')">⚙️</div>
                     <div class="order-menu-header" id="txt-cat-title">🐈 <b>CAT'S CHOICE</b></div>
                     <div class="divider"></div>
                     <div id="cat-game-area">
@@ -429,7 +400,7 @@
                         </div>
                         <div class="receipt-line"></div>
                         <div class="fortune-area" id="receipt-fortune"></div>
-                        <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="width:100%; margin-top: 15px; border:1px solid #eee; border-radius:10px; padding:8px; font-size:0.6rem;">GET A RECEIPT</button>
+                        <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="width:100%; margin-top: 15px; color:#ccc; border:1px solid #eee; border-radius:10px; padding:8px; font-size:0.6rem;">GET A RECEIPT</button>
                     </div>
                 </div>
             </div>
@@ -501,7 +472,14 @@
                 lbl_times: "times",
                 lbl_empty: "Empty",
                 lbl_member_count: "Members",
-                txt_about_content: `<span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS.<br> 2. Go to ENTER SHOP and pick a game.<br> 3. Pick a hand, spin the wheel, or wait for the cat.<br> 4. The one chosen pays!<br> <span class="about-label">HISTORY & RANKING</span> - Every win is recorded in HISTORY.<br> - Check the 'DONATION KINGS' to see who paid the most.`,
+                txt_about_content: `<span class="about-label">HOW TO PLAY</span>
+                        1. Enter names in SETTINGS.<br>
+                        2. Go to ENTER SHOP and pick a game.<br>
+                        3. Pick a hand, spin the wheel, or wait for the cat.<br>
+                        4. The one chosen pays!<br>
+                        <span class="about-label">HISTORY & RANKING</span>
+                        - Every win is recorded in HISTORY.<br>
+                        - Check the 'DONATION KINGS' to see who paid the most.`,
                 fortunes: ["Great luck will come to you!", "Kindness returns to you.", "Small loss, big luck later!", "Your team respects you!", "Tip: Choose the next payer!"],
                 menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"]
             },
@@ -545,606 +523,655 @@
                 lbl_get_receipt: "영수증 받기",
                 lbl_monthly_king: "이달의 기부왕",
                 lbl_times: "회",
-                lbl_empty: "없음",
+                lbl_empty: "비어있음",
                 lbl_member_count: "명",
-                txt_about_content: `<span class="about-label">게임 방법</span> 1. 설정에서 팀 멤버 이름을 입력하세요.<br> 2. ENTER SHOP에서 게임을 선택합니다.<br> 3. 손을 고르거나 룰렛을 돌려보세요.<br> 4. 고양이의 선택을 기다려도 좋습니다!<br> <span class="about-label">기록 및 랭킹</span> - 모든 결과는 히스토리에 기록됩니다.<br> - 기부왕 랭킹에서 누가 가장 많이 샀는지 확인하세요.`,
-                fortunes: ["오늘은 좋은 일이 생길 거예요!", "배려가 행운으로 돌아옵니다.", "작은 지출이 큰 행운이 되어!", "팀원들이 당신의 배려를 기억해요!", "팁: 다음 게임 당첨자를 지목해보세요!"],
+                txt_about_content: `<span class="about-label">게임 방법</span>
+                        1. SETTINGS에서 멤버 이름을 입력하세요.<br>
+                        2. ENTER SHOP을 눌러 게임을 고르세요.<br>
+                        3. 손 뽑기, 룰렛, 혹은 고양이의 선택을 기다리세요.<br>
+                        4. 선택된 사람이 오늘의 결제 당첨!<br>
+                        <span class="about-label">히스토리 및 랭킹</span>
+                        - 결제 당첨 내역은 HISTORY에 자동 기록됩니다.<br>
+                        - 메인 화면과 히스토리에서 누가 가장 많이 냈는지 확인하세요.`,
+                fortunes: ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 비었어도 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 팀원들이 당신을 존경합니다."],
                 menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루", "아인슈페너", "돌체라떼", "카라멜 마키아또"]
             }
         };
 
-        const randomNames = ["Emma", "Noah", "Olivia", "Liam", "Ava", "Lucas", "Mia", "Ethan", "Luna", "Oliver", "철수", "영희", "길동", "수지", "민수", "지혜", "현우", "나리", "준서", "미나"];
-        const presetGroups = [
-            { name: "Coffee Friends", members: ["Emma", "Noah", "Olivia"] },
-            { name: "Tech Team", members: ["Liam", "Lucas", "Ethan", "Mia"] },
-            { name: "Office Mates", members: ["철수", "영희", "민수", "지혜", "나리"] }
-        ];
+        let currentLang = localStorage.getItem('luckyBeanLang') || 'en';
+        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread"];
 
-        let currentLang = localStorage.getItem('luckyBeanLang') || 'ko';
-        let members = JSON.parse(localStorage.getItem('luckyBeanMembers')) || ["Member 1", "Member 2", "Member 3"];
-        let groupName = localStorage.getItem('luckyBeanGroup') || "My Team";
-        let history = JSON.parse(localStorage.getItem('coffeeStats')) || [];
-        let previousView = 'front-view';
+        let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1;
+        let isLuckyRound = false; let lastWasLucky = false;
+        let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
+        let isAudioStarted = false;
+        let rouletteAngle = 0; let rouletteSpinning = false; let currentRouletteItems = [];
+        let catRunning = false;
 
-        const mainImg = document.getElementById('main-img');
-        const rpgContent = document.getElementById('rpg-content');
+        const AudioEngine = {
+            ctx: null, bgm: null,
+            initAndPlayBGM() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    this.bgm = document.getElementById('bgm-player');
+                    this.bgm.volume = 0.15;
+                }
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                if (this.bgm && this.bgm.paused) this.bgm.play().then(() => { isAudioStarted = true; }).catch(e => console.log(e));
+            },
+            pauseBGM() { if (this.bgm) this.bgm.pause(); },
+            resumeBGM() { if (this.bgm && isAudioStarted) this.bgm.play(); },
+            play(type) {
+                if (!this.ctx || this.ctx.state === 'suspended') return;
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain(); const now = this.ctx.currentTime;
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                if (type === 'start') {
+                    osc.frequency.setValueAtTime(698.46, now); osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15);
+                    gain.gain.setValueAtTime(0.5, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now); osc.stop(now + 0.2);
+                } else if (type === 'safe') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(1174.66, now);
+                    gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now); osc.stop(now + 0.1);
+                } else if (type === 'fail') {
+                    osc.frequency.setValueAtTime(880, now); osc.frequency.exponentialRampToValueAtTime(110, now + 0.5);
+                    gain.gain.setValueAtTime(0.5, now); gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                    osc.start(now); osc.stop(now + 0.5);
+                } else if (type === 'whoosh') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
+                    gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                }
+            }
+        };
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) AudioEngine.pauseBGM();
+            else AudioEngine.resumeBGM();
+        });
+
+        window.onload = () => {
+            const fill = document.getElementById('progress-fill');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100; clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loading-progress-area').style.display = 'none';
+                        document.getElementById('start-action-area').style.display = 'flex';
+                    }, 500);
+                }
+                fill.style.width = progress + '%';
+            }, 50);
+            applyLanguage();
+        };
 
         function setLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('luckyBeanLang', lang);
-            updateUI();
+            applyLanguage();
+            if (!document.getElementById('front-view').classList.contains('hidden')) goFront();
+            else if (!document.getElementById('setup-view').classList.contains('hidden')) goSetup();
+            else if (!document.getElementById('about-view').classList.contains('hidden')) goAbout();
+            else if (!document.getElementById('history-view').classList.contains('hidden')) goHistory();
+            else if (!document.getElementById('selector-view').classList.contains('hidden')) showGameSelector();
         }
 
-        function updateUI() {
+        function applyLanguage() {
             const t = i18n[currentLang];
-            document.getElementById('lang-ko').className = currentLang === 'ko' ? 'lang-btn active' : 'lang-btn';
-            document.getElementById('lang-en').className = currentLang === 'en' ? 'lang-btn active' : 'lang-btn';
-
+            document.getElementById('lang-ko').classList.toggle('active', currentLang === 'ko');
+            document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
             document.getElementById('btn-start').innerText = t.btn_start;
             document.getElementById('btn-enter-shop').innerText = t.btn_enter_shop;
             document.getElementById('btn-go-setup').innerText = t.btn_setup;
             document.getElementById('btn-go-history').innerText = t.btn_history;
             document.getElementById('btn-go-about').innerText = t.btn_about;
-
-            document.getElementById('txt-choose-luck').innerText = t.choose_luck;
             document.getElementById('btn-back-menu-selector').innerText = t.btn_back_menu;
+            document.getElementById('btn-back-menu-hand').innerText = t.btn_back_menu;
+            document.getElementById('btn-back-menu-roulette').innerText = t.btn_back_menu;
+            document.getElementById('btn-back-menu-cat').innerText = t.btn_back_menu;
+            document.getElementById('btn-back-home').innerText = t.btn_back_home;
+            document.getElementById('btn-back-home-about').innerText = t.btn_back_home;
+            document.getElementById('btn-back-home-history').innerText = t.btn_back_home;
+            document.getElementById('btn-save-exit').innerText = t.btn_save_exit;
+            document.getElementById('btn-shuffle').innerText = t.btn_shuffle;
+            document.getElementById('btn-again-hand').innerText = t.btn_again;
+            document.getElementById('roulette-spin-btn').innerText = t.btn_spin;
+            document.getElementById('cat-start-btn').innerText = t.btn_start;
             
-            document.getElementById('txt-setting-title').innerHTML = `📋 <b>${currentLang === 'ko' ? '주문 메뉴 설정' : 'ORDER MENU SETTING'}</b>`;
+            document.getElementById('btn-back-selector-hand').innerText = t.btn_change_game;
+            document.getElementById('btn-back-selector-roulette').innerText = t.btn_change_game;
+            document.getElementById('btn-back-selector-cat').innerText = t.btn_change_game;
+
             document.getElementById('lbl-group').innerText = t.lbl_group;
             document.getElementById('lbl-members').innerText = t.lbl_members;
             document.getElementById('btn-random').innerText = t.lbl_random;
             document.getElementById('btn-clear').innerText = t.lbl_clear;
             document.getElementById('btn-save-team').innerText = t.lbl_save;
-            document.getElementById('btn-save-exit').innerText = t.btn_save_exit;
-            document.getElementById('btn-back-home').innerText = currentLang === 'ko' ? '뒤로' : 'BACK';
-
-            document.getElementById('btn-shuffle').innerText = t.btn_shuffle;
-            document.getElementById('btn-again-hand').innerText = t.btn_again;
-            document.getElementById('btn-back-selector-hand').innerText = t.btn_change_game;
-            document.getElementById('btn-back-menu-hand').innerText = t.btn_back_menu;
-
-            document.getElementById('txt-roulette-title').innerHTML = `🎡 <b>${currentLang === 'ko' ? '행운의 룰렛' : 'LUCKY ROULETTE'}</b>`;
-            document.getElementById('roulette-spin-btn').innerText = t.btn_spin;
-            document.getElementById('btn-back-selector-roulette').innerText = t.btn_change_game;
-            document.getElementById('btn-back-menu-roulette').innerText = t.btn_back_menu;
-
-            document.getElementById('txt-cat-title').innerHTML = `🐈 <b>${currentLang === 'ko' ? '고양이의 선택' : "CAT'S CHOICE"}</b>`;
-            document.getElementById('cat-start-btn').innerText = currentLang === 'ko' ? '시작' : 'START';
-            document.getElementById('btn-back-selector-cat').innerText = t.btn_change_game;
-            document.getElementById('btn-back-menu-cat').innerText = t.btn_back_menu;
-
-            document.getElementById('txt-about-title').innerHTML = `☕ <b>ABOUT LUCKY BEAN</b>`;
-            document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
-            document.getElementById('btn-back-home-about').innerText = t.btn_back_home;
-
-            document.getElementById('txt-history-title').innerHTML = `🏆 <b>${currentLang === 'ko' ? '기부 히스토리' : 'DONATION HISTORY'}</b>`;
-            document.getElementById('btn-back-home-history').innerText = t.btn_back_home;
-            document.getElementById('btn-reset-all').innerText = currentLang === 'ko' ? '데이터 초기화' : 'RESET ALL DATA';
-
             document.getElementById('txt-donation-kings').innerText = t.lbl_kings;
-            document.getElementById('btn-reset-small').innerText = currentLang === 'ko' ? '초기화' : 'RESET';
-
-            document.getElementById('display-group-name').innerText = groupName || t.lbl_empty;
-            document.getElementById('display-member-count').innerText = `${members.length} ${t.lbl_member_count}`;
-
-            if(previousView === 'front-view') updateRPG(t.welcome);
-            renderStats();
-            renderInputGrid();
-        }
-
-        function updateRPG(msg) { rpgContent.innerText = msg; }
-
-        function showView(viewId) {
-            const views = ['front-view', 'selector-view', 'setup-view', 'game-view', 'roulette-view', 'cat-view', 'about-view', 'history-view'];
-            views.forEach(v => document.getElementById(v).classList.add('hidden'));
-            document.getElementById(viewId).classList.remove('hidden');
-            if(viewId !== 'setup-view') previousView = viewId;
+            document.getElementById('txt-unit-price').innerText = t.lbl_unit_price;
+            document.getElementById('txt-subtotal').innerText = t.lbl_subtotal;
+            document.getElementById('txt-selected-customer').innerText = t.lbl_selected;
+            document.getElementById('id-share-btn').innerText = t.lbl_get_receipt;
+            document.getElementById('txt-choose-luck').innerText = t.choose_luck;
+            document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
+            document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : "Lucky Roulette";
+            document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : "Cat's Choice";
             
-            if(viewId === 'front-view') mainImg.src = 'cafe_facade.png';
-            else if(viewId === 'selector-view') mainImg.src = 'cafe_inside.png';
-            else if(viewId === 'game-view') mainImg.src = 'cafe_table.png';
-            else if(viewId === 'roulette-view') mainImg.src = 'cafe_table.png';
-            else if(viewId === 'cat-view') mainImg.src = 'cafe_garden.png';
+            document.getElementById('txt-setting-title').innerHTML = `📋 <b>${currentLang === 'ko' ? "주문 메뉴 설정" : "ORDER MENU SETTING"}</b>`;
+            document.getElementById('txt-roulette-title').innerHTML = `🎡 <b>${currentLang === 'ko' ? "행운의 룰렛" : "LUCKY ROULETTE"}</b>`;
+            document.getElementById('txt-cat-title').innerHTML = `🐈 <b>${currentLang === 'ko' ? "고양이의 선택" : "CAT'S CHOICE"}</b>`;
+            document.getElementById('txt-about-title').innerHTML = `☕ <b>${currentLang === 'ko' ? "럭키빈 정보" : "ABOUT LUCKY BEAN"}</b>`;
+            document.getElementById('txt-history-title').innerHTML = `🏆 <b>${currentLang === 'ko' ? "기부 히스토리" : "DONATION HISTORY"}</b>`;
+            document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
+            document.getElementById('display-group-name').innerText = currentTeamName === 'Empty' ? t.lbl_empty : currentTeamName;
+            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : ' Members'}`;
         }
 
-        function goFront() { 
+        function updateText(msgKey, isDirect = false) {
+            clearTimeout(typeTimeout);
+            const content = document.getElementById('rpg-content'); content.innerText = ''; let i = 0;
+            const msg = isDirect ? msgKey : i18n[currentLang][msgKey];
+            function typing() { if (i < msg.length) { content.innerText += msg.charAt(i); i++; typeTimeout = setTimeout(typing, 40); } }
+            typing();
+        }
+
+        function handleStartGame() {
+            AudioEngine.initAndPlayBGM();
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => { splash.style.display = 'none'; goFront(); }, 600);
+        }
+
+        function goFront() {
+            hideAllViews();
+            document.getElementById('front-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_facade.png';
+            updateText('welcome');
+            showStats();
+        }
+
+        function showGameSelector() {
+            hideAllViews();
+            document.getElementById('selector-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_facade_zoom.png';
+            updateText('choose_luck');
+        }
+
+        function goSetup() {
+            hideAllViews();
+            document.getElementById('setup-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_setting.png';
+            updateText('setting_msg');
+            generateNameInputs();
+        }
+
+        function goAbout() {
+            hideAllViews();
+            document.getElementById('about-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_facade.png';
+            updateText('how_to');
+        }
+
+        function goHistory() {
+            hideAllViews();
+            document.getElementById('history-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_history.png';
+            updateText('history_msg');
+            renderHistoryPage();
+        }
+
+        function hideAllViews() {
+            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view', 'cat-view'].forEach(v => {
+                const el = document.getElementById(v);
+                if(el) el.classList.add('hidden');
+            });
             document.getElementById('result-shared-root').classList.add('hidden');
-            showView('front-view'); 
-            updateRPG(i18n[currentLang].welcome);
-        }
-        function showGameSelector() { 
-            document.getElementById('result-shared-root').classList.add('hidden');
-            showView('selector-view'); 
-            updateRPG(i18n[currentLang].choose_luck);
-        }
-        function goAbout() { showView('about-view'); }
-        function goHistory() { showView('history-view'); renderHistoryList(); }
-        function goSetup() { 
-            showView('setup-view'); 
-            renderInputGrid();
-            updateRPG(i18n[currentLang].setting_msg);
-        }
-        
-        // 게임내 설정 진입 및 돌아오기 로직
-        let lastGameView = 'selector-view';
-        function goSetupFromGame(game) {
-            lastGameView = game === 'hand' ? 'game-view' : (game === 'roulette' ? 'roulette-view' : 'cat-view');
-            goSetup();
-        }
-        function goBackFromSetup() {
-            showView(lastGameView);
-            // 만약 게임뷰에서 온것이라면 데이터 즉시 반영 위해 재시작 필요할 수 있음
-            if(lastGameView === 'game-view') startGame();
-            if(lastGameView === 'roulette-view') goRoulette();
-            if(lastGameView === 'cat-view') goCatGame();
-        }
+            document.getElementById('receipt').classList.remove('show');
+            document.getElementById('lucky-area').classList.add('hidden');
+            document.querySelectorAll('button').forEach(btn => btn.disabled = false);
 
-        function renderInputGrid() {
-            const container = document.getElementById('name-input-container');
-            container.innerHTML = "";
-            members.forEach((m, idx) => {
-                const input = document.createElement('input');
-                input.className = 'name-input';
-                input.value = m;
-                input.placeholder = `Name ${idx+1}`;
-                input.oninput = (e) => { members[idx] = e.target.value; };
-                container.appendChild(input);
-            });
-        }
-
-        function openGroupModal() {
-            const container = document.getElementById('modal-list-container');
-            container.innerHTML = "";
-            document.getElementById('modal-title').innerText = i18n[currentLang].lbl_group;
-            presetGroups.forEach(g => {
-                const div = document.createElement('div');
-                div.className = 'stats-row';
-                div.style.padding = "15px";
-                div.style.cursor = "pointer";
-                div.style.borderBottom = "1px solid #f0f0f0";
-                div.innerHTML = `<span style="font-weight:800;">${g.name}</span><span style="color:#bbb; font-size:0.7rem;">${g.members.length} members</span>`;
-                div.onclick = () => {
-                    groupName = g.name;
-                    members = [...g.members];
-                    updateUI();
-                    closeModal();
-                };
-                container.appendChild(div);
-            });
-            document.getElementById('modal-overlay').style.display = 'flex';
-        }
-
-        function openMemberModal() {
-            const container = document.getElementById('modal-list-container');
-            container.innerHTML = "";
-            document.getElementById('modal-title').innerText = i18n[currentLang].lbl_members;
-            [2, 3, 4, 5, 6, 8, 10, 12].forEach(n => {
-                const div = document.createElement('div');
-                div.className = 'stats-row';
-                div.style.padding = "15px";
-                div.style.cursor = "pointer";
-                div.style.borderBottom = "1px solid #f0f0f0";
-                div.innerHTML = `<span style="font-weight:800;">${n} ${i18n[currentLang].lbl_member_count}</span>`;
-                div.onclick = () => {
-                    const diff = n - members.length;
-                    if(diff > 0) for(let i=0; i<diff; i++) members.push("");
-                    else if(diff < 0) members = members.slice(0, n);
-                    updateUI();
-                    closeModal();
-                };
-                container.appendChild(div);
-            });
-            document.getElementById('modal-overlay').style.display = 'flex';
-        }
-
-        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-
-        function fillRandomNames() {
-            const shuffled = [...randomNames].sort(() => 0.5 - Math.random());
-            members = members.map((_, i) => shuffled[i % shuffled.length]);
-            renderInputGrid();
-        }
-
-        function clearNames() {
-            members = members.map(() => "");
-            renderInputGrid();
-        }
-
-        function saveCurrentTeam() {
-            localStorage.setItem('luckyBeanMembers', JSON.stringify(members));
-            localStorage.setItem('luckyBeanGroup', groupName);
-            alert(currentLang === 'ko' ? "저장되었습니다!" : "Saved!");
+            const captureArea = document.getElementById('capture-area');
+            const rootContainer = document.getElementById('result-shared-root');
+            if(captureArea && rootContainer && captureArea.parentElement !== rootContainer) {
+                rootContainer.appendChild(captureArea);
+            }
         }
 
         function saveAndGoHome() {
-            saveCurrentTeam();
+            const inputs = document.querySelectorAll('.name-input');
+            const tempNames = [];
+            for (let i = 0; i < currentMemberCount; i++) { tempNames.push(inputs[i].value.trim() || `User ${i+1}`); }
+            localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
             goFront();
         }
 
-        // --- 랜덤 핸드 로직 ---
-        let canPick = true;
-        let isAllPass = false;
-
-        function startGame() {
-            if(members.filter(m => m.trim() !== "").length < 2) {
-                alert(currentLang === 'ko' ? "최소 2명의 이름을 입력해주세요." : "Please enter at least 2 names.");
-                goSetup();
-                return;
+        function generateNameInputs(providedNames = null) {
+            const container = document.getElementById('name-input-container');
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            const lastSaved = saved ? JSON.parse(saved) : null;
+            const currentInputs = Array.from(container.querySelectorAll('.name-input')).map(i => i.value);
+            let namesToUse = providedNames || (lastSaved && lastSaved.length === currentMemberCount ? lastSaved : currentInputs);
+            container.innerHTML = '';
+            for (let i = 0; i < currentMemberCount; i++) {
+                const input = document.createElement('input'); input.type = 'text'; input.className = 'name-input';
+                input.placeholder = `User ${i+1}`; input.id = `input-name-${i}`;
+                if (namesToUse && namesToUse[i]) input.value = namesToUse[i];
+                container.appendChild(input);
             }
-            showView('game-view');
-            document.getElementById('result-shared-root').classList.add('hidden');
-            document.getElementById('lucky-area').classList.add('hidden');
-            document.getElementById('btn-shuffle').classList.remove('hidden');
-            document.getElementById('btn-again-hand').classList.add('hidden');
-            
-            isAllPass = Math.random() < 0.05;
-            canPick = false;
-            updateRPG(i18n[currentLang].hands_mixed);
-            
-            const display = document.getElementById('hand-display');
-            display.innerHTML = "";
-            
-            const activeMembers = members.filter(m => m.trim() !== "");
-            activeMembers.forEach((name, i) => {
-                const wrap = document.createElement('div');
-                wrap.className = 'hand-wrapper';
-                wrap.innerHTML = `<img src="hand_closed.png" class="hand-img tension-shake" id="hand-${i}"><div class="member-name">${name}</div>`;
-                display.appendChild(wrap);
-            });
+            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : ' Members'}`;
+        }
 
-            setTimeout(() => {
-                document.querySelectorAll('.hand-img').forEach(img => img.classList.remove('tension-shake'));
-                updateRPG(i18n[currentLang].pick_hand);
-                canPick = true;
-            }, 1200);
+        function fillRandomNames() {
+            let shuffled = [...randomNicknames].sort(() => Math.random() - 0.5);
+            document.querySelectorAll('.name-input').forEach((input, idx) => { input.value = shuffled[idx % shuffled.length]; });
+        }
+
+        function openGroupModal() {
+            const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
+            document.getElementById('modal-title').innerText = i18n[currentLang].lbl_group;
+            overlay.style.display = 'flex'; container.innerHTML = '';
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            Object.keys(teams).forEach(name => {
+                const div = document.createElement('div');
+                div.style = "display:flex; justify-content:space-between; padding:18px 5px; border-bottom:1px solid #f8f8f8;";
+                div.innerHTML = `<span style="flex:1; cursor:pointer; font-weight:600;" onclick="loadTeam('${name}')">${name}</span><span style="color:#eee; font-size:1.5rem; cursor:pointer; padding:0 10px;" onclick="deleteTeam('${name}')">×</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteTeam(name) {
+            if(confirm(`${name} 팀을 삭제할까요?`)) {
+                const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+                delete teams[name];
+                localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+                openGroupModal();
+            }
+        }
+
+        function openMemberModal() {
+            const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
+            document.getElementById('modal-title').innerText = currentLang === 'ko' ? "인원 선택" : "How many?";
+            overlay.style.display = 'flex'; container.innerHTML = '';
+            for (let i = 2; i <= 12; i++) {
+                const div = document.createElement('div');
+                div.style = "padding:18px 5px; border-bottom:1px solid #f8f8f8; text-align:center; cursor:pointer; font-weight:600;";
+                div.innerText = `${i}${currentLang === 'ko' ? '명' : ' Members'}`; div.onclick = () => { currentMemberCount = i; generateNameInputs(); closeModal(); };
+                container.appendChild(div);
+            }
+        }
+
+        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+        
+        function loadTeam(name) {
+            currentTeamName = name; document.getElementById('display-group-name').innerText = name;
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            if (teams[name]) { currentMemberCount = teams[name].count; generateNameInputs(teams[name].names); }
+            closeModal();
+        }
+
+        function saveCurrentTeam() {
+            const name = prompt(currentLang === 'ko' ? "그룹 이름을 입력하세요:" : "Group Name:"); if (!name) return;
+            const names = Array.from(document.querySelectorAll('.name-input')).map(i => i.value.trim() || `User`);
+            const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
+            teams[name] = { count: currentMemberCount, names: names };
+            localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+            currentTeamName = name; document.getElementById('display-group-name').innerText = name;
+        }
+
+        function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
+
+        /* --- 핸드 게임 로직 --- */
+        function startGame() {
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
+            AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * memberNames.length);
+            isLuckyRound = !lastWasLucky && Math.random() < 0.15;
+            isGameOver = false; hideAllViews();
+            document.getElementById('game-view').classList.remove('hidden');
+            document.getElementById('btn-shuffle').disabled = false;
+            document.getElementById('btn-again-hand').disabled = true;
+            updateText('pick_hand');
+            document.getElementById('main-img').src = 'cafe_counter.png';
+            renderHands();
+        }
+
+        function renderHands() {
+            const display = document.getElementById('hand-display'); display.innerHTML = '';
+            for (let i = 0; i < memberNames.length; i++) {
+                const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
+                const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png'; handImg.className = 'hand-img';
+                handImg.onclick = () => handleHandClick(i, memberNames.length);
+                const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
+                wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
+            }
         }
 
         function shufflePositions() {
-            const display = document.getElementById('hand-display');
-            const items = Array.from(display.children);
-            items.sort(() => Math.random() - 0.5);
-            display.innerHTML = "";
-            items.forEach(item => display.appendChild(item));
+            if (isGameOver || isShuffling) return;
+            isShuffling = true; AudioEngine.play('whoosh');
+            const wrappers = document.querySelectorAll('.hand-wrapper');
+            wrappers.forEach(w => { w.style.transition = "transform 0.4s"; w.style.transform = `scale(0.5) translate(0, 50px)`; });
+            setTimeout(() => {
+                for (let i = memberNames.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1)); [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
+                }
+                winnerIndex = Math.floor(Math.random() * memberNames.length);
+                wrappers.forEach(w => { w.style.transform = `translate(${(Math.random()-0.5)*100}px, ${(Math.random()-0.5)*100}px) scale(1)`; });
+                setTimeout(() => { renderHands(); isShuffling = false; updateText('hands_mixed'); }, 450);
+            }, 450);
         }
 
-        document.getElementById('hand-display').addEventListener('click', (e) => {
-            if(!canPick || !e.target.classList.contains('hand-img')) return;
-            const idx = e.target.id.split('-')[1];
-            const name = e.target.nextSibling.innerText;
-            
-            canPick = false;
-            if(isAllPass) {
-                e.target.src = 'hand_open.png';
-                triggerAllPass();
-            } else {
-                e.target.src = 'hand_loser.png';
-                e.target.classList.add('shake');
-                const t = i18n[currentLang];
-                updateRPG(name + t.pay_msg);
-                confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 }, colors: ['#ff4d4d', '#000000'] });
-                showReceipt(name);
-                saveResult(name);
-            }
-            document.getElementById('btn-shuffle').classList.add('hidden');
-            document.getElementById('btn-again-hand').classList.remove('hidden');
-        });
-
-        function triggerAllPass() {
-            document.querySelectorAll('.hand-img').forEach(img => {
-                img.src = 'hand_open.png';
-                img.classList.add('floating');
-            });
-            document.getElementById('lucky-area').classList.remove('hidden');
-            updateRPG(i18n[currentLang].all_pass_unbelievable);
-            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#f1c40f', '#ffffff'] });
+        function handleHandClick(index, total) {
+            if (isGameOver || isShuffling) return;
+            const hands = document.getElementsByClassName('hand-img');
+            if (hands[index].dataset.opened === "true") return;
+            document.getElementById('btn-shuffle').disabled = true;
+            hands[index].classList.add('tension-shake');
+            setTimeout(() => {
+                hands[index].classList.remove('tension-shake');
+                if (isLuckyRound) {
+                    isGameOver = true; lastWasLucky = true; AudioEngine.play('start');
+                    for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
+                    updateText('lucky_round');
+                    document.getElementById('main-img').src = 'cafe_counter_lucky.png';
+                    document.getElementById('lucky-area').classList.remove('hidden');
+                    document.getElementById('btn-again-hand').disabled = false;
+                } else if (index === winnerIndex) {
+                    isGameOver = true; lastWasLucky = false; AudioEngine.play('fail');
+                    hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
+                    for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
+                    updateText(`${memberNames[index]}${i18n[currentLang].pay_msg}`, true);
+                    document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                    updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                    showFinish(total, memberNames[index], 'game-view');
+                } else {
+                    AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true";
+                    updateText(`${memberNames[index]}${i18n[currentLang].safe_msg}`, true);
+                }
+            }, 800);
         }
 
-        // --- 룰렛 로직 ---
-        let isSpinning = false;
+        /* --- 룰렛 게임 로직 --- */
         function goRoulette() {
-            if(members.filter(m => m.trim() !== "").length < 2) {
-                alert(currentLang === 'ko' ? "최소 2명의 이름을 입력해주세요." : "Please enter at least 2 names.");
-                goSetup();
-                return;
-            }
-            showView('roulette-view');
-            document.getElementById('result-shared-root').classList.add('hidden');
-            updateRPG(i18n[currentLang].spin_msg);
-            drawRoulette(0);
+            hideAllViews();
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
+            currentRouletteItems = [...members, i18n[currentLang].all_pass];
+            document.getElementById('roulette-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_counter.png';
+            document.getElementById('roulette-spin-btn').innerText = i18n[currentLang].btn_spin;
+            updateText('spin_msg');
+            rouletteAngle = 0; drawRoulette();
         }
 
-        function drawRoulette(angle) {
-            const canvas = document.getElementById('rouletteCanvas');
-            const ctx = canvas.getContext('2d');
-            const activeMembers = members.filter(m => m.trim() !== "");
-            const slice = (Math.PI * 2) / activeMembers.length;
-            
+        function drawRoulette() {
+            const canvas = document.getElementById('rouletteCanvas'); const ctx = canvas.getContext('2d');
+            const cx = 200, cy = 200, r = 190;
+            const weights = currentRouletteItems.map(item => item.includes(i18n.en.all_pass) || item.includes(i18n.ko.all_pass) ? 0.2 : 1);
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
             ctx.clearRect(0, 0, 400, 400);
-            activeMembers.forEach((name, i) => {
-                const startA = i * slice + angle;
-                const endA = startA + slice;
-                ctx.beginPath();
-                ctx.moveTo(200, 200);
-                ctx.arc(200, 200, 190, startA, endA);
-                ctx.fillStyle = i % 2 === 0 ? "#ffffff" : "#f1f1f1";
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.save();
-                ctx.translate(200, 200);
-                ctx.rotate(startA + slice / 2);
-                ctx.textAlign = "right";
-                ctx.fillStyle = "#333";
-                ctx.font = "800 16px sans-serif";
-                ctx.fillText(name, 170, 5);
-                ctx.restore();
-            });
+            let startAngle = rouletteAngle;
+            for (let i = 0; i < currentRouletteItems.length; i++) {
+                const sliceAngle = (weights[i] / totalWeight) * Math.PI * 2;
+                ctx.beginPath(); ctx.fillStyle = (currentRouletteItems[i].includes(i18n.en.all_pass) || currentRouletteItems[i].includes(i18n.ko.all_pass)) ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
+                ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, startAngle, startAngle + sliceAngle); ctx.fill();
+                ctx.strokeStyle = "#333"; ctx.lineWidth = 2; ctx.stroke();
+                ctx.save(); ctx.translate(cx, cy); ctx.rotate(startAngle + sliceAngle / 2); ctx.textAlign = "right";
+                ctx.fillStyle = (currentRouletteItems[i].includes(i18n.en.all_pass) || currentRouletteItems[i].includes(i18n.ko.all_pass)) ? "#f1c40f" : "#333";
+                ctx.font = "bold 14px Montserrat"; ctx.fillText(currentRouletteItems[i], r - 30, 5); ctx.restore();
+                startAngle += sliceAngle;
+            }
+            ctx.beginPath(); ctx.arc(cx, cy, 15, 0, Math.PI * 2); ctx.fillStyle = "#333"; ctx.fill();
         }
 
         function spinRoulette() {
-            if(isSpinning) return;
-            isSpinning = true;
-            const btn = document.getElementById('roulette-spin-btn');
-            btn.disabled = true;
+            if (rouletteSpinning) return;
+            if (document.getElementById('roulette-spin-btn').innerText === i18n[currentLang].btn_again) { goRoulette(); return; }
+            rouletteSpinning = true; AudioEngine.play('whoosh');
+            
+            document.getElementById('roulette-spin-btn').disabled = true;
+            document.getElementById('btn-back-selector-roulette').disabled = true;
+            document.getElementById('btn-back-menu-roulette').disabled = true;
 
-            let currentAngle = 0;
-            const targetRotation = Math.PI * 2 * (5 + Math.random() * 5);
-            const startTime = performance.now();
-            const duration = 4000;
-
+            const duration = 4000; const startTS = performance.now(); const startRot = rouletteAngle;
+            const targetRot = startRot + (Math.random() * 5 + 5) * Math.PI * 2;
             function animate(now) {
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
+                const elapsed = now - startTS; const progress = Math.min(elapsed / duration, 1);
                 const easeOut = 1 - Math.pow(1 - progress, 3);
-                currentAngle = targetRotation * easeOut;
-                drawRoulette(currentAngle);
-
-                if(progress < 1) requestAnimationFrame(animate);
-                else {
-                    isSpinning = false;
-                    btn.disabled = false;
-                    const activeMembers = members.filter(m => m.trim() !== "");
-                    const slice = (Math.PI * 2) / activeMembers.length;
-                    const normalized = (targetRotation % (Math.PI * 2));
-                    const winningIdx = activeMembers.length - 1 - Math.floor(normalized / slice);
-                    const winner = activeMembers[winningIdx % activeMembers.length];
-                    
-                    updateRPG(winner + i18n[currentLang].pay_msg);
-                    confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 } });
-                    showReceipt(winner);
-                    saveResult(winner);
-                }
+                rouletteAngle = startRot + (targetRot - startRot) * easeOut;
+                drawRoulette();
+                if (progress < 1) requestAnimationFrame(animate);
+                else { rouletteSpinning = false; finishSpin(); }
             }
             requestAnimationFrame(animate);
         }
 
-        // --- 고양이 게임 로직 ---
-        function goCatGame() {
-            if(members.filter(m => m.trim() !== "").length < 2) {
-                alert(currentLang === 'ko' ? "최소 2명의 이름을 입력해주세요." : "Please enter at least 2 names.");
-                goSetup();
-                return;
+        function finishSpin() {
+            const weights = currentRouletteItems.map(item => item.includes(i18n.en.all_pass) || item.includes(i18n.ko.all_pass) ? 0.2 : 1);
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            let normalizedAngle = (rouletteAngle % (Math.PI * 2)); if (normalizedAngle < 0) normalizedAngle += Math.PI * 2;
+            const pinPos = (Math.PI * 1.5); let checkAngle = normalizedAngle, winnerIdx = 0;
+            for (let i = 0; i < currentRouletteItems.length; i++) {
+                const sliceAngle = (weights[i] / totalWeight) * Math.PI * 2;
+                const start = checkAngle % (Math.PI * 2); const end = (checkAngle + sliceAngle) % (Math.PI * 2);
+                if (end < start) { if (pinPos >= start || pinPos <= end) { winnerIdx = i; break; } }
+                else { if (pinPos >= start && pinPos <= end) { winnerIdx = i; break; } }
+                checkAngle += sliceAngle;
             }
-            showView('cat-view');
-            document.getElementById('result-shared-root').classList.add('hidden');
-            updateRPG(i18n[currentLang].cat_start);
+            const winnerName = currentRouletteItems[winnerIdx];
             
-            const area = document.getElementById('bowls-container');
-            area.innerHTML = "";
-            const activeMembers = members.filter(m => m.trim() !== "");
+            document.getElementById('roulette-spin-btn').disabled = false;
+            document.getElementById('btn-back-selector-roulette').disabled = false;
+            document.getElementById('btn-back-menu-roulette').disabled = false;
+            document.getElementById('roulette-spin-btn').innerText = i18n[currentLang].btn_again;
             
-            // 6명 기준 고정 그리드 배치 로직 (한 줄 6개)
-            const count = activeMembers.length;
-            const bowlWidth = 50;
-            const gap = (320 - (count * bowlWidth)) / (count + 1);
+            if (winnerName.includes(i18n.en.all_pass) || winnerName.includes(i18n.ko.all_pass)) {
+                AudioEngine.play('start'); updateText('all_pass_unbelievable');
+                document.getElementById('main-img').src = 'cafe_counter_lucky.png';
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] });
+                showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-view');
+            } else {
+                AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true);
+                document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                updateStats(winnerName); confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } });
+                showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-view');
+            }
+        }
 
-            activeMembers.forEach((name, i) => {
+        /* --- 고양이의 선택 로직 --- */
+        function goCatGame() {
+            hideAllViews();
+            const saved = localStorage.getItem('lastCoffeeMembers');
+            memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
+            document.getElementById('cat-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_counter.png';
+            document.getElementById('cat-start-btn').disabled = false;
+            document.getElementById('cat-start-btn').innerText = i18n[currentLang].btn_start;
+            updateText('cat_start');
+            
+            const cat = document.getElementById('moving-cat');
+            cat.src = 'cat_stand.png'; cat.style.left = '50%'; cat.style.top = '12%'; cat.style.transform = 'translateX(-50%)';
+            cat.className = '';
+            
+            renderCatBowls();
+        }
+
+        function renderCatBowls() {
+            const container = document.getElementById('bowls-container');
+            container.innerHTML = '';
+            const count = memberNames.length;
+            const areaWidth = document.getElementById('cat-game-area').clientWidth;
+            
+            memberNames.forEach((name, i) => {
                 const bowl = document.createElement('div');
                 bowl.className = 'cat-bowl';
                 bowl.id = `bowl-${i}`;
-                bowl.style.left = `${gap + i * (bowlWidth + gap)}px`;
-                bowl.innerHTML = `<img src="cat_bowl.png" class="bowl-img"><div class="bowl-name">${name}</div>`;
-                area.appendChild(bowl);
+                const xPos = (areaWidth / (count + 1)) * (i + 1) - 30;
+                bowl.style.left = `${xPos}px`;
+                bowl.style.opacity = '1';
+                bowl.style.filter = 'none';
+                bowl.innerHTML = `<img src="cat_bowl_full.png" class="bowl-img" id="img-bowl-${i}"><div class="bowl-name">${name}</div>`;
+                container.appendChild(bowl);
             });
-            document.getElementById('moving-cat').style.left = '50%';
-            document.getElementById('moving-cat').style.top = '12%';
-            document.getElementById('cat-start-btn').disabled = false;
         }
 
         function startCatGame() {
-            const btn = document.getElementById('cat-start-btn');
-            btn.disabled = true;
+            if (catRunning) return;
+            if (document.getElementById('cat-start-btn').innerText === i18n[currentLang].btn_again) { goCatGame(); return; }
+            
+            catRunning = true;
+            document.getElementById('cat-start-btn').disabled = true;
+            document.getElementById('btn-back-selector-cat').disabled = true;
+            document.getElementById('btn-back-menu-cat').disabled = true;
+            
+            updateText('cat_msg');
+            AudioEngine.play('whoosh');
+            
             const cat = document.getElementById('moving-cat');
-            cat.src = "cat_walk.gif";
-            cat.classList.add('cat-moving');
-            updateRPG(i18n[currentLang].cat_msg);
-
-            const activeMembers = members.filter(m => m.trim() !== "");
-            const winnerIdx = Math.floor(Math.random() * activeMembers.length);
-            const targetBowl = document.getElementById(`bowl-${winnerIdx}`);
-            const targetX = targetBowl.offsetLeft + (targetBowl.offsetWidth / 2);
+            cat.src = 'cat_walk.gif'; cat.style.transform = 'none'; cat.classList.add('cat-moving');
             
-            // 고양이가 배회하는 척하다가 타겟으로 이동
-            setTimeout(() => {
-                cat.style.left = `${targetX}px`;
-                cat.style.top = '55%';
-            }, 1000);
-
-            setTimeout(() => {
-                cat.src = "cat_stand.png";
-                cat.classList.remove('cat-moving');
-                targetBowl.classList.add('bowl-highlight');
-                document.querySelectorAll('.cat-bowl').forEach((b, idx) => {
-                    if(idx !== winnerIdx) b.classList.add('bowl-dimmed');
-                });
-                
-                const winner = activeMembers[winnerIdx];
-                updateRPG(winner + i18n[currentLang].pay_msg);
-                confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 } });
-                showReceipt(winner);
-                saveResult(winner);
-                btn.disabled = false;
-            }, 2500);
+            const winnerIdx = Math.floor(Math.random() * memberNames.length);
+            const bowlEls = document.querySelectorAll('.cat-bowl');
+            
+            let visits = 0;
+            const maxVisits = 6 + Math.floor(Math.random() * 4);
+            
+            function moveCat() {
+                if (visits < maxVisits) {
+                    const randomBowlIdx = Math.floor(Math.random() * memberNames.length);
+                    const targetBowl = bowlEls[randomBowlIdx];
+                    cat.style.left = (parseInt(targetBowl.style.left) - 10) + 'px';
+                    cat.style.top = (10 + Math.random() * 5) + '%';
+                    visits++;
+                    setTimeout(moveCat, 400 + Math.random() * 300);
+                } else {
+                    const finalBowl = bowlEls[winnerIdx];
+                    cat.style.left = (parseInt(finalBowl.style.left) - 10) + 'px';
+                    
+                    setTimeout(() => {
+                        cat.classList.remove('cat-moving');
+                        cat.src = 'cat_eat.png';
+                        // 변경사항 반영: 당첨 시 높이 top 32%로 하강
+                        cat.style.top = '32%';
+                        
+                        // 변경사항 반영: 선택 안된 보울 흐리게 및 z-index 조정
+                        bowlEls.forEach((b, idx) => {
+                            if(idx !== winnerIdx) {
+                                b.classList.add('bowl-dimmed');
+                            } else {
+                                b.classList.add('bowl-highlight');
+                                // 고양이가 먹는 시점에 당첨 보울을 빈 보울로 변경
+                                setTimeout(() => {
+                                    document.getElementById(`img-bowl-${winnerIdx}`).src = 'cat_bowl_empty.png';
+                                }, 500);
+                            }
+                        });
+                        
+                        AudioEngine.play('fail');
+                        updateText(`${memberNames[winnerIdx]}${i18n[currentLang].pay_msg}`, true);
+                        document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                        updateStats(memberNames[winnerIdx]);
+                        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                        
+                        showFinish(memberNames.length, memberNames[winnerIdx], 'cat-view');
+                        
+                        document.getElementById('cat-start-btn').disabled = false;
+                        document.getElementById('btn-back-selector-cat').disabled = false;
+                        document.getElementById('btn-back-menu-cat').disabled = false;
+                        document.getElementById('cat-start-btn').innerText = i18n[currentLang].btn_again;
+                        catRunning = false;
+                    }, 500);
+                }
+            }
+            moveCat();
         }
 
-        // --- 결과 및 공통 로직 ---
-        function showReceipt(name) {
+        /* --- 공통 유틸리티 --- */
+        function showFinish(total, payerName, viewId) {
+            const now = new Date(); const randomPrice = (Math.random() * (8.5 - 3.5) + 3.5).toFixed(2);
             const t = i18n[currentLang];
-            const receipt = document.getElementById('receipt');
-            const root = document.getElementById('result-shared-root');
-            root.classList.remove('hidden');
-            receipt.classList.add('show');
-            
-            const now = new Date();
             document.getElementById('receipt-date').innerText = now.toLocaleDateString();
-            document.getElementById('receipt-order-no').innerText = "ORD-" + Math.floor(Math.random()*9000+1000);
+            document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('receipt-qty').innerText = "x" + total;
+            document.getElementById('receipt-price').innerText = "$" + randomPrice;
+            document.getElementById('receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2);
+            document.getElementById('receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
+            document.getElementById('receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
             
-            const menu = t.menus[Math.floor(Math.random()*t.menus.length)];
-            const price = (Math.floor(Math.random()*3 + 3) * 1000) + (Math.random() < 0.5 ? 500 : 0);
-            const qty = members.filter(m => m.trim() !== "").length;
+            const payerEl = document.getElementById('receipt-payer');
+            if(payerName.includes(i18n.en.all_pass) || payerName.includes(i18n.ko.all_pass)) {
+                payerEl.innerText = "FREE"; payerEl.style.color = "var(--roulette-gold)";
+            } else {
+                payerEl.innerText = payerName; payerEl.style.color = "var(--point-red)";
+            }
 
-            document.getElementById('receipt-menu').innerText = menu;
-            document.getElementById('receipt-qty').innerText = "x" + qty;
-            document.getElementById('txt-unit-price').innerText = t.lbl_unit_price;
-            document.getElementById('receipt-price').innerText = price.toLocaleString();
-            document.getElementById('txt-subtotal').innerText = t.lbl_subtotal;
-            document.getElementById('receipt-subtotal').innerText = (price * qty).toLocaleString();
-            document.getElementById('txt-selected-customer').innerText = t.lbl_selected;
-            document.getElementById('receipt-payer').innerText = name;
-            document.getElementById('receipt-fortune').innerText = t.fortunes[Math.floor(Math.random()*t.fortunes.length)];
-            document.getElementById('id-share-btn').innerText = t.lbl_get_receipt;
+            const resRoot = document.getElementById('result-shared-root');
+            const captureArea = document.getElementById('capture-area');
+            resRoot.classList.remove('hidden');
+
+            if(viewId === 'game-view') {
+                document.getElementById('game-btn-group').prepend(captureArea);
+            } else if(viewId === 'roulette-view') {
+                document.getElementById('roulette-action-area').prepend(captureArea);
+            } else if(viewId === 'cat-view') {
+                document.getElementById('cat-action-area').prepend(captureArea);
+            }
+            setTimeout(() => document.getElementById('receipt').classList.add('show'), 200);
         }
 
-        function saveResult(name) {
-            const entry = { name, date: new Date().toISOString(), lang: currentLang };
-            history.push(entry);
-            localStorage.setItem('coffeeStats', JSON.stringify(history));
-            renderStats();
+        function updateStats(name) {
+            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const monthKey = new Date().toISOString().slice(0, 7);
+            if(!stats[name] || typeof stats[name] !== 'object') { stats[name] = { total: 0, monthly: {} }; }
+            stats[name].total += 1;
+            stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1;
+            localStorage.setItem('coffeeStats', JSON.stringify(stats));
         }
 
-        function renderStats() {
-            const statsList = document.getElementById('stats-list');
+        function showStats() {
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const entries = Object.entries(stats).map(([name, data]) => [name, data.total || 0]).sort((a, b) => b[1] - a[1]);
             const dashboard = document.getElementById('stats-dashboard');
-            const noMsg = document.getElementById('no-stats-msg');
-
-            if(history.length === 0) {
-                dashboard.classList.add('hidden');
-                noMsg.classList.remove('hidden');
-                return;
-            }
-            dashboard.classList.remove('hidden');
-            noMsg.classList.add('hidden');
-
-            const counts = history.reduce((acc, curr) => {
-                acc[curr.name] = (acc[curr.name] || 0) + 1;
-                return acc;
-            }, {});
-
-            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 5);
-            statsList.innerHTML = sorted.map(([name, count]) => `
-                <div class="stats-row">
-                    <span>${name}</span>
-                    <span style="color:var(--point-red); font-weight:800;">${count} ${i18n[currentLang].lbl_times}</span>
-                </div>
-            `).join('');
+            if (entries.length === 0) { if(dashboard) dashboard.classList.add('hidden'); return; }
+            if(dashboard) dashboard.classList.remove('hidden');
+            const list = document.getElementById('stats-list');
+            if(list) list.innerHTML = entries.slice(0, 3).map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} ${i18n[currentLang].lbl_times}</span></div>`).join('');
         }
 
-        function renderHistoryList() {
-            const content = document.getElementById('history-list-content');
+        function renderHistoryPage() {
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const monthKey = new Date().toISOString().slice(0, 7);
+            const entries = Object.entries(stats).map(([name, data]) => ({ name, total: data.total || 0, monthly: (data.monthly && data.monthly[monthKey]) || 0 }))
+                            .sort((a, b) => b.total - a.total);
             const kingArea = document.getElementById('monthly-king-area');
-            if(history.length === 0) {
-                content.innerText = currentLang === 'ko' ? "기록이 없습니다." : "No history yet.";
-                kingArea.innerHTML = "";
-                return;
-            }
-
-            // 이달의 왕 계산
-            const counts = history.reduce((acc, curr) => {
-                acc[curr.name] = (acc[curr.name] || 0) + 1;
-                return acc;
-            }, {});
-            const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
-            const king = sorted[0];
-
-            kingArea.innerHTML = `
-                <div class="monthly-king-badge">
-                    <div class="king-crown">👑</div>
-                    <div class="king-info">
-                        <div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div>
-                        <div class="king-name">${king[0]}</div>
-                    </div>
-                    <div class="king-count-area">${king[1]}${i18n[currentLang].lbl_times}</div>
-                </div>
-            `;
-
-            content.innerHTML = history.slice().reverse().map(h => `
-                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0f0f0;">
-                    <span>${h.name}</span>
-                    <span style="font-size:0.7rem; color:#bbb;">${new Date(h.date).toLocaleDateString()}</span>
-                </div>
-            `).join('');
+            const content = document.getElementById('history-list-content');
+            if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = "No Data."; return; }
+            const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0];
+            
+            if(king && king.monthly > 0) {
+                kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king} (${monthKey})</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly} ${i18n[currentLang].lbl_times}</div></div>`;
+            } else { kingArea.innerHTML = ""; }
+            
+            content.innerHTML = entries.map(item => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f0f0f0;"><span style="font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</span><span style="color:var(--point-red); font-weight:800; flex-shrink:0; margin-left:10px;">${item.total} ${i18n[currentLang].lbl_times}</span></div>`).join('');
         }
 
-        function resetStats() {
-            if(confirm(currentLang === 'ko' ? "모든 데이터를 삭제할까요?" : "Clear all stats?")) {
-                history = [];
-                localStorage.removeItem('coffeeStats');
-                updateUI();
-                if(!document.getElementById('history-view').classList.contains('hidden')) goHistory();
-            }
-        }
+        function resetStats() { if(confirm(currentLang === 'ko' ? "모든 데이터를 삭제할까요?" : "Clear all?")) { localStorage.removeItem('coffeeStats'); goFront(); } }
 
         async function shareAsImage() {
-            const btn = document.getElementById('id-share-btn');
-            const originalText = btn.innerText;
-            btn.innerText = "...";
             const captureArea = document.getElementById('capture-area');
-            
+            const btn = document.getElementById('id-share-btn'); btn.innerText = "...";
             try {
-                const canvas = await html2canvas(captureArea, { backgroundColor: null, scale: 2 });
+                const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", scale: 3 });
                 canvas.toBlob(async (blob) => {
-                    const file = new File([blob], "lucky_receipt.png", { type: "image/png" });
-                    if (navigator.share) {
-                        await navigator.share({ files: [file], title: 'Lucky Bean Receipt' });
-                    } else {
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.download = 'receipt.png';
-                        link.click();
-                    }
-                    btn.innerText = originalText;
+                    const file = new File([blob], "receipt.png", { type: "image/png" });
+                    if (navigator.share) await navigator.share({ files: [file] });
+                    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'receipt.png'; a.click(); }
+                    btn.innerText = i18n[currentLang].lbl_get_receipt;
                 });
-            } catch (e) {
-                console.error(e);
-                btn.innerText = originalText;
-            }
+            } catch (e) { btn.innerText = "ERROR"; }
         }
-
-        function handleStartGame() {
-            const bgm = document.getElementById('bgm-player');
-            bgm.play().catch(() => console.log("Audio auto-play blocked"));
-            document.getElementById('splash-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splash-screen').style.display = 'none';
-            }, 600);
-        }
-
-        // 초기 로딩 애니메이션
-        window.addEventListener('load', () => {
-            const fill = document.getElementById('progress-fill');
-            let p = 0;
-            const iv = setInterval(() => {
-                p += Math.random() * 20;
-                if(p >= 100) {
-                    p = 100;
-                    clearInterval(iv);
-                    document.getElementById('loading-progress-area').style.display = 'none';
-                    document.getElementById('start-action-area').style.display = 'flex';
-                }
-                fill.style.width = p + '%';
-            }, 150);
-            updateUI();
-        });
     </script>
 </body>
 </html>

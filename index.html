@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.5.5</title>
+    <title>lucky bean - v0.6.5</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -28,6 +28,7 @@
             --btn-shadow: #333333;
             --btn-light-shadow: #e0e0e0;
             --roulette-gold: #f1c40f;
+            --btn-dark-gray: #444444;
         }
 
         html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
@@ -63,7 +64,14 @@
             padding: 25px; box-sizing: border-box; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.01), 0 15px 35px rgba(0,0,0,0.03); margin: 0 auto 25px;
         }
 
-        .order-menu-header { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; color: #333; text-align: left; margin-bottom: 10px; letter-spacing: 1px; }
+        .order-menu-header { 
+            font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; color: #333; 
+            text-align: left; margin-bottom: 12px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .settings-icon-btn {
+            background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #bbb; padding: 0 5px; transition: color 0.2s;
+        }
 
         .picker-group { width: 100%; display: flex; gap: 12px; margin-bottom: 20px; }
         .picker-btn {
@@ -77,9 +85,17 @@
         .picker-value { display: flex; justify-content: space-between; width: 100%; align-items: center; }
         .picker-value::after { content: '▾'; color: #ccc; font-size: 1rem; }
 
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; margin-bottom: 15px; }
+        .toggle-label { font-size: 0.75rem; font-weight: 800; color: #333; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--point-red); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
         .icon-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
         .icon-btn-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
-        .icon-btn-item:active { transform: scale(0.95); }
         .icon-square {
             width: 100%; aspect-ratio: 1/1; border: 3px solid #000; border-radius: 15px;
             background: #fff; overflow: hidden; margin-bottom: 8px; box-shadow: 0 4px 0 #333;
@@ -104,56 +120,51 @@
         .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #666; font-weight: 600; }
 
-        #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 10px 10px; width: 100%; box-sizing: border-box; position: relative; margin-bottom: 20px; }
-        .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 20px); min-width: 90px; transition: transform 0.4s ease; z-index: 1; }
-        .hand-img { width: 100%; max-width: 140px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
+        .game-canvas-area { 
+            width: 100%; min-height: 220px; height: auto; position: relative; margin: 15px 0; padding-bottom: 25px; overflow: hidden; background: #fff; border: 2px solid #eee; border-radius: 20px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            transition: min-height 0.3s ease-out;
+        }
 
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        #hand-display { 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 25px 15px; width: 100%; box-sizing: border-box; 
+        }
+        .hand-wrapper { display: flex; flex-direction: column; align-items: center; flex: 0 0 calc(33.33% - 15px); min-width: 85px; transition: transform 0.4s ease; z-index: 1; }
+        .hand-img { width: 100%; max-width: 110px; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
+        .hand-name { font-size: 0.75rem; font-weight: 800; margin-top: 8px; color: #555; text-align: center; word-break: keep-all; line-height: 1.2; }
+
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .tension-shake { animation: tension-animation 0.1s infinite !important; }
-        @keyframes tension-animation { 0% { transform: translate(2px, 2px); } 50% { transform: translate(-2px, -2px); } 100% { transform: translate(2px, -2px); } }
+        @keyframes tension-animation { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } 100% { transform: translate(1px, -1px); } }
         .shake { animation: winner-shake 0.15s infinite !important; }
-        @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+        @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
 
-        /* 고양이 게임 애니메이션 및 레이어 설정 */
+        #bowls-container { 
+            display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end;
+            gap: 12px; padding: 120px 10px 30px; width: 100%; box-sizing: border-box; margin-top: auto;
+        }
+        .cat-bowl { flex: 0 1 calc(16.66% - 12px); min-width: 48px; text-align: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bowl-img { width: 100%; max-width: 42px; height: auto; display: block; margin: 0 auto; transition: transform 0.3s; }
+        .bowl-name { 
+            font-size: 0.55rem; font-weight: 800; color: #888; margin-top: 6px; 
+            white-space: normal; word-break: keep-all; line-height: 1.1; overflow: hidden;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+        }
+        
+        #moving-cat { 
+            position: absolute; width: 85px; height: auto; z-index: 15; top: 15px;
+            transition: left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
         @keyframes cat-walk { 0% { transform: translateX(-5px) rotate(-1deg); } 50% { transform: translateX(5px) rotate(1deg); } 100% { transform: translateX(-5px) rotate(-1deg); } }
         .cat-moving { animation: cat-walk 0.4s infinite; }
-        
-        .bowl-highlight { transform: scale(1.2); z-index: 10 !important; filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
+        .bowl-highlight { transform: scale(1.15); z-index: 10 !important; filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
         .bowl-dimmed { opacity: 0.2; filter: blur(2px); z-index: 1 !important; }
 
-        .game-header-btns {
-            display: flex; justify-content: center; align-items: center; gap: 12px;
-            width: 100%; max-width: 450px; margin: 0 auto 20px; padding: 0 15px; box-sizing: border-box;
+        #roulette-container { position: relative; width: 100%; max-width: 320px; margin: 20px auto; display: flex; flex-direction: column; align-items: center; }
+        .roulette-pin {
+            position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+            width: 34px; height: 44px; z-index: 20; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
         }
-        .btn-pixel-game {
-            flex: 1; max-width: 160px; background-color: #fff; color: #333; border: 2px solid #333; padding: 12px 0; font-size: 0.9rem; font-weight: 900;
-            border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #333; transition: all 0.1s; letter-spacing: 1px; text-transform: uppercase;
-        }
-        .btn-pixel-game:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
-        .btn-pixel-game:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: translateY(3px); filter: grayscale(1); }
-
-        .member-name { font-size: 0.85rem; font-weight: 800; margin-top: 10px; color: #555; }
-
-        .receipt {
-            background: #fff; color: #333; width: 280px; padding: 35px 25px 25px; font-family: 'Courier Prime', monospace;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 2px; position: relative; opacity: 0; margin: 0 auto;
-        }
-        .receipt::after {
-            content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 12px;
-            background: linear-gradient(-45deg, transparent 6px, #fff 6px), linear-gradient(45deg, transparent 6px, #fff 6px);
-            background-size: 12px 24px; transform: translateY(50%);
-        }
-        .receipt.show { animation: slideUpReceipt 0.6s forwards; }
-        @keyframes slideUpReceipt { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .receipt-header { font-size: 1.4rem; font-weight: 800; margin-bottom: 5px; letter-spacing: 2px; text-align: center; }
-        .receipt-subheader { font-size: 0.75rem; margin-bottom: 20px; text-align: center; color: #666; }
-        .receipt-line { border-top: 1px dashed #bbb; margin: 12px 0; width: 100%; }
-        .receipt-item { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; width: 100%; }
-        .receipt-total { display: flex; flex-direction: column; align-items: center; margin: 20px 0; padding: 10px 0; border-top: 2px solid #333; border-bottom: 2px solid #333; }
-        .label-customer { font-size: 0.7rem; font-weight: 700; color: #888; margin-bottom: 5px; }
-        .value-customer { font-size: 2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; }
-        .fortune-area { font-size: 0.75rem; line-height: 1.5; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; }
 
         .btn-main {
             padding: 20px 10px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: white; border: none; border-radius: 20px;
@@ -162,7 +173,6 @@
             position: relative; top: 0; margin-bottom: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .btn-main:active:not(:disabled) { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
-        .btn-main:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; top: 4px; }
 
         .btn-sub {
             padding: 16px; font-size: 0.9rem; font-weight: 800; background: #fff; color: #000; border: 2px solid #000; border-radius: 20px;
@@ -170,30 +180,23 @@
             box-shadow: 0 6px 0 var(--btn-shadow); text-transform: uppercase; margin-bottom: 12px;
         }
         .btn-sub:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 3px 0 var(--btn-shadow); }
-        .btn-sub:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(1); }
 
         .btn-spin {
             padding: 18px; font-size: 1.2rem; font-weight: 900; background: #e74c3c; color: white; border: 3px solid #000; border-radius: 50px;
-            cursor: pointer; width: 80%; max-width: 280px; transition: all 0.1s;
-            box-shadow: 0 6px 0 #333; text-transform: uppercase; margin: 20px auto;
+            cursor: pointer; width: 90%; max-width: 300px; transition: all 0.1s; margin: 20px auto;
+            box-shadow: 0 6px 0 #333; text-transform: uppercase; display: block;
         }
         .btn-spin:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #333; }
         .btn-spin:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: translateY(4px); }
 
-        .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 1px; }
-        .hidden { display: none !important; }
+        .btn-again { background-color: var(--btn-dark-gray) !important; box-shadow: 0 6px 0 #222 !important; }
 
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
-        .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #333; }
-        .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .loading-bar-fill { height: 100%; width: 0%; background: #000; transition: width 0.1s; }
-
-        .about-text { font-size: 0.85rem; color: #666; line-height: 1.6; text-align: left; word-break: keep-all; }
-        .about-label { font-weight: 800; color: #000; margin-top: 15px; display: block; }
+        .lang-btn { background: #eee; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: 800; border-radius: 8px; cursor: pointer; color: #999; transition: 0.2s; }
+        .lang-btn.active { background: #000; color: #fff; }
 
         .monthly-king-badge {
             background: #fff8e1; border: 1.5px solid #ffca28; border-radius: 15px;
@@ -206,26 +209,35 @@
         .king-tag { font-size: 0.65rem; font-weight: 800; color: #ffca28; letter-spacing: 1px; white-space: nowrap; }
         .king-count-area { margin-left: auto; font-weight: 800; color: #ffca28; white-space: nowrap; flex-shrink: 0; }
 
-        #roulette-container { position: relative; width: 100%; max-width: 320px; margin: 20px auto; }
-        .roulette-pin {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 30px; height: 40px; z-index: 20; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-        }
+        .history-item { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f0f0f0; font-size: 0.85rem; font-weight: 600; color: #333; }
+        .about-text { font-size: 0.85rem; color: #666; line-height: 1.7; text-align: left; word-break: keep-all; }
+        .about-label { font-weight: 800; color: #000; margin-top: 18px; display: block; font-size: 0.9rem; }
 
-        .lang-toggle-container { display: flex; justify-content: flex-end; width: 100%; margin-bottom: 15px; }
-        .lang-btn { background: #eee; border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: 800; border-radius: 8px; cursor: pointer; color: #999; transition: 0.2s; }
-        .lang-btn.active { background: #000; color: #fff; }
-
-        /* 고양이 게임 스타일링 */
-        #cat-game-area { width: 100%; height: 320px; position: relative; margin: 15px 0; overflow: hidden; background: #fff; border: 2px solid #eee; border-radius: 20px; }
-        .cat-bowl { position: absolute; bottom: 25px; width: 60px; text-align: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .bowl-img { width: 44px; height: auto; display: block; margin: 0 auto; transition: transform 0.3s; }
-        .bowl-name { font-size: 0.65rem; font-weight: 800; color: #888; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        #moving-cat { 
-            position: absolute; width: 85px; height: auto; z-index: 15; 
-            transition: left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        .receipt-container { width: 100%; display: flex; justify-content: center; margin: 15px 0; }
+        .receipt {
+            background: #fff; color: #333; width: 280px; padding: 35px 25px 25px; font-family: 'Courier Prime', monospace;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 2px; position: relative; margin: 0 auto;
+            text-align: left;
         }
+        .receipt.show { animation: slideUpReceipt 0.6s forwards; }
+        @keyframes slideUpReceipt { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .receipt-header { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; letter-spacing: 2px; text-align: center; }
+        .receipt-subheader { font-size: 0.75rem; margin-bottom: 20px; text-align: center; color: #666; font-weight: 700; }
+        .receipt-line { border-top: 1px dashed #bbb; margin: 12px 0; width: 100%; }
+        .receipt-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; width: 100%; font-weight: 600; }
+        .receipt-total { display: flex; flex-direction: column; align-items: center; margin: 25px 0; padding: 15px 0; border-top: 2px solid #333; border-bottom: 2px solid #333; }
+        .label-customer { font-size: 0.75rem; font-weight: 700; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        .value-customer { font-size: 2.2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; text-align: center; }
+        .fortune-area { font-size: 0.75rem; line-height: 1.6; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; font-style: italic; }
+
+        .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #ccc; letter-spacing: 1px; }
+        .hidden { display: none !important; }
+
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
+        .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #333; }
+        .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .loading-bar-fill { height: 100%; width: 0%; background: #000; transition: width 0.1s; }
     </style>
 </head>
 <body>
@@ -248,9 +260,7 @@
 
     <div id="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-title" id="modal-title" style="font-weight:800; font-size:1.2rem; margin-bottom:20px;">Select</div>
             <div id="modal-list-container"></div>
-            <button class="btn-text" id="modal-close-btn" style="width:100%; padding:20px; color:#999;" onclick="closeModal()">CLOSE</button>
         </div>
     </div>
 
@@ -285,7 +295,10 @@
 
             <div id="selector-view" class="hidden">
                 <div class="card-container">
-                    <div class="order-menu-header" id="txt-choose-luck" style="text-align: center; margin-bottom: 25px;">CHOOSE YOUR LUCK</div>
+                    <div class="order-menu-header">
+                        <span id="txt-choose-luck">CHOOSE YOUR LUCK</span>
+                        <button class="settings-icon-btn" onclick="goSetup('selector')">⚙️</button>
+                    </div>
                     <div class="icon-selector-grid">
                         <div class="icon-btn-item" onclick="startGame()">
                             <div class="icon-square"><img src="random_hand.png" alt="Hand"></div>
@@ -305,12 +318,14 @@
             </div>
 
             <div id="setup-view" class="hidden">
-                <div class="card-container">
-                    <div class="lang-toggle-container">
-                        <button id="lang-ko" class="lang-btn" onclick="setLanguage('ko')">KO</button>
-                        <button id="lang-en" class="lang-btn" onclick="setLanguage('en')" style="margin-left:5px;">EN</button>
+                <div class="card-container" style="text-align: left;">
+                    <div class="order-menu-header">
+                        <span id="txt-setting-title">📋 ORDER MENU SETTING</span>
+                        <div class="lang-toggle-container">
+                            <button id="lang-ko" class="lang-btn" onclick="setLanguage('ko')">KO</button>
+                            <button id="lang-en" class="lang-btn" onclick="setLanguage('en')" style="margin-left:5px;">EN</button>
+                        </div>
                     </div>
-                    <div class="order-menu-header" id="txt-setting-title">📋 <b>ORDER MENU SETTING</b></div>
                     <div class="divider" style="margin-bottom: 15px;"></div>
                     <div class="picker-group">
                         <div class="picker-btn" onclick="openGroupModal()">
@@ -322,6 +337,15 @@
                             <div class="picker-value"><span id="display-member-count">3 Members</span></div>
                         </div>
                     </div>
+                    
+                    <div class="setting-row">
+                        <span class="toggle-label" id="lbl-history-onoff">HISTORY RECORDING</span>
+                        <label class="switch">
+                            <input type="checkbox" id="history-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
                     <div class="name-mgmt-bar">
                         <button class="btn-text" id="btn-random" onclick="fillRandomNames()">RANDOM</button>
                         <button class="btn-text" id="btn-clear" onclick="clearNames()">CLEAR</button>
@@ -337,29 +361,47 @@
             </div>
 
             <div id="game-view" class="hidden">
-                <div class="game-header-btns">
-                    <button class="btn-pixel-game" id="btn-shuffle" onclick="shufflePositions()">SHUFFLE</button>
-                    <button class="btn-pixel-game" id="btn-again-hand" onclick="startGame()" disabled>AGAIN</button>
+                <div class="card-container" style="text-align:left;">
+                    <div class="order-menu-header">
+                        <span id="txt-game-hand-title">RANDOM HAND</span>
+                        <button class="settings-icon-btn" onclick="goSetup('hand')">⚙️</button>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="game-canvas-area" style="min-height: 200px;">
+                        <div id="hand-display"></div>
+                    </div>
+                    <button id="btn-shuffle" class="btn-spin" onclick="shufflePositions()">SHUFFLE</button>
+                    
+                    <div id="hand-result-anchor"></div>
+                    <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000; text-align: center;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
+                    
+                    <button id="hand-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('hand')">REPLAY</button>
                 </div>
-                <div id="hand-display"></div>
                 <div id="game-btn-group" style="display:flex; flex-direction:column; align-items:center; gap:8px; width:100%;">
-                    <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
                     <button class="btn-main" id="btn-back-selector-hand" onclick="showGameSelector()">CHANGE GAME</button>
                     <button class="btn-sub" id="btn-back-menu-hand" onclick="goFront()" style="color:#bbb; border-color:#eee; box-shadow:0 6px 0 #f8f8f8;">BACK TO MENU</button>
                 </div>
             </div>
 
             <div id="roulette-view" class="hidden">
-                <div class="card-container" style="text-align:center;">
-                    <div class="order-menu-header" id="txt-roulette-title">🎡 <b>LUCKY ROULETTE</b></div>
+                <div class="card-container" style="text-align:left;">
+                    <div class="order-menu-header">
+                        <span id="txt-roulette-title">🎡 LUCKY ROULETTE</span>
+                        <button class="settings-icon-btn" onclick="goSetup('roulette')">⚙️</button>
+                    </div>
                     <div class="divider"></div>
-                    <div id="roulette-container">
-                        <svg class="roulette-pin" viewBox="0 0 30 40">
-                            <path d="M15 0 L30 20 L15 40 L0 20 Z" fill="#e74c3c" stroke="#000" stroke-width="2"/>
-                        </svg>
-                        <canvas id="rouletteCanvas" width="400" height="400" style="width:100%; max-width:320px; border-radius:50%; border:6px solid #333;"></canvas>
+                    <div class="game-canvas-area" style="justify-content:center; min-height: 380px;">
+                        <div id="roulette-container">
+                            <svg class="roulette-pin" viewBox="0 0 30 40">
+                                <path d="M15 0 L30 20 L15 40 L0 20 Z" fill="#e74c3c" stroke="#000" stroke-width="2"/>
+                            </svg>
+                            <canvas id="rouletteCanvas" width="400" height="400" style="width:100%; max-width:320px; border-radius:50%; border:6px solid #333;"></canvas>
+                        </div>
                     </div>
                     <button id="roulette-spin-btn" class="btn-spin" onclick="spinRoulette()">SPIN</button>
+                    
+                    <div id="roulette-result-anchor"></div>
+                    <button id="roulette-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('roulette')">REPLAY</button>
                 </div>
                 <div id="roulette-action-area" style="display:flex; flex-direction:column; align-items:center; width:100%; gap:8px;">
                      <button class="btn-main" id="btn-back-selector-roulette" onclick="showGameSelector()">CHANGE GAME</button>
@@ -368,14 +410,20 @@
             </div>
 
             <div id="cat-view" class="hidden">
-                <div class="card-container" style="text-align:center;">
-                    <div class="order-menu-header" id="txt-cat-title">🐈 <b>CAT'S CHOICE</b></div>
+                <div class="card-container" style="text-align:left;">
+                    <div class="order-menu-header">
+                        <span id="txt-cat-title">🐈 CAT'S CHOICE</span>
+                        <button class="settings-icon-btn" onclick="goSetup('cat')">⚙️</button>
+                    </div>
                     <div class="divider"></div>
-                    <div id="cat-game-area">
-                        <img src="cat_stand.png" id="moving-cat" alt="Cat" style="left: 50%; top: 12%; transform: translateX(-50%);">
+                    <div id="cat-white-box" class="game-canvas-area" style="min-height: 320px;">
+                        <img src="cat_stand.png" id="moving-cat" alt="Cat" style="left: 50%; transform: translateX(-50%);">
                         <div id="bowls-container"></div>
                     </div>
                     <button id="cat-start-btn" class="btn-spin" onclick="startCatGame()">START</button>
+                    
+                    <div id="cat-result-anchor"></div>
+                    <button id="cat-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('cat')">REPLAY</button>
                 </div>
                 <div id="cat-action-area" style="display:flex; flex-direction:column; align-items:center; width:100%; gap:8px;">
                     <button class="btn-main" id="btn-back-selector-cat" onclick="showGameSelector()">CHANGE GAME</button>
@@ -383,31 +431,31 @@
                 </div>
             </div>
 
-            <div id="result-shared-root" class="hidden">
-                <div id="capture-area" style="padding: 15px 0; background: transparent; width:100%;">
-                    <div class="receipt" id="receipt">
+            <div id="receipt-prototype-area" class="hidden">
+                <div class="receipt-container">
+                    <div class="receipt">
                         <div class="receipt-header">RECEIPT</div>
                         <div class="receipt-subheader">LUCKY BEAN SHOP</div>
-                        <div class="receipt-item"><span id="receipt-date"></span><span id="receipt-order-no"></span></div>
+                        <div class="receipt-item"><span class="receipt-date"></span><span class="receipt-order-no"></span></div>
                         <div class="receipt-line"></div>
-                        <div class="receipt-item"><span id="receipt-menu"></span><span id="receipt-qty"></span></div>
-                        <div class="receipt-item"><span id="txt-unit-price">UNIT PRICE</span><span id="receipt-price"></span></div>
-                        <div class="receipt-line"></div>
-                        <div class="receipt-item" style="font-weight:800;"><span id="txt-subtotal">SUBTOTAL</span><span id="receipt-subtotal"></span></div>
+                        <div class="receipt-item"><span class="receipt-menu"></span><span class="receipt-qty"></span></div>
+                        <div class="receipt-item"><span class="txt-lbl-unit">UNIT PRICE</span><span class="receipt-price"></span></div>
+                        <div class="divider" style="margin: 10px 0; border-top: 1px dashed #bbb;"></div>
+                        <div class="receipt-item" style="font-weight:800;"><span class="txt-lbl-sub">SUBTOTAL</span><span class="receipt-subtotal"></span></div>
                         <div class="receipt-total">
-                            <span class="label-customer" id="txt-selected-customer">SELECTED CUSTOMER</span>
-                            <span id="receipt-payer" class="value-customer"></span>
+                            <span class="label-customer txt-lbl-payer">SELECTED CUSTOMER</span>
+                            <span class="receipt-payer value-customer"></span>
                         </div>
                         <div class="receipt-line"></div>
-                        <div class="fortune-area" id="receipt-fortune"></div>
-                        <button class="btn-text" id="id-share-btn" onclick="shareAsImage()" style="width:100%; margin-top: 15px; color:#ccc; border:1px solid #eee; border-radius:10px; padding:8px; font-size:0.6rem;">GET A RECEIPT</button>
+                        <div class="fortune-area receipt-fortune"></div>
+                        <button class="btn-text btn-capture-run" style="width:100%; margin-top: 15px; color:#ccc; border:1px solid #eee; border-radius:10px; padding:8px; font-size:0.6rem;">GET A RECEIPT</button>
                     </div>
                 </div>
             </div>
 
             <div id="about-view" class="hidden">
                 <div class="card-container" style="text-align: left;">
-                    <div class="order-menu-header" id="txt-about-title">☕ <b>ABOUT LUCKY BEAN</b></div>
+                    <div class="order-menu-header" id="txt-about-title">☕ ABOUT LUCKY BEAN</div>
                     <div class="divider"></div>
                     <div class="about-text" id="txt-about-content"></div>
                 </div>
@@ -416,16 +464,16 @@
 
             <div id="history-view" class="hidden">
                 <div class="card-container" style="text-align: left;">
-                    <div class="order-menu-header" id="txt-history-title">🏆 <b>DONATION HISTORY</b></div>
+                    <div class="order-menu-header" id="txt-history-title">🏆 DONATION HISTORY</div>
                     <div class="divider"></div>
                     <div id="monthly-king-area"></div>
-                    <div id="history-list-content" class="about-text"></div>
+                    <div id="history-list-content"></div>
                     <button class="btn-text" id="btn-reset-all" onclick="resetStats()" style="width:100%; margin-top:15px; color:var(--point-red);">RESET ALL DATA</button>
                 </div>
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.5.5 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.5 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -455,7 +503,7 @@
                 btn_back_home: "BACK TO HOME",
                 btn_save_exit: "SAVE & EXIT",
                 btn_shuffle: "SHUFFLE",
-                btn_again: "AGAIN",
+                btn_again: "REPLAY",
                 btn_spin: "SPIN",
                 btn_change_game: "CHANGE GAME",
                 lbl_group: "GROUP",
@@ -472,16 +520,11 @@
                 lbl_times: "times",
                 lbl_empty: "Empty",
                 lbl_member_count: "Members",
-                txt_about_content: `<span class="about-label">HOW TO PLAY</span>
-                        1. Enter names in SETTINGS.<br>
-                        2. Go to ENTER SHOP and pick a game.<br>
-                        3. Pick a hand, spin the wheel, or wait for the cat.<br>
-                        4. The one chosen pays!<br>
-                        <span class="about-label">HISTORY & RANKING</span>
-                        - Every win is recorded in HISTORY.<br>
-                        - Check the 'DONATION KINGS' to see who paid the most.`,
-                fortunes: ["Great luck will come to you!", "Kindness returns to you.", "Small loss, big luck later!", "Your team respects you!", "Tip: Choose the next payer!"],
-                menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Dolce Latte", "Caramel Macchiato"]
+                lbl_history_onoff: "HISTORY RECORDING",
+                confirm_replay: "Are you sure you want to replay?",
+                txt_about_content: `<span class="about-label">WHAT IS LUCKY BEAN?</span> Lucky Bean is the ultimate mini-game app for coffee-loving teams! It turns the daily "Who pays?" moment into a thrilling mini-game.<br><span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS. You can save groups for quick access later!<br>2. Go to ENTER SHOP and pick your favorite game: Random Hand, Roulette, or Cat.<br>3. Interact with the game. The 'Chosen One' pays! You can capture and share the receipt.`,
+                fortunes: ["Great luck will come to you!", "Kindness returns to you.", "Small loss, big luck later!", "Your team respects you!"],
+                menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner"]
             },
             ko: {
                 welcome: "럭키빈에 오신 것을 환영합니다!",
@@ -491,8 +534,8 @@
                 history_msg: "누가 가장 커피를 많이 샀을까요?",
                 pick_hand: "누가 낼까요? 손을 골라보세요!",
                 hands_mixed: "손이 섞였습니다!",
-                safe_msg: "님은 생존!",
-                pay_msg: "님이 당첨되었습니다!",
+                safe_msg: " 님은 생존!",
+                pay_msg: " 님이 당첨되었습니다!",
                 lucky_round: "럭키! 모두 생존했습니다! 🌟",
                 spin_msg: "룰렛을 돌려 운을 시험하세요!",
                 cat_msg: "고양이가 고민 중입니다...",
@@ -507,7 +550,7 @@
                 btn_back_menu: "메뉴로 돌아가기",
                 btn_back_home: "홈으로 돌아가기",
                 btn_save_exit: "저장 및 나가기",
-                btn_shuffle: "섞기",
+                btn_shuffle: "셔플",
                 btn_again: "다시하기",
                 btn_spin: "돌리기",
                 btn_change_game: "게임 변경",
@@ -525,21 +568,16 @@
                 lbl_times: "회",
                 lbl_empty: "비어있음",
                 lbl_member_count: "명",
-                txt_about_content: `<span class="about-label">게임 방법</span>
-                        1. SETTINGS에서 멤버 이름을 입력하세요.<br>
-                        2. ENTER SHOP을 눌러 게임을 고르세요.<br>
-                        3. 손 뽑기, 룰렛, 혹은 고양이의 선택을 기다리세요.<br>
-                        4. 선택된 사람이 오늘의 결제 당첨!<br>
-                        <span class="about-label">히스토리 및 랭킹</span>
-                        - 결제 당첨 내역은 HISTORY에 자동 기록됩니다.<br>
-                        - 메인 화면과 히스토리에서 누가 가장 많이 냈는지 확인하세요.`,
-                fortunes: ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 비었어도 인심은 꽉 찼네요!", "오늘 마시는 커피는 인생 최고로 달콤할 겁니다.", "멋진 결제! 팀원들이 당신을 존경합니다."],
-                menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루", "아인슈페너", "돌체라떼", "카라멜 마키아또"]
+                lbl_history_onoff: "게임 기록 저장",
+                confirm_replay: "정말 게임을 다시 시작하시겠습니까?",
+                txt_about_content: `<span class="about-label">럭키빈이란?</span> 커피를 사랑하는 동료들을 위한 최고의 복불복 도구입니다. 매일 돌아오는 "누가 커피 살까?"의 고민을 짜릿한 미니 게임으로 즐겨보세요!<br><span class="about-label">게임 방법</span> 1. SETTINGS에서 팀원 이름을 입력하세요. 그룹 저장이 가능해 편리합니다.<br>2. ENTER SHOP에서 원하는 게임을 선택하세요.<br>3. 게임에 참여하면 행운의 당첨자가 결정됩니다. 당첨된 사람이 결제! 영수증을 캡처해 공유해보세요.`,
+                fortunes: ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 비었어도 인심은 꽉 찼네요!"],
+                menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루"]
             }
         };
 
         let currentLang = localStorage.getItem('luckyBeanLang') || 'en';
-        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover", "Caffeine Bomb", "Daily Bread"];
+        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover"];
 
         let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1;
         let isLuckyRound = false; let lastWasLucky = false;
@@ -547,6 +585,8 @@
         let isAudioStarted = false;
         let rouletteAngle = 0; let rouletteSpinning = false; let currentRouletteItems = [];
         let catRunning = false;
+        let fromView = 'front';
+        let recordStats = localStorage.getItem('luckyBeanRecord') !== 'false';
 
         const AudioEngine = {
             ctx: null, bgm: null,
@@ -604,6 +644,7 @@
                 }
                 fill.style.width = progress + '%';
             }, 50);
+            document.getElementById('history-toggle').checked = recordStats;
             applyLanguage();
         };
 
@@ -611,11 +652,7 @@
             currentLang = lang;
             localStorage.setItem('luckyBeanLang', lang);
             applyLanguage();
-            if (!document.getElementById('front-view').classList.contains('hidden')) goFront();
-            else if (!document.getElementById('setup-view').classList.contains('hidden')) goSetup();
-            else if (!document.getElementById('about-view').classList.contains('hidden')) goAbout();
-            else if (!document.getElementById('history-view').classList.contains('hidden')) goHistory();
-            else if (!document.getElementById('selector-view').classList.contains('hidden')) showGameSelector();
+            if (!document.getElementById('setup-view').classList.contains('hidden')) goSetup(fromView);
         }
 
         function applyLanguage() {
@@ -636,7 +673,9 @@
             document.getElementById('btn-back-home-history').innerText = t.btn_back_home;
             document.getElementById('btn-save-exit').innerText = t.btn_save_exit;
             document.getElementById('btn-shuffle').innerText = t.btn_shuffle;
-            document.getElementById('btn-again-hand').innerText = t.btn_again;
+            document.getElementById('hand-again-btn').innerText = t.btn_again;
+            document.getElementById('roulette-again-btn').innerText = t.btn_again;
+            document.getElementById('cat-again-btn').innerText = t.btn_again;
             document.getElementById('roulette-spin-btn').innerText = t.btn_spin;
             document.getElementById('cat-start-btn').innerText = t.btn_start;
             
@@ -646,24 +685,23 @@
 
             document.getElementById('lbl-group').innerText = t.lbl_group;
             document.getElementById('lbl-members').innerText = t.lbl_members;
+            document.getElementById('lbl-history-onoff').innerText = t.lbl_history_onoff;
             document.getElementById('btn-random').innerText = t.lbl_random;
             document.getElementById('btn-clear').innerText = t.lbl_clear;
             document.getElementById('btn-save-team').innerText = t.lbl_save;
             document.getElementById('txt-donation-kings').innerText = t.lbl_kings;
-            document.getElementById('txt-unit-price').innerText = t.lbl_unit_price;
-            document.getElementById('txt-subtotal').innerText = t.lbl_subtotal;
-            document.getElementById('txt-selected-customer').innerText = t.lbl_selected;
-            document.getElementById('id-share-btn').innerText = t.lbl_get_receipt;
             document.getElementById('txt-choose-luck').innerText = t.choose_luck;
+
+            document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
             document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
             document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : "Lucky Roulette";
             document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : "Cat's Choice";
             
-            document.getElementById('txt-setting-title').innerHTML = `📋 <b>${currentLang === 'ko' ? "주문 메뉴 설정" : "ORDER MENU SETTING"}</b>`;
-            document.getElementById('txt-roulette-title').innerHTML = `🎡 <b>${currentLang === 'ko' ? "행운의 룰렛" : "LUCKY ROULETTE"}</b>`;
-            document.getElementById('txt-cat-title').innerHTML = `🐈 <b>${currentLang === 'ko' ? "고양이의 선택" : "CAT'S CHOICE"}</b>`;
-            document.getElementById('txt-about-title').innerHTML = `☕ <b>${currentLang === 'ko' ? "럭키빈 정보" : "ABOUT LUCKY BEAN"}</b>`;
-            document.getElementById('txt-history-title').innerHTML = `🏆 <b>${currentLang === 'ko' ? "기부 히스토리" : "DONATION HISTORY"}</b>`;
+            document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "주문 메뉴 설정" : "ORDER MENU SETTING"}`;
+            document.getElementById('txt-roulette-title').innerHTML = `🎡 ${currentLang === 'ko' ? "행운의 룰렛" : "LUCKY ROULETTE"}`;
+            document.getElementById('txt-cat-title').innerHTML = `🐈 ${currentLang === 'ko' ? "고양이의 선택" : "CAT'S CHOICE"}`;
+            document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : "ABOUT LUCKY BEAN"}`;
+            document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : "DONATION HISTORY"}`;
             document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
             document.getElementById('display-group-name').innerText = currentTeamName === 'Empty' ? t.lbl_empty : currentTeamName;
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : ' Members'}`;
@@ -685,66 +723,96 @@
         }
 
         function goFront() {
-            hideAllViews();
+            fromView = 'front'; hideAllViews();
             document.getElementById('front-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_facade.png';
-            updateText('welcome');
-            showStats();
+            updateText('welcome'); showStats();
         }
 
         function showGameSelector() {
-            hideAllViews();
+            fromView = 'selector'; hideAllViews();
             document.getElementById('selector-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_facade_zoom.png';
             updateText('choose_luck');
         }
 
-        function goSetup() {
-            hideAllViews();
+        function goSetup(source = 'front') {
+            fromView = source; hideAllViews();
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_setting.png';
-            updateText('setting_msg');
-            generateNameInputs();
+            updateText('setting_msg'); generateNameInputs();
         }
 
         function goAbout() {
-            hideAllViews();
-            document.getElementById('about-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_facade.png';
-            updateText('how_to');
+            hideAllViews(); document.getElementById('about-view').classList.remove('hidden');
+            document.getElementById('main-img').src = 'cafe_facade.png'; updateText('how_to');
         }
 
         function goHistory() {
-            hideAllViews();
-            document.getElementById('history-view').classList.remove('hidden');
+            hideAllViews(); document.getElementById('history-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_history.png';
-            updateText('history_msg');
-            renderHistoryPage();
+            updateText('history_msg'); renderHistoryPage();
         }
 
         function hideAllViews() {
             ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view', 'cat-view'].forEach(v => {
-                const el = document.getElementById(v);
-                if(el) el.classList.add('hidden');
+                const el = document.getElementById(v); if(el) el.classList.add('hidden');
             });
-            document.getElementById('result-shared-root').classList.add('hidden');
-            document.getElementById('receipt').classList.remove('show');
             document.getElementById('lucky-area').classList.add('hidden');
-            document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+            
+            // 모든 앵커 비우기
+            document.getElementById('hand-result-anchor').innerHTML = '';
+            document.getElementById('roulette-result-anchor').innerHTML = '';
+            document.getElementById('cat-result-anchor').innerHTML = '';
 
-            const captureArea = document.getElementById('capture-area');
-            const rootContainer = document.getElementById('result-shared-root');
-            if(captureArea && rootContainer && captureArea.parentElement !== rootContainer) {
-                rootContainer.appendChild(captureArea);
-            }
+            // 버튼 상태 초기화 (사라졌던 버튼들 복구)
+            document.getElementById('btn-shuffle').classList.remove('hidden');
+            document.getElementById('btn-shuffle').disabled = false;
+            document.getElementById('roulette-spin-btn').classList.remove('hidden');
+            document.getElementById('roulette-spin-btn').disabled = false;
+            document.getElementById('cat-start-btn').classList.remove('hidden');
+            document.getElementById('cat-start-btn').disabled = false;
+
+            // 다시하기 버튼 숨기기
+            document.getElementById('hand-again-btn').classList.add('hidden');
+            document.getElementById('roulette-again-btn').classList.add('hidden');
+            document.getElementById('cat-again-btn').classList.add('hidden');
+            
+            document.querySelectorAll('button').forEach(btn => btn.disabled = false);
         }
 
         function saveAndGoHome() {
+            recordStats = document.getElementById('history-toggle').checked;
+            localStorage.setItem('luckyBeanRecord', recordStats);
             const inputs = document.querySelectorAll('.name-input');
             const tempNames = [];
             for (let i = 0; i < currentMemberCount; i++) { tempNames.push(inputs[i].value.trim() || `User ${i+1}`); }
             localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
-            goFront();
+            
+            if (fromView === 'hand') startGame();
+            else if (fromView === 'roulette') goRoulette();
+            else if (fromView === 'cat') goCatGame();
+            else goFront();
+        }
+
+        function confirmReplay(gameType) {
+            if (confirm(i18n[currentLang].confirm_replay)) {
+                if (gameType === 'hand') startGame();
+                else if (gameType === 'roulette') goRoulette();
+                else if (gameType === 'cat') goCatGame();
+            }
+        }
+
+        function openMemberModal() {
+            const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
+            overlay.style.display = 'flex'; container.innerHTML = '';
+            for (let i = 2; i <= 12; i++) {
+                const div = document.createElement('div');
+                div.style = "padding:18px 5px; border-bottom:1px solid #f8f8f8; text-align:center; cursor:pointer; font-weight:700;";
+                div.innerText = `${i}${currentLang === 'ko' ? '명' : ' Members'}`; 
+                div.onclick = () => { currentMemberCount = i; generateNameInputs(); closeModal(); };
+                container.appendChild(div);
+            }
         }
 
         function generateNameInputs(providedNames = null) {
@@ -756,8 +824,7 @@
             container.innerHTML = '';
             for (let i = 0; i < currentMemberCount; i++) {
                 const input = document.createElement('input'); input.type = 'text'; input.className = 'name-input';
-                input.placeholder = `User ${i+1}`; input.id = `input-name-${i}`;
-                if (namesToUse && namesToUse[i]) input.value = namesToUse[i];
+                input.placeholder = `User ${i+1}`; if (namesToUse && namesToUse[i]) input.value = namesToUse[i];
                 container.appendChild(input);
             }
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : ' Members'}`;
@@ -770,13 +837,12 @@
 
         function openGroupModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
-            document.getElementById('modal-title').innerText = i18n[currentLang].lbl_group;
             overlay.style.display = 'flex'; container.innerHTML = '';
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
             Object.keys(teams).forEach(name => {
                 const div = document.createElement('div');
                 div.style = "display:flex; justify-content:space-between; padding:18px 5px; border-bottom:1px solid #f8f8f8;";
-                div.innerHTML = `<span style="flex:1; cursor:pointer; font-weight:600;" onclick="loadTeam('${name}')">${name}</span><span style="color:#eee; font-size:1.5rem; cursor:pointer; padding:0 10px;" onclick="deleteTeam('${name}')">×</span>`;
+                div.innerHTML = `<span style="flex:1; cursor:pointer; font-weight:700;" onclick="loadTeam('${name}')">${name}</span><span style="color:#eee; font-size:1.5rem; cursor:pointer; padding:0 10px;" onclick="deleteTeam('${name}')">×</span>`;
                 container.appendChild(div);
             });
         }
@@ -784,21 +850,8 @@
         function deleteTeam(name) {
             if(confirm(`${name} 팀을 삭제할까요?`)) {
                 const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
-                delete teams[name];
-                localStorage.setItem('coffeeTeams', JSON.stringify(teams));
+                delete teams[name]; localStorage.setItem('coffeeTeams', JSON.stringify(teams));
                 openGroupModal();
-            }
-        }
-
-        function openMemberModal() {
-            const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
-            document.getElementById('modal-title').innerText = currentLang === 'ko' ? "인원 선택" : "How many?";
-            overlay.style.display = 'flex'; container.innerHTML = '';
-            for (let i = 2; i <= 12; i++) {
-                const div = document.createElement('div');
-                div.style = "padding:18px 5px; border-bottom:1px solid #f8f8f8; text-align:center; cursor:pointer; font-weight:600;";
-                div.innerText = `${i}${currentLang === 'ko' ? '명' : ' Members'}`; div.onclick = () => { currentMemberCount = i; generateNameInputs(); closeModal(); };
-                container.appendChild(div);
             }
         }
 
@@ -822,16 +875,14 @@
 
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
-        /* --- 핸드 게임 로직 --- */
+        /* --- Hand Game --- */
         function startGame() {
             const saved = localStorage.getItem('lastCoffeeMembers');
             memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
             AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * memberNames.length);
             isLuckyRound = !lastWasLucky && Math.random() < 0.15;
-            isGameOver = false; hideAllViews();
+            isGameOver = false; hideAllViews(); // 여기서 버튼 상태가 모두 리셋됨
             document.getElementById('game-view').classList.remove('hidden');
-            document.getElementById('btn-shuffle').disabled = false;
-            document.getElementById('btn-again-hand').disabled = true;
             updateText('pick_hand');
             document.getElementById('main-img').src = 'cafe_counter.png';
             renderHands();
@@ -843,7 +894,7 @@
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
                 const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png'; handImg.className = 'hand-img';
                 handImg.onclick = () => handleHandClick(i, memberNames.length);
-                const nameTag = document.createElement('div'); nameTag.className = 'member-name'; nameTag.innerText = memberNames[i];
+                const nameTag = document.createElement('div'); nameTag.className = 'hand-name'; nameTag.innerText = memberNames[i];
                 wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
             }
         }
@@ -852,13 +903,13 @@
             if (isGameOver || isShuffling) return;
             isShuffling = true; AudioEngine.play('whoosh');
             const wrappers = document.querySelectorAll('.hand-wrapper');
-            wrappers.forEach(w => { w.style.transition = "transform 0.4s"; w.style.transform = `scale(0.5) translate(0, 50px)`; });
+            wrappers.forEach(w => { w.style.transition = "transform 0.4s"; w.style.transform = `scale(0.5) translate(${(Math.random()-0.5)*50}px, 50px)`; });
             setTimeout(() => {
                 for (let i = memberNames.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1)); [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]];
                 }
                 winnerIndex = Math.floor(Math.random() * memberNames.length);
-                wrappers.forEach(w => { w.style.transform = `translate(${(Math.random()-0.5)*100}px, ${(Math.random()-0.5)*100}px) scale(1)`; });
+                wrappers.forEach(w => { w.style.transform = `scale(1) translate(0, 0)`; });
                 setTimeout(() => { renderHands(); isShuffling = false; updateText('hands_mixed'); }, 450);
             }, 450);
         }
@@ -874,18 +925,21 @@
                 if (isLuckyRound) {
                     isGameOver = true; lastWasLucky = true; AudioEngine.play('start');
                     for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
-                    updateText('lucky_round');
-                    document.getElementById('main-img').src = 'cafe_counter_lucky.png';
+                    updateText('lucky_round'); document.getElementById('main-img').src = 'cafe_counter_lucky.png';
                     document.getElementById('lucky-area').classList.remove('hidden');
-                    document.getElementById('btn-again-hand').disabled = false;
+                    document.getElementById('hand-again-btn').classList.remove('hidden');
+                    document.getElementById('btn-shuffle').classList.add('hidden');
                 } else if (index === winnerIndex) {
                     isGameOver = true; lastWasLucky = false; AudioEngine.play('fail');
                     hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
                     for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
                     updateText(`${memberNames[index]}${i18n[currentLang].pay_msg}`, true);
                     document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
-                    updateStats(memberNames[index]); confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-                    showFinish(total, memberNames[index], 'game-view');
+                    if (recordStats) updateStats(memberNames[index]); 
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                    showFinish(total, memberNames[index], 'hand-result-anchor');
+                    document.getElementById('hand-again-btn').classList.remove('hidden');
+                    document.getElementById('btn-shuffle').classList.add('hidden');
                 } else {
                     AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true";
                     updateText(`${memberNames[index]}${i18n[currentLang].safe_msg}`, true);
@@ -893,33 +947,32 @@
             }, 800);
         }
 
-        /* --- 룰렛 게임 로직 --- */
+        /* --- Roulette --- */
         function goRoulette() {
-            hideAllViews();
+            hideAllViews(); // 여기서 버튼 상태가 모두 리셋됨
             const saved = localStorage.getItem('lastCoffeeMembers');
             const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
             currentRouletteItems = [...members, i18n[currentLang].all_pass];
             document.getElementById('roulette-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_counter.png';
-            document.getElementById('roulette-spin-btn').innerText = i18n[currentLang].btn_spin;
-            updateText('spin_msg');
-            rouletteAngle = 0; drawRoulette();
+            updateText('spin_msg'); rouletteAngle = 0; drawRoulette();
         }
 
         function drawRoulette() {
             const canvas = document.getElementById('rouletteCanvas'); const ctx = canvas.getContext('2d');
             const cx = 200, cy = 200, r = 190;
-            const weights = currentRouletteItems.map(item => item.includes(i18n.en.all_pass) || item.includes(i18n.ko.all_pass) ? 0.2 : 1);
+            const weights = currentRouletteItems.map(item => item.includes('PASS') || item.includes('통과') ? 0.2 : 1);
             const totalWeight = weights.reduce((a, b) => a + b, 0);
             ctx.clearRect(0, 0, 400, 400);
             let startAngle = rouletteAngle;
             for (let i = 0; i < currentRouletteItems.length; i++) {
                 const sliceAngle = (weights[i] / totalWeight) * Math.PI * 2;
-                ctx.beginPath(); ctx.fillStyle = (currentRouletteItems[i].includes(i18n.en.all_pass) || currentRouletteItems[i].includes(i18n.ko.all_pass)) ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
+                ctx.beginPath(); 
+                ctx.fillStyle = (currentRouletteItems[i].includes('PASS') || currentRouletteItems[i].includes('통과')) ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
                 ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, startAngle, startAngle + sliceAngle); ctx.fill();
                 ctx.strokeStyle = "#333"; ctx.lineWidth = 2; ctx.stroke();
                 ctx.save(); ctx.translate(cx, cy); ctx.rotate(startAngle + sliceAngle / 2); ctx.textAlign = "right";
-                ctx.fillStyle = (currentRouletteItems[i].includes(i18n.en.all_pass) || currentRouletteItems[i].includes(i18n.ko.all_pass)) ? "#f1c40f" : "#333";
+                ctx.fillStyle = (currentRouletteItems[i].includes('PASS') || currentRouletteItems[i].includes('통과')) ? "#f1c40f" : "#333";
                 ctx.font = "bold 14px Montserrat"; ctx.fillText(currentRouletteItems[i], r - 30, 5); ctx.restore();
                 startAngle += sliceAngle;
             }
@@ -928,18 +981,13 @@
 
         function spinRoulette() {
             if (rouletteSpinning) return;
-            if (document.getElementById('roulette-spin-btn').innerText === i18n[currentLang].btn_again) { goRoulette(); return; }
             rouletteSpinning = true; AudioEngine.play('whoosh');
-            
             document.getElementById('roulette-spin-btn').disabled = true;
-            document.getElementById('btn-back-selector-roulette').disabled = true;
-            document.getElementById('btn-back-menu-roulette').disabled = true;
-
-            const duration = 4000; const startTS = performance.now(); const startRot = rouletteAngle;
+            const duration = 4500; const startTS = performance.now(); const startRot = rouletteAngle;
             const targetRot = startRot + (Math.random() * 5 + 5) * Math.PI * 2;
             function animate(now) {
                 const elapsed = now - startTS; const progress = Math.min(elapsed / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const easeOut = 1 - Math.pow(1 - progress, 4);
                 rouletteAngle = startRot + (targetRot - startRot) * easeOut;
                 drawRoulette();
                 if (progress < 1) requestAnimationFrame(animate);
@@ -949,7 +997,7 @@
         }
 
         function finishSpin() {
-            const weights = currentRouletteItems.map(item => item.includes(i18n.en.all_pass) || item.includes(i18n.ko.all_pass) ? 0.2 : 1);
+            const weights = currentRouletteItems.map(item => item.includes('PASS') || item.includes('통과') ? 0.2 : 1);
             const totalWeight = weights.reduce((a, b) => a + b, 0);
             let normalizedAngle = (rouletteAngle % (Math.PI * 2)); if (normalizedAngle < 0) normalizedAngle += Math.PI * 2;
             const pinPos = (Math.PI * 1.5); let checkAngle = normalizedAngle, winnerIdx = 0;
@@ -961,209 +1009,148 @@
                 checkAngle += sliceAngle;
             }
             const winnerName = currentRouletteItems[winnerIdx];
+            document.getElementById('roulette-spin-btn').classList.add('hidden');
+            document.getElementById('roulette-again-btn').classList.remove('hidden');
             
-            document.getElementById('roulette-spin-btn').disabled = false;
-            document.getElementById('btn-back-selector-roulette').disabled = false;
-            document.getElementById('btn-back-menu-roulette').disabled = false;
-            document.getElementById('roulette-spin-btn').innerText = i18n[currentLang].btn_again;
-            
-            if (winnerName.includes(i18n.en.all_pass) || winnerName.includes(i18n.ko.all_pass)) {
+            if (winnerName.includes('PASS') || winnerName.includes('통과')) {
                 AudioEngine.play('start'); updateText('all_pass_unbelievable');
                 document.getElementById('main-img').src = 'cafe_counter_lucky.png';
                 confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] });
-                showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-view');
             } else {
                 AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true);
                 document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
-                updateStats(winnerName); confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } });
-                showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-view');
+                if (recordStats) updateStats(winnerName); 
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } });
+                showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-result-anchor');
             }
         }
 
-        /* --- 고양이의 선택 로직 --- */
+        /* --- Cat Game --- */
         function goCatGame() {
-            hideAllViews();
+            hideAllViews(); // 여기서 버튼 상태가 모두 리셋되고 고양이 위치가 초기화됨
             const saved = localStorage.getItem('lastCoffeeMembers');
             memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
             document.getElementById('cat-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_counter.png';
-            document.getElementById('cat-start-btn').disabled = false;
-            document.getElementById('cat-start-btn').innerText = i18n[currentLang].btn_start;
             updateText('cat_start');
             
+            // 고양이 위치 및 상태 완전 초기화
             const cat = document.getElementById('moving-cat');
-            cat.src = 'cat_stand.png'; cat.style.left = '50%'; cat.style.top = '12%'; cat.style.transform = 'translateX(-50%)';
+            cat.src = 'cat_stand.png';
+            cat.style.transition = 'none'; // 초기 배치 시 트랜지션 끄기
+            cat.style.left = '50%';
+            cat.style.top = '15px';
+            cat.style.transform = 'translateX(-50%)';
             cat.className = '';
+            
+            // 한 프레임 뒤에 트랜지션 다시 켜기
+            setTimeout(() => {
+                cat.style.transition = 'left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            }, 50);
             
             renderCatBowls();
         }
 
         function renderCatBowls() {
-            const container = document.getElementById('bowls-container');
-            container.innerHTML = '';
+            const container = document.getElementById('bowls-container'); container.innerHTML = '';
             const count = memberNames.length;
-            const areaWidth = document.getElementById('cat-game-area').clientWidth;
+            const rows = Math.ceil(count / 6);
             
+            const whiteBox = document.getElementById('cat-white-box');
+            if(rows >= 2) {
+                whiteBox.style.minHeight = "400px";
+                container.style.paddingTop = "100px";
+            } else {
+                whiteBox.style.minHeight = "320px";
+                container.style.paddingTop = "120px";
+            }
+
             memberNames.forEach((name, i) => {
-                const bowl = document.createElement('div');
-                bowl.className = 'cat-bowl';
-                bowl.id = `bowl-${i}`;
-                const xPos = (areaWidth / (count + 1)) * (i + 1) - 30;
-                bowl.style.left = `${xPos}px`;
-                bowl.style.opacity = '1';
-                bowl.style.filter = 'none';
+                const bowl = document.createElement('div'); bowl.className = 'cat-bowl';
                 bowl.innerHTML = `<img src="cat_bowl_full.png" class="bowl-img" id="img-bowl-${i}"><div class="bowl-name">${name}</div>`;
                 container.appendChild(bowl);
             });
         }
 
         function startCatGame() {
-            if (catRunning) return;
-            if (document.getElementById('cat-start-btn').innerText === i18n[currentLang].btn_again) { goCatGame(); return; }
-            
-            catRunning = true;
+            if (catRunning) return; catRunning = true;
             document.getElementById('cat-start-btn').disabled = true;
-            document.getElementById('btn-back-selector-cat').disabled = true;
-            document.getElementById('btn-back-menu-cat').disabled = true;
-            
-            updateText('cat_msg');
-            AudioEngine.play('whoosh');
-            
+            updateText('cat_msg'); AudioEngine.play('whoosh');
             const cat = document.getElementById('moving-cat');
             cat.src = 'cat_walk.gif'; cat.style.transform = 'none'; cat.classList.add('cat-moving');
-            
             const winnerIdx = Math.floor(Math.random() * memberNames.length);
             const bowlEls = document.querySelectorAll('.cat-bowl');
-            
-            let visits = 0;
-            const maxVisits = 6 + Math.floor(Math.random() * 4);
+            const gameArea = document.getElementById('cat-white-box');
+            const parentRect = gameArea.getBoundingClientRect();
+            let visits = 0; const maxVisits = 7 + Math.floor(Math.random() * 4);
             
             function moveCat() {
                 if (visits < maxVisits) {
-                    const randomBowlIdx = Math.floor(Math.random() * memberNames.length);
-                    const targetBowl = bowlEls[randomBowlIdx];
-                    cat.style.left = (parseInt(targetBowl.style.left) - 10) + 'px';
-                    cat.style.top = (10 + Math.random() * 5) + '%';
-                    visits++;
-                    setTimeout(moveCat, 400 + Math.random() * 300);
+                    const target = bowlEls[Math.floor(Math.random() * memberNames.length)].getBoundingClientRect();
+                    cat.style.left = (target.left - parentRect.left + (target.width / 2)) - (cat.offsetWidth / 2) + 'px';
+                    cat.style.top = (15 + Math.random() * 40) + 'px';
+                    visits++; setTimeout(moveCat, 450 + Math.random() * 200);
                 } else {
-                    const finalBowl = bowlEls[winnerIdx];
-                    cat.style.left = (parseInt(finalBowl.style.left) - 10) + 'px';
-                    
+                    const final = bowlEls[winnerIdx].getBoundingClientRect();
+                    cat.style.left = (final.left - parentRect.left + (final.width / 2)) - (cat.offsetWidth / 2) + 'px';
+                    cat.style.top = (final.top - parentRect.top - cat.offsetHeight + 18) + 'px';
                     setTimeout(() => {
-                        cat.classList.remove('cat-moving');
-                        cat.src = 'cat_eat.png';
-                        // 변경사항 반영: 당첨 시 높이 top 32%로 하강
-                        cat.style.top = '32%';
-                        
-                        // 변경사항 반영: 선택 안된 보울 흐리게 및 z-index 조정
+                        cat.classList.remove('cat-moving'); cat.src = 'cat_eat.png';
                         bowlEls.forEach((b, idx) => {
-                            if(idx !== winnerIdx) {
-                                b.classList.add('bowl-dimmed');
-                            } else {
+                            if(idx !== winnerIdx) b.classList.add('bowl-dimmed');
+                            else {
                                 b.classList.add('bowl-highlight');
-                                // 고양이가 먹는 시점에 당첨 보울을 빈 보울로 변경
-                                setTimeout(() => {
-                                    document.getElementById(`img-bowl-${winnerIdx}`).src = 'cat_bowl_empty.png';
-                                }, 500);
+                                setTimeout(() => { document.getElementById(`img-bowl-${winnerIdx}`).src = 'cat_bowl_empty.png'; }, 500);
                             }
                         });
-                        
                         AudioEngine.play('fail');
                         updateText(`${memberNames[winnerIdx]}${i18n[currentLang].pay_msg}`, true);
                         document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
-                        updateStats(memberNames[winnerIdx]);
+                        if (recordStats) updateStats(memberNames[winnerIdx]); 
                         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-                        
-                        showFinish(memberNames.length, memberNames[winnerIdx], 'cat-view');
-                        
-                        document.getElementById('cat-start-btn').disabled = false;
-                        document.getElementById('btn-back-selector-cat').disabled = false;
-                        document.getElementById('btn-back-menu-cat').disabled = false;
-                        document.getElementById('cat-start-btn').innerText = i18n[currentLang].btn_again;
+                        showFinish(memberNames.length, memberNames[winnerIdx], 'cat-result-anchor');
+                        document.getElementById('cat-start-btn').classList.add('hidden');
+                        document.getElementById('cat-again-btn').classList.remove('hidden');
                         catRunning = false;
-                    }, 500);
+                    }, 600);
                 }
             }
             moveCat();
         }
 
-        /* --- 공통 유틸리티 --- */
-        function showFinish(total, payerName, viewId) {
-            const now = new Date(); const randomPrice = (Math.random() * (8.5 - 3.5) + 3.5).toFixed(2);
+        /* --- Global Utilities --- */
+        function showFinish(total, payerName, anchorId) {
+            const now = new Date(); const randomPrice = (Math.random() * 5 + 3).toFixed(2);
             const t = i18n[currentLang];
-            document.getElementById('receipt-date').innerText = now.toLocaleDateString();
-            document.getElementById('receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('receipt-qty').innerText = "x" + total;
-            document.getElementById('receipt-price').innerText = "$" + randomPrice;
-            document.getElementById('receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2);
-            document.getElementById('receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
-            document.getElementById('receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
             
-            const payerEl = document.getElementById('receipt-payer');
-            if(payerName.includes(i18n.en.all_pass) || payerName.includes(i18n.ko.all_pass)) {
-                payerEl.innerText = "FREE"; payerEl.style.color = "var(--roulette-gold)";
-            } else {
-                payerEl.innerText = payerName; payerEl.style.color = "var(--point-red)";
-            }
-
-            const resRoot = document.getElementById('result-shared-root');
-            const captureArea = document.getElementById('capture-area');
-            resRoot.classList.remove('hidden');
-
-            if(viewId === 'game-view') {
-                document.getElementById('game-btn-group').prepend(captureArea);
-            } else if(viewId === 'roulette-view') {
-                document.getElementById('roulette-action-area').prepend(captureArea);
-            } else if(viewId === 'cat-view') {
-                document.getElementById('cat-action-area').prepend(captureArea);
-            }
-            setTimeout(() => document.getElementById('receipt').classList.add('show'), 200);
-        }
-
-        function updateStats(name) {
-            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            const monthKey = new Date().toISOString().slice(0, 7);
-            if(!stats[name] || typeof stats[name] !== 'object') { stats[name] = { total: 0, monthly: {} }; }
-            stats[name].total += 1;
-            stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1;
-            localStorage.setItem('coffeeStats', JSON.stringify(stats));
-        }
-
-        function showStats() {
-            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            const entries = Object.entries(stats).map(([name, data]) => [name, data.total || 0]).sort((a, b) => b[1] - a[1]);
-            const dashboard = document.getElementById('stats-dashboard');
-            if (entries.length === 0) { if(dashboard) dashboard.classList.add('hidden'); return; }
-            if(dashboard) dashboard.classList.remove('hidden');
-            const list = document.getElementById('stats-list');
-            if(list) list.innerHTML = entries.slice(0, 3).map(([name, count]) => `<div class="stats-row"><span>${name}</span><span>${count} ${i18n[currentLang].lbl_times}</span></div>`).join('');
-        }
-
-        function renderHistoryPage() {
-            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
-            const monthKey = new Date().toISOString().slice(0, 7);
-            const entries = Object.entries(stats).map(([name, data]) => ({ name, total: data.total || 0, monthly: (data.monthly && data.monthly[monthKey]) || 0 }))
-                            .sort((a, b) => b.total - a.total);
-            const kingArea = document.getElementById('monthly-king-area');
-            const content = document.getElementById('history-list-content');
-            if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = "No Data."; return; }
-            const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0];
+            const prototype = document.getElementById('receipt-prototype-area').querySelector('.receipt-container').cloneNode(true);
+            const receipt = prototype.querySelector('.receipt');
             
-            if(king && king.monthly > 0) {
-                kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king} (${monthKey})</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly} ${i18n[currentLang].lbl_times}</div></div>`;
-            } else { kingArea.innerHTML = ""; }
+            receipt.querySelector('.receipt-date').innerText = now.toLocaleDateString();
+            receipt.querySelector('.receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
+            receipt.querySelector('.receipt-qty').innerText = "x" + total;
+            receipt.querySelector('.receipt-price').innerText = "$" + randomPrice;
+            receipt.querySelector('.receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2);
+            receipt.querySelector('.receipt-payer').innerText = payerName;
+            receipt.querySelector('.receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
+            receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
             
-            content.innerHTML = entries.map(item => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f0f0f0;"><span style="font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</span><span style="color:var(--point-red); font-weight:800; flex-shrink:0; margin-left:10px;">${item.total} ${i18n[currentLang].lbl_times}</span></div>`).join('');
+            receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price;
+            receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal;
+            receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected;
+            receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
+            
+            const anchor = document.getElementById(anchorId);
+            anchor.innerHTML = ''; anchor.appendChild(prototype);
+            
+            setTimeout(() => { receipt.classList.add('show'); }, 100);
+            receipt.querySelector('.btn-capture-run').onclick = function() { shareAsImage(receipt, this); };
         }
 
-        function resetStats() { if(confirm(currentLang === 'ko' ? "모든 데이터를 삭제할까요?" : "Clear all?")) { localStorage.removeItem('coffeeStats'); goFront(); } }
-
-        async function shareAsImage() {
-            const captureArea = document.getElementById('capture-area');
-            const btn = document.getElementById('id-share-btn'); btn.innerText = "...";
+        async function shareAsImage(element, btn) {
+            btn.innerText = "...";
             try {
-                const canvas = await html2canvas(captureArea, { backgroundColor: "#ffffff", scale: 3 });
+                const canvas = await html2canvas(element, { backgroundColor: "#ffffff", scale: 3 });
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], "receipt.png", { type: "image/png" });
                     if (navigator.share) await navigator.share({ files: [file] });
@@ -1172,6 +1159,38 @@
                 });
             } catch (e) { btn.innerText = "ERROR"; }
         }
+
+        function updateStats(name) {
+            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const monthKey = new Date().toISOString().slice(0, 7);
+            if(!stats[name]) stats[name] = { total: 0, monthly: {} };
+            stats[name].total += 1; stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1;
+            localStorage.setItem('coffeeStats', JSON.stringify(stats));
+        }
+
+        function showStats() {
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const entries = Object.entries(stats).map(([n, d]) => [n, d.total]).sort((a, b) => b[1] - a[1]);
+            const dash = document.getElementById('stats-dashboard');
+            if (entries.length === 0) { if(dash) dash.classList.add('hidden'); return; }
+            if(dash) dash.classList.remove('hidden');
+            const list = document.getElementById('stats-list');
+            if(list) list.innerHTML = entries.slice(0, 3).map(e => `<div class="stats-row"><span>${e[0]}</span><span>${e[1]} ${i18n[currentLang].lbl_times}</span></div>`).join('');
+        }
+
+        function renderHistoryPage() {
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            const month = new Date().toISOString().slice(0, 7);
+            const entries = Object.entries(stats).map(([n, d]) => ({ name: n, total: d.total, monthly: d.monthly[month] || 0 })).sort((a, b) => b.total - a.total);
+            const kingArea = document.getElementById('monthly-king-area');
+            const content = document.getElementById('history-list-content');
+            if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; return; }
+            const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0];
+            if(king && king.monthly > 0) kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`;
+            content.innerHTML = entries.map(item => `<div class="history-item"><span>${item.name}</span><span style="color:var(--point-red)">${item.total}${i18n[currentLang].lbl_times}</span></div>`).join('');
+        }
+
+        function resetStats() { if(confirm("Clear all?")) { localStorage.removeItem('coffeeStats'); goFront(); } }
     </script>
 </body>
 </html>

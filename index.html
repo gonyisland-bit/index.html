@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.15</title>
+    <title>lucky bean - v0.6.16</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -34,6 +34,7 @@
             --input-bg: #ffffff;
         }
 
+        /* [CAFE NIGHT] 다크모드 테마 설정 */
         body.dark-mode {
             --bg-color: #1a1a1a;
             --primary-color: #ffffff;
@@ -132,6 +133,7 @@
         .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-gray-70); font-weight: 600; }
 
+        /* [Game Box] 화이트 배경 유지 및 가로/세로 센터 정렬 */
         .game-canvas-area { 
             width: 100%; min-height: 220px; height: auto; position: relative; margin: 15px 0; padding-bottom: 25px; overflow: hidden; 
             background: #ffffff !important; border: 2px solid #eee; border-radius: 20px; 
@@ -139,6 +141,7 @@
             transition: min-height 0.3s ease-out;
         }
 
+        /* 게임 선택 화면 아이콘 사이즈 통일 (v0.6.5 복원) */
         .icon-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
         .icon-btn-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
         .icon-btn-item:active { transform: scale(0.95); }
@@ -150,6 +153,7 @@
         .icon-square img { width: 80%; height: 80%; object-fit: contain; }
         .icon-label { font-size: 0.65rem; font-weight: 900; color: var(--text-main); letter-spacing: 0px; text-transform: uppercase; line-height: 1.2; height: 2.4em; display: flex; align-items: center; justify-content: center; }
 
+        /* 랜덤핸드 모바일 가독성: 3개당 1줄 */
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 25px 10px; width: 100%; box-sizing: border-box; }
         .hand-wrapper { 
             display: flex; flex-direction: column; align-items: center; 
@@ -157,7 +161,6 @@
             max-width: calc(33.33% - 8px); transition: transform 0.4s ease; z-index: 1; 
         }
         .hand-img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
-        /* [변경 사항] 랜덤핸드 이름 표기 로직 - 고양이 게임 방식 적용 */
         .hand-name { 
             font-size: 0.55rem; font-weight: 800; color: #888; margin-top: 5px; 
             white-space: normal; word-break: keep-all; line-height: 1.1; overflow: hidden;
@@ -170,6 +173,7 @@
         .shake { animation: winner-shake 0.15s infinite !important; }
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
 
+        /* 고양이 게임 레이아웃 */
         #bowls-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 12px; padding: 120px 10px 30px; width: 100%; box-sizing: border-box; margin-top: auto; }
         .cat-bowl { flex: 0 1 calc(16.66% - 12px); min-width: 48px; text-align: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .bowl-img { width: 100%; max-width: 42px; height: auto; display: block; margin: 0 auto; transition: transform 0.3s; }
@@ -181,6 +185,7 @@
         .bowl-highlight { transform: scale(1.15); z-index: 10 !important; filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
         .bowl-dimmed { opacity: 0.2; filter: blur(2px); z-index: 1 !important; }
 
+        /* 룰렛 캔버스 센터 배치 최적화 */
         #roulette-container { position: relative; width: 90%; max-width: 300px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
         .roulette-pin { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 34px; height: 44px; z-index: 20; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3)); }
 
@@ -209,6 +214,7 @@
 
         .btn-again { background-color: var(--btn-dark-gray) !important; box-shadow: 0 6px 0 #222 !important; }
 
+        /* [Stable v0.6.5] 모달 팝업 복원 */
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { 
             background: var(--bg-color); width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; 
@@ -217,6 +223,7 @@
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-item { padding: 18px 5px; border-bottom: 1px solid var(--divider-color); text-align: center; cursor: pointer; font-weight: 700; display: flex; justify-content: space-between; }
 
+        /* 히스토리 및 캘린더 */
         .monthly-king-badge {
             background: #fff8e1; border: 1.5px solid #ffca28; border-radius: 15px;
             padding: 10px 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
@@ -231,9 +238,24 @@
         .king-count-area { margin-left: auto; font-weight: 800; color: #ffca28; white-space: nowrap; flex-shrink: 0; }
         .history-item { display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--divider-color); font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
         
+        .view-toggle-bar { display: flex; gap: 10px; margin-bottom: 15px; }
+        .view-btn { flex: 1; padding: 10px; font-size: 0.7rem; font-weight: 800; border-radius: 12px; border: 1px solid var(--tablet-border); background: var(--input-bg); color: #bbb; cursor: pointer; }
+        .view-btn.active { border-color: var(--primary-color); background: var(--primary-color); color: var(--bg-color); }
+
+        .calendar-container { width: 100%; margin-top: 10px; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .calendar-day-label { font-size: 0.6rem; font-weight: 800; color: #bbb; padding: 5px 0; }
+        .calendar-cell { aspect-ratio: 1/1; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--tablet-border); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .calendar-cell.has-data { border-color: #ffca28; background: #fffdf5; }
+        body.dark-mode .calendar-cell.has-data { background: #2a2618; }
+        .calendar-date-num { font-size: 0.65rem; font-weight: 700; color: var(--text-main); }
+        .calendar-bean-icon { font-size: 0.7rem; margin-top: 2px; }
+
         .about-text { font-size: 0.85rem; color: var(--text-gray-70); line-height: 1.7; text-align: left; word-break: keep-all; }
         .about-label { font-weight: 800; color: var(--text-main); margin-top: 18px; display: block; font-size: 0.9rem; }
 
+        /* [Print Effect] 영수증 출력 애니메이션 */
         .receipt-container { width: 100%; display: flex; justify-content: center; margin: 15px 0; overflow: hidden; }
         .receipt {
             background: #fff !important; color: #333 !important; width: 280px; padding: 35px 25px 25px; font-family: 'Courier Prime', monospace;
@@ -248,29 +270,17 @@
         .value-customer { font-size: 2.2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; text-align: center; }
         .fortune-area { font-size: 0.75rem; line-height: 1.6; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; font-style: italic; }
 
+        /* 로딩 화면 (화이트 고정) */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff !important; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #000 !important; }
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .loading-bar-fill { height: 100%; width: 0%; background: #000 !important; transition: width 0.1s; }
 
-        .calendar-container { width: 100%; margin-top: 10px; }
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .calendar-day-label { font-size: 0.6rem; font-weight: 800; color: #bbb; padding: 5px 0; }
-        .calendar-cell { aspect-ratio: 1/1; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--tablet-border); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .calendar-cell.has-data { border-color: #ffca28; background: #fffdf5; }
-        body.dark-mode .calendar-cell.has-data { background: #2a2618; }
-        .calendar-date-num { font-size: 0.65rem; font-weight: 700; color: var(--text-main); }
-        .calendar-bean-icon { font-size: 0.7rem; margin-top: 2px; }
-        .view-toggle-bar { display: flex; gap: 10px; margin-bottom: 15px; }
-        .view-btn { flex: 1; padding: 10px; font-size: 0.7rem; font-weight: 800; border-radius: 12px; border: 1px solid var(--tablet-border); background: var(--input-bg); color: #bbb; cursor: pointer; }
-        .view-btn.active { border-color: var(--primary-color); background: var(--primary-color); color: var(--bg-color); }
-
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
         .hidden { display: none !important; }
     </style>
 </head>
-<body>
+<body class="">
 
     <div id="splash-screen">
         <img src="coffee.png" alt="Logo" style="width:110px; animation: floating 2s ease-in-out infinite;">
@@ -355,6 +365,7 @@
                         </div>
                     </div>
                     <div class="divider" style="margin-bottom: 15px;"></div>
+
                     <div class="setting-row">
                         <span class="toggle-label" id="lbl-darkmode">CAFE NIGHT (DARK MODE)</span>
                         <label class="switch">
@@ -362,6 +373,7 @@
                             <span class="slider"></span>
                         </label>
                     </div>
+
                     <div class="picker-group">
                         <div class="picker-btn" onclick="openGroupModal()">
                             <span class="picker-label" id="lbl-group">GROUP</span>
@@ -372,6 +384,7 @@
                             <div class="picker-value"><span id="display-member-count">3 Members</span></div>
                         </div>
                     </div>
+                    
                     <div class="setting-row">
                         <span class="toggle-label" id="lbl-history-onoff">HISTORY RECORDING</span>
                         <label class="switch">
@@ -379,6 +392,7 @@
                             <span class="slider"></span>
                         </label>
                     </div>
+
                     <div class="name-mgmt-bar">
                         <button class="btn-text" id="btn-random" onclick="fillRandomNames()">RANDOM</button>
                         <button class="btn-text" id="btn-clear" onclick="clearNames()">CLEAR</button>
@@ -404,8 +418,10 @@
                         <div id="hand-display"></div>
                     </div>
                     <button id="btn-shuffle" class="btn-spin" onclick="shufflePositions()">SHUFFLE</button>
+                    
                     <div id="hand-result-anchor"></div>
                     <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000; text-align: center;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
+                    
                     <button id="hand-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('hand')">REPLAY</button>
                 </div>
                 <div id="game-btn-group" style="display:flex; flex-direction:column; align-items:center; gap:8px; width:100%;">
@@ -430,6 +446,7 @@
                         </div>
                     </div>
                     <button id="roulette-spin-btn" class="btn-spin" onclick="spinRoulette()">SPIN</button>
+                    
                     <div id="roulette-result-anchor"></div>
                     <button id="roulette-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('roulette')">REPLAY</button>
                 </div>
@@ -451,6 +468,7 @@
                         <div id="bowls-container"></div>
                     </div>
                     <button id="cat-start-btn" class="btn-spin" onclick="startCatGame()">START</button>
+                    
                     <div id="cat-result-anchor"></div>
                     <button id="cat-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('cat')">REPLAY</button>
                 </div>
@@ -495,10 +513,12 @@
                 <div class="card-container" style="text-align: left;">
                     <div class="order-menu-header" id="txt-history-title">🏆 DONATION HISTORY</div>
                     <div class="divider"></div>
+                    
                     <div class="view-toggle-bar">
                         <button id="btn-view-list" class="view-btn active" onclick="switchHistoryView('list')">LIST</button>
                         <button id="btn-view-cal" class="view-btn" onclick="switchHistoryView('cal')">CALENDAR</button>
                     </div>
+
                     <div id="history-content-area">
                         <div id="history-list-view">
                             <div id="monthly-king-area"></div>
@@ -508,12 +528,13 @@
                             <div class="calendar-container" id="calendar-render-area"></div>
                         </div>
                     </div>
+
                     <button class="btn-text" id="btn-reset-all" onclick="resetStats()" style="width:100%; margin-top:15px; color:var(--point-red);">RESET ALL DATA</button>
                 </div>
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.15 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.16 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -683,6 +704,12 @@
             }
         };
 
+        /* [변경 사항] 브라우저 탭 활성화 상태에 따른 사운드 온오프 로직 재활성화 */
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) AudioEngine.pauseBGM();
+            else AudioEngine.resumeBGM();
+        });
+
         window.onload = () => {
             const fill = document.getElementById('progress-fill');
             let progress = 0;
@@ -697,6 +724,7 @@
                 }
                 fill.style.width = progress + '%';
             }, 50);
+            
             if(isDarkMode) document.body.classList.add('dark-mode');
             document.getElementById('history-toggle').checked = recordStats;
             applyLanguage();
@@ -720,6 +748,7 @@
             const t = i18n[currentLang];
             document.getElementById('lang-ko').classList.toggle('active', currentLang === 'ko');
             document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+            
             const transMap = {
                 'btn-start': t.btn_start, 'btn-enter-shop': t.btn_enter_shop, 'btn-go-setup': t.btn_setup,
                 'btn-go-history': t.btn_history, 'btn-go-about': t.btn_about, 'btn-back-menu-selector': t.btn_back_menu,
@@ -730,7 +759,12 @@
                 'cat-start-btn': t.btn_start, 'btn-back-selector-hand': t.btn_change_game, 'btn-back-selector-roulette': t.btn_change_game,
                 'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : "LIST", 'btn-view-cal': currentLang === 'ko' ? "달력" : "CALENDAR"
             };
-            Object.keys(transMap).forEach(id => { const el = document.getElementById(id); if(el) el.innerText = transMap[id]; });
+
+            Object.keys(transMap).forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.innerText = transMap[id];
+            });
+
             document.getElementById('lbl-group').innerText = t.lbl_group;
             document.getElementById('lbl-members').innerText = t.lbl_members;
             document.getElementById('lbl-darkmode').innerText = t.lbl_darkmode;
@@ -743,9 +777,11 @@
             document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
             document.getElementById('display-group-name').innerText = currentTeamName === 'Empty' ? t.lbl_empty : currentTeamName;
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : ' Members'}`;
+            
             document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
             document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : "Lucky Roulette";
             document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : "Cat's Choice";
+            
             document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
             document.getElementById('txt-roulette-title').innerText = currentLang === 'ko' ? "🎡 행운의 룰렛" : "🎡 LUCKY ROULETTE";
             document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : "🐈 CAT'S CHOICE";
@@ -769,9 +805,8 @@
             setTimeout(() => { splash.style.display = 'none'; goFront(); }, 600);
         }
 
-        /* [변경 사항] 게임 선택 시 각각 소리 나도록 수정 */
         function handleGameSelection(gameType) {
-            AudioEngine.play('start'); // 소리 재생
+            AudioEngine.play('start'); 
             if (gameType === 'hand') startGame();
             else if (gameType === 'roulette') goRoulette();
             else if (gameType === 'cat') goCatGame();
@@ -818,12 +853,18 @@
             document.getElementById('hand-result-anchor').innerHTML = '';
             document.getElementById('roulette-result-anchor').innerHTML = '';
             document.getElementById('cat-result-anchor').innerHTML = '';
+
             document.getElementById('btn-shuffle').classList.remove('hidden');
+            document.getElementById('btn-shuffle').disabled = false;
             document.getElementById('roulette-spin-btn').classList.remove('hidden');
+            document.getElementById('roulette-spin-btn').disabled = false;
             document.getElementById('cat-start-btn').classList.remove('hidden');
+            document.getElementById('cat-start-btn').disabled = false;
+
             document.getElementById('hand-again-btn').classList.add('hidden');
             document.getElementById('roulette-again-btn').classList.add('hidden');
             document.getElementById('cat-again-btn').classList.add('hidden');
+            
             document.querySelectorAll('button').forEach(btn => btn.disabled = false);
         }
 
@@ -844,6 +885,7 @@
             }
         }
 
+        /* [Stable v0.6.5 복원] 설정 팝업 로직 */
         function openMemberModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             overlay.style.display = 'flex'; container.innerHTML = '';
@@ -881,8 +923,9 @@
             overlay.style.display = 'flex'; container.innerHTML = '';
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
             const keys = Object.keys(teams);
-            if(keys.length === 0) { container.innerHTML = `<div style="padding:40px; text-align:center; color:#ccc; font-weight:700;">NO SAVED GROUPS</div>`; }
-            else {
+            if(keys.length === 0) {
+                container.innerHTML = `<div style="padding:40px; text-align:center; color:#ccc; font-weight:700;">NO SAVED GROUPS</div>`;
+            } else {
                 keys.forEach(name => {
                     const div = document.createElement('div');
                     div.className = 'modal-item';
@@ -967,7 +1010,7 @@
             }, 800);
         }
 
-        /* --- Roulette --- */
+        /* --- Roulette (v0.6.12 정밀 수정 복원) --- */
         function goRoulette() {
             hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers');
             const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
@@ -985,7 +1028,8 @@
             ctx.clearRect(0, 0, 400, 400); let startAngle = rouletteAngle;
             for (let i = 0; i < currentRouletteItems.length; i++) {
                 const sliceAngle = (weights[i] / totalWeight) * Math.PI * 2;
-                ctx.beginPath(); ctx.fillStyle = (weights[i] < 1) ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
+                ctx.beginPath(); 
+                ctx.fillStyle = (weights[i] < 1) ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
                 ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, startAngle, startAngle + sliceAngle); ctx.fill();
                 ctx.strokeStyle = "#333"; ctx.lineWidth = 2; ctx.stroke();
                 ctx.save(); ctx.translate(cx, cy); ctx.rotate(startAngle + sliceAngle / 2); ctx.textAlign = "right";
@@ -1140,6 +1184,7 @@
             } catch (e) { btn.innerText = "ERROR"; }
         }
 
+        /* --- Stats & History Restoration (v0.6.13 Calendar) --- */
         function updateStats(name) { 
             let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
             const now = new Date();

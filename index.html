@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.12</title>
+    <title>lucky bean - v0.6.14</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -34,7 +34,6 @@
             --input-bg: #ffffff;
         }
 
-        /* [CAFE NIGHT] 다크모드 설정 */
         body.dark-mode {
             --bg-color: #1a1a1a;
             --primary-color: #ffffff;
@@ -133,7 +132,6 @@
         .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-gray-70); font-weight: 600; }
 
-        /* [Game Box] 화이트 배경 유지 및 가로/세로 센터 정렬 */
         .game-canvas-area { 
             width: 100%; min-height: 220px; height: auto; position: relative; margin: 15px 0; padding-bottom: 25px; overflow: hidden; 
             background: #ffffff !important; border: 2px solid #eee; border-radius: 20px; 
@@ -141,7 +139,6 @@
             transition: min-height 0.3s ease-out;
         }
 
-        /* 게임 선택 화면 아이콘 사이즈 통일 (v0.6.5 복원) */
         .icon-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
         .icon-btn-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
         .icon-btn-item:active { transform: scale(0.95); }
@@ -153,7 +150,6 @@
         .icon-square img { width: 80%; height: 80%; object-fit: contain; }
         .icon-label { font-size: 0.65rem; font-weight: 900; color: var(--text-main); letter-spacing: 0px; text-transform: uppercase; line-height: 1.2; height: 2.4em; display: flex; align-items: center; justify-content: center; }
 
-        /* 랜덤핸드 모바일 가독성: 3개당 1줄 */
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 25px 10px; width: 100%; box-sizing: border-box; }
         .hand-wrapper { 
             display: flex; flex-direction: column; align-items: center; 
@@ -169,7 +165,6 @@
         .shake { animation: winner-shake 0.15s infinite !important; }
         @keyframes winner-shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
 
-        /* 고양이 게임 레이아웃 */
         #bowls-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 12px; padding: 120px 10px 30px; width: 100%; box-sizing: border-box; margin-top: auto; }
         .cat-bowl { flex: 0 1 calc(16.66% - 12px); min-width: 48px; text-align: center; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .bowl-img { width: 100%; max-width: 42px; height: auto; display: block; margin: 0 auto; transition: transform 0.3s; }
@@ -181,8 +176,14 @@
         .bowl-highlight { transform: scale(1.15); z-index: 10 !important; filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
         .bowl-dimmed { opacity: 0.2; filter: blur(2px); z-index: 1 !important; }
 
-        /* [변경 사항] 룰렛 캔버스 좌우 잘림 방지 및 Center 배치 최적화 */
-        #roulette-container { position: relative; width: 100%; max-width: 320px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
+        /* [변경 사항] 룰렛 사이즈 최적화 (모바일 좌우 잘림 방지) */
+        #roulette-container { 
+            position: relative; 
+            width: 90%; /* 화면 너비의 90%만 차지 */
+            max-width: 300px; /* 최대 크기를 300px로 제한하여 작은 폰 대응 */
+            margin: 0 auto; 
+            display: flex; flex-direction: column; align-items: center; box-sizing: border-box; 
+        }
         .roulette-pin { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 34px; height: 44px; z-index: 20; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3)); }
 
         .btn-main {
@@ -196,7 +197,7 @@
         .btn-sub {
             padding: 16px; font-size: 0.9rem; font-weight: 800; background: var(--card-bg); color: var(--text-main); border: 2px solid var(--text-main); border-radius: 20px;
             cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s;
-            box-shadow: 0 6px 0 var(--btn-shadow); text-transform: uppercase; margin-bottom: 12px;
+            box-shadow: 0 3px 0 var(--btn-shadow); text-transform: uppercase; margin-bottom: 12px;
         }
         .btn-sub:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 3px 0 var(--btn-shadow); }
 
@@ -210,7 +211,6 @@
 
         .btn-again { background-color: var(--btn-dark-gray) !important; box-shadow: 0 6px 0 #222 !important; }
 
-        /* [Stable v0.6.5] 모달 팝업 스타일 복원 */
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { 
             background: var(--bg-color); width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; 
@@ -219,7 +219,6 @@
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-item { padding: 18px 5px; border-bottom: 1px solid var(--divider-color); text-align: center; cursor: pointer; font-weight: 700; display: flex; justify-content: space-between; }
 
-        /* 히스토리 배지 및 리스트 */
         .monthly-king-badge {
             background: #fff8e1; border: 1.5px solid #ffca28; border-radius: 15px;
             padding: 10px 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
@@ -237,7 +236,6 @@
         .about-text { font-size: 0.85rem; color: var(--text-gray-70); line-height: 1.7; text-align: left; word-break: keep-all; }
         .about-label { font-weight: 800; color: var(--text-main); margin-top: 18px; display: block; font-size: 0.9rem; }
 
-        /* [Print Effect] 영수증 애니메이션 */
         .receipt-container { width: 100%; display: flex; justify-content: center; margin: 15px 0; overflow: hidden; }
         .receipt {
             background: #fff !important; color: #333 !important; width: 280px; padding: 35px 25px 25px; font-family: 'Courier Prime', monospace;
@@ -248,24 +246,37 @@
         @keyframes printEffect { 0% { transform: translateY(-100%); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
 
         .receipt-header { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; letter-spacing: 2px; text-align: center; }
-        .receipt-subheader { font-size: 0.75rem; margin-bottom: 20px; text-align: center; color: #666; font-weight: 700; }
-        .receipt-line { border-top: 1px dashed #bbb; margin: 12px 0; width: 100%; }
-        .receipt-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; width: 100%; font-weight: 600; }
         .receipt-total { display: flex; flex-direction: column; align-items: center; margin: 25px 0; padding: 15px 0; border-top: 2px solid #333; border-bottom: 2px solid #333; }
         .value-customer { font-size: 2.2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; text-align: center; }
         .fortune-area { font-size: 0.75rem; line-height: 1.6; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; font-style: italic; }
 
-        /* [Stable] 로딩 화면 (화이트 고정) */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff !important; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #000 !important; }
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .loading-bar-fill { height: 100%; width: 0%; background: #000 !important; transition: width 0.1s; }
 
+        /* 기부 캘린더 스타일 */
+        .calendar-container { width: 100%; margin-top: 10px; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .calendar-day-label { font-size: 0.6rem; font-weight: 800; color: #bbb; padding: 5px 0; }
+        .calendar-cell { 
+            aspect-ratio: 1/1; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--tablet-border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+        }
+        .calendar-cell.has-data { border-color: #ffca28; background: #fffdf5; }
+        body.dark-mode .calendar-cell.has-data { background: #2a2618; }
+        .calendar-date-num { font-size: 0.65rem; font-weight: 700; color: var(--text-main); }
+        .calendar-bean-icon { font-size: 0.7rem; margin-top: 2px; }
+        .view-toggle-bar { display: flex; gap: 10px; margin-bottom: 15px; }
+        .view-btn { flex: 1; padding: 10px; font-size: 0.7rem; font-weight: 800; border-radius: 12px; border: 1px solid var(--tablet-border); background: var(--input-bg); color: #bbb; cursor: pointer; }
+        .view-btn.active { border-color: var(--primary-color); background: var(--primary-color); color: var(--bg-color); }
+
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
         .hidden { display: none !important; }
     </style>
 </head>
-<body class="">
+<body>
 
     <div id="splash-screen">
         <img src="coffee.png" alt="Logo" style="width:110px; animation: floating 2s ease-in-out infinite;">
@@ -403,10 +414,8 @@
                         <div id="hand-display"></div>
                     </div>
                     <button id="btn-shuffle" class="btn-spin" onclick="shufflePositions()">SHUFFLE</button>
-                    
                     <div id="hand-result-anchor"></div>
                     <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000; text-align: center;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
-                    
                     <button id="hand-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('hand')">REPLAY</button>
                 </div>
                 <div id="game-btn-group" style="display:flex; flex-direction:column; align-items:center; gap:8px; width:100%;">
@@ -422,16 +431,15 @@
                         <button class="settings-icon-btn" onclick="goSetup('roulette')">⚙️</button>
                     </div>
                     <div class="divider"></div>
-                    <div class="game-canvas-area" style="min-height: 380px; justify-content: center;">
+                    <div class="game-canvas-area" style="min-height: 380px;">
                         <div id="roulette-container">
                             <svg class="roulette-pin" viewBox="0 0 30 40">
                                 <path d="M15 0 L30 20 L15 40 L0 20 Z" fill="#e74c3c" stroke="#000" stroke-width="2"/>
                             </svg>
-                            <canvas id="rouletteCanvas" width="400" height="400" style="width:100%; max-width:320px; border-radius:50%; border:6px solid #333;"></canvas>
+                            <canvas id="rouletteCanvas" width="400" height="400" style="width:100%; border-radius:50%; border:6px solid #333;"></canvas>
                         </div>
                     </div>
                     <button id="roulette-spin-btn" class="btn-spin" onclick="spinRoulette()">SPIN</button>
-                    
                     <div id="roulette-result-anchor"></div>
                     <button id="roulette-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('roulette')">REPLAY</button>
                 </div>
@@ -453,7 +461,6 @@
                         <div id="bowls-container"></div>
                     </div>
                     <button id="cat-start-btn" class="btn-spin" onclick="startCatGame()">START</button>
-                    
                     <div id="cat-result-anchor"></div>
                     <button id="cat-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('cat')">REPLAY</button>
                 </div>
@@ -475,7 +482,7 @@
                         <div class="divider" style="margin: 10px 0; border-top: 1px dashed #bbb;"></div>
                         <div class="receipt-item" style="font-weight:800;"><span class="txt-lbl-sub">SUBTOTAL</span><span class="receipt-subtotal"></span></div>
                         <div class="receipt-total">
-                            <span class="label-customer txt-lbl-payer">SELECTED CUSTOMER</span>
+                            <span class="label-customer txt-lbl-selected">SELECTED CUSTOMER</span>
                             <span class="receipt-payer value-customer"></span>
                         </div>
                         <div class="receipt-line"></div>
@@ -498,18 +505,31 @@
                 <div class="card-container" style="text-align: left;">
                     <div class="order-menu-header" id="txt-history-title">🏆 DONATION HISTORY</div>
                     <div class="divider"></div>
-                    <div id="monthly-king-area"></div>
-                    <div id="history-list-content"></div>
+                    
+                    <div class="view-toggle-bar">
+                        <button id="btn-view-list" class="view-btn active" onclick="switchHistoryView('list')">LIST</button>
+                        <button id="btn-view-cal" class="view-btn" onclick="switchHistoryView('cal')">CALENDAR</button>
+                    </div>
+
+                    <div id="history-content-area">
+                        <div id="history-list-view">
+                            <div id="monthly-king-area"></div>
+                            <div id="history-list-content"></div>
+                        </div>
+                        <div id="history-cal-view" class="hidden">
+                            <div class="calendar-container" id="calendar-render-area"></div>
+                        </div>
+                    </div>
+
                     <button class="btn-text" id="btn-reset-all" onclick="resetStats()" style="width:100%; margin-top:15px; color:var(--point-red);">RESET ALL DATA</button>
                 </div>
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.12 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.14 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
-        /* i18n Dictionary */
         const i18n = {
             en: {
                 welcome: "Welcome to the Lucky Bean!",
@@ -557,7 +577,8 @@
                 confirm_replay: "Are you sure you want to replay?",
                 txt_about_content: `<span class="about-label">WHAT IS LUCKY BEAN?</span> Lucky Bean is the ultimate mini-game app for coffee-loving teams! It turns the daily "Who pays?" moment into a thrilling mini-game.<br><br><span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS. You can save groups for quick access later!<br>2. Go to ENTER SHOP and pick your favorite game: Random Hand, Roulette, or Cat.<br>3. Interact with the game. The 'Chosen One' pays! You can capture and share the receipt.<br><br><span class="about-label">HISTORY & RANKING</span> Win records are automatically stored in HISTORY. Track who is the 'Monthly King' or 'Donation King' on the home screen.`,
                 fortunes: ["Great luck will come to you!", "Kindness returns to you.", "Small loss, big luck later!", "Your team respects you!"],
-                menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner"]
+                menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner"],
+                days: ["S", "M", "T", "W", "T", "F", "S"]
             },
             ko: {
                 welcome: "럭키빈에 오신 것을 환영합니다!",
@@ -605,7 +626,8 @@
                 confirm_replay: "정말 게임을 다시 시작하시겠습니까?",
                 txt_about_content: `<span class="about-label">럭키빈이란?</span> 커피를 사랑하는 동료들을 위한 최고의 복불복 도구입니다. 매일 돌아오는 "누가 커피 살까?"의 고민을 짜릿한 미니 게임으로 즐겨보세요!<br><br><span class="about-label">게임 방법</span> 1. SETTINGS에서 팀원 이름을 입력하세요. 그룹 저장이 가능해 편리합니다.<br>2. ENTER SHOP에서 원하는 게임을 선택하세요.<br>3. 게임에 참여하면 행운의 당첨자가 결정됩니다. 당첨된 사람이 결제! 영수증을 캡처해 공유해보세요.<br><br><span class="about-label">히스토리 및 랭킹</span> 게임 기록이 켜져 있으면 히스토리에 자동 기록됩니다. 메인 화면에서 이달의 기부왕을 확인하세요.`,
                 fortunes: ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 비었어도 인심은 꽉 찼네요!"],
-                menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루"]
+                menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루"],
+                days: ["일", "월", "화", "수", "목", "금", "토"]
             }
         };
 
@@ -621,6 +643,8 @@
         let catRunning = false;
         let fromView = 'front';
         let recordStats = localStorage.getItem('luckyBeanRecord') !== 'false';
+        let historyViewMode = 'list';
+        let calCursor = new Date();
 
         const AudioEngine = {
             ctx: null, bgm: null,
@@ -672,6 +696,11 @@
             }
         };
 
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) AudioEngine.pauseBGM();
+            else AudioEngine.resumeBGM();
+        });
+
         window.onload = () => {
             const fill = document.getElementById('progress-fill');
             let progress = 0;
@@ -686,6 +715,7 @@
                 }
                 fill.style.width = progress + '%';
             }, 50);
+            
             if(isDarkMode) document.body.classList.add('dark-mode');
             document.getElementById('history-toggle').checked = recordStats;
             applyLanguage();
@@ -718,7 +748,7 @@
                 'btn-save-exit': t.btn_save_exit, 'btn-shuffle': t.btn_shuffle, 'hand-again-btn': t.btn_again,
                 'roulette-again-btn': t.btn_again, 'cat-again-btn': t.btn_again, 'roulette-spin-btn': t.btn_spin,
                 'cat-start-btn': t.btn_start, 'btn-back-selector-hand': t.btn_change_game, 'btn-back-selector-roulette': t.btn_change_game,
-                'btn-back-selector-cat': t.btn_change_game
+                'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : "LIST", 'btn-view-cal': currentLang === 'ko' ? "달력" : "CALENDAR"
             };
 
             Object.keys(transMap).forEach(id => {
@@ -796,7 +826,7 @@
         function goHistory() {
             hideAllViews(); document.getElementById('history-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_history.png';
-            updateText('history_msg'); renderHistoryPage();
+            updateText('history_msg'); switchHistoryView(historyViewMode);
         }
 
         function hideAllViews() {
@@ -839,7 +869,6 @@
             }
         }
 
-        /* [Stable v0.6.5 복원] 설정 팝업 로직 */
         function openMemberModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             overlay.style.display = 'flex'; container.innerHTML = '';
@@ -964,11 +993,10 @@
             }, 800);
         }
 
-        /* --- [v0.6.12 정밀 수정] Roulette (검정 0.2 확률 Lucky Pass 복원) --- */
+        /* --- Roulette (v0.6.12 정밀 수정 복원) --- */
         function goRoulette() {
             hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers');
             const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
-            // 0.6.5 안정 버전의 'Lucky Pass' 명칭 및 구조 강제 적용
             currentRouletteItems = [...members, i18n[currentLang].all_pass];
             document.getElementById('roulette-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'cafe_counter.png';
@@ -978,19 +1006,16 @@
         function drawRoulette() {
             const canvas = document.getElementById('rouletteCanvas'); const ctx = canvas.getContext('2d');
             const cx = 200, cy = 200, r = 190;
-            // [정밀 분석] Lucky Pass (가중치 0.2) 적용 로직
             const weights = currentRouletteItems.map(item => (item.includes('Lucky Pass') || item.includes('Lucky Round') || item.includes('전원 통과')) ? 0.2 : 1);
             const totalWeight = weights.reduce((a, b) => a + b, 0);
             ctx.clearRect(0, 0, 400, 400); let startAngle = rouletteAngle;
             for (let i = 0; i < currentRouletteItems.length; i++) {
                 const sliceAngle = (weights[i] / totalWeight) * Math.PI * 2;
                 ctx.beginPath(); 
-                // [v0.6.5 복원] 럭키 칸은 무조건 검정 배경 (#000)
                 ctx.fillStyle = (weights[i] < 1) ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
                 ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, startAngle, startAngle + sliceAngle); ctx.fill();
                 ctx.strokeStyle = "#333"; ctx.lineWidth = 2; ctx.stroke();
                 ctx.save(); ctx.translate(cx, cy); ctx.rotate(startAngle + sliceAngle / 2); ctx.textAlign = "right";
-                // [v0.6.5 복원] 럭키 텍스트는 골드 색상 (#f1c40f)
                 ctx.fillStyle = (weights[i] < 1) ? "#f1c40f" : "#333";
                 ctx.font = "bold 14px Montserrat"; ctx.fillText(currentRouletteItems[i], r - 30, 5); ctx.restore();
                 startAngle += sliceAngle;
@@ -1030,7 +1055,6 @@
             document.getElementById('roulette-spin-btn').classList.add('hidden');
             document.getElementById('roulette-again-btn').classList.remove('hidden');
             
-            // [변경 사항] Lucky Pass 당첨 시 영수증 없이 결과 처리
             if (weights[winnerIdx] < 1) {
                 AudioEngine.play('start'); updateText('all_pass_unbelievable');
                 document.getElementById('main-img').src = 'cafe_counter_lucky.png';
@@ -1108,7 +1132,7 @@
             moveCat();
         }
 
-        /* --- Print Receipt Logic --- */
+        /* --- Global Utilities --- */
         function showFinish(total, payerName, anchorId) {
             const now = new Date(); const randomPrice = (Math.random() * 5 + 3.5).toFixed(2);
             const t = i18n[currentLang];
@@ -1122,10 +1146,6 @@
             receipt.querySelector('.receipt-payer').innerText = payerName;
             receipt.querySelector('.receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
             receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
-            receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price;
-            receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal;
-            receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected;
-            receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
             const anchor = document.getElementById(anchorId);
             anchor.innerHTML = ''; anchor.appendChild(prototype);
             requestAnimationFrame(() => {
@@ -1148,10 +1168,72 @@
             } catch (e) { btn.innerText = "ERROR"; }
         }
 
-        /* --- [Stable v0.6.5 복원] Stats & History Restoration --- */
-        function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); const monthKey = new Date().toISOString().slice(0, 7); if(!stats[name]) stats[name] = { total: 0, monthly: {} }; stats[name].total += 1; stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1; localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
-        function showStats() { const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); const entries = Object.entries(stats).map(([n, d]) => [n, d.total || 0]).sort((a, b) => b[1] - a[1]); const dash = document.getElementById('stats-dashboard'); if (entries.length === 0) { if(dash) dash.classList.add('hidden'); return; } dash.classList.remove('hidden'); document.getElementById('stats-list').innerHTML = entries.slice(0, 3).map(e => `<div class="stats-row"><span>${e[0]}</span><span>${e[1]} ${i18n[currentLang].lbl_times}</span></div>`).join(''); }
-        function renderHistoryPage() { const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); const month = new Date().toISOString().slice(0, 7); const entries = Object.entries(stats).map(([n, d]) => ({ name: n, total: d.total || 0, monthly: (d.monthly && d.monthly[month]) || 0 })).sort((a, b) => b.total - a.total); const kingArea = document.getElementById('monthly-king-area'); const content = document.getElementById('history-list-content'); if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; return; } const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0]; if(king && king.monthly > 0) kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`; content.innerHTML = entries.map(item => `<div class="history-item"><span>${item.name}</span><span style="color:var(--point-red)">${item.total}${i18n[currentLang].lbl_times}</span></div>`).join(''); }
+        /* --- Stats & History (Calendar) --- */
+        function updateStats(name) { 
+            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
+            const now = new Date();
+            const monthKey = now.toISOString().slice(0, 7); 
+            const dateKey = now.toISOString().slice(0, 10);
+            if(!stats[name]) stats[name] = { total: 0, monthly: {}, daily: [] }; 
+            stats[name].total += 1; 
+            stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1; 
+            if(!stats[name].daily) stats[name].daily = [];
+            stats[name].daily.push(dateKey);
+            localStorage.setItem('coffeeStats', JSON.stringify(stats)); 
+        }
+
+        function showStats() { 
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
+            const entries = Object.entries(stats).map(([n, d]) => [n, d.total || 0]).sort((a, b) => b[1] - a[1]); 
+            const dash = document.getElementById('stats-dashboard'); 
+            if (entries.length === 0) { if(dash) dash.classList.add('hidden'); return; } 
+            dash.classList.remove('hidden'); 
+            document.getElementById('stats-list').innerHTML = entries.slice(0, 3).map(e => `<div class="stats-row"><span>${e[0]}</span><span>${e[1]} ${i18n[currentLang].lbl_times}</span></div>`).join(''); 
+        }
+
+        function switchHistoryView(mode) {
+            historyViewMode = mode;
+            document.getElementById('btn-view-list').classList.toggle('active', mode === 'list');
+            document.getElementById('btn-view-cal').classList.toggle('active', mode === 'cal');
+            document.getElementById('history-list-view').classList.toggle('hidden', mode !== 'list');
+            document.getElementById('history-cal-view').classList.toggle('hidden', mode !== 'cal');
+            if(mode === 'list') renderHistoryList(); else renderCalendar();
+        }
+
+        function renderHistoryList() {
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
+            const month = new Date().toISOString().slice(0, 7); 
+            const entries = Object.entries(stats).map(([n, d]) => ({ name: n, total: d.total || 0, monthly: (d.monthly && d.monthly[month]) || 0 })).sort((a, b) => b.total - a.total); 
+            const kingArea = document.getElementById('monthly-king-area'); 
+            const content = document.getElementById('history-list-content'); 
+            if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; return; } 
+            const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0]; 
+            if(king && king.monthly > 0) kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`; 
+            content.innerHTML = entries.map(item => `<div class="history-item"><span>${item.name}</span><span style="color:var(--point-red)">${item.total}${i18n[currentLang].lbl_times}</span></div>`).join(''); 
+        }
+
+        function renderCalendar() {
+            const area = document.getElementById('calendar-render-area');
+            const year = calCursor.getFullYear();
+            const month = calCursor.getMonth();
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            let html = `<div class="calendar-header"><button class="btn-text" onclick="changeCalMonth(-1)">◀</button><span style="font-weight:800; font-size:0.9rem;">${year}.${String(month+1).padStart(2,'0')}</span><button class="btn-text" onclick="changeCalMonth(1)">▶</button></div><div class="calendar-grid">`;
+            i18n[currentLang].days.forEach(d => html += `<div class="calendar-day-label">${d}</div>`);
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            for(let i=0; i<firstDay; i++) html += `<div></div>`;
+            for(let d=1; d<=lastDate; d++) {
+                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                let payers = [];
+                Object.entries(stats).forEach(([name, data]) => { if(data.daily && data.daily.includes(dateStr)) payers.push(name); });
+                const hasDataClass = payers.length > 0 ? 'has-data' : '';
+                html += `<div class="calendar-cell ${hasDataClass}"><span class="calendar-date-num">${d}</span>${payers.length > 0 ? '<span class="calendar-bean-icon">☕</span>' : ''}</div>`;
+            }
+            html += `</div>`;
+            area.innerHTML = html;
+        }
+
+        function changeCalMonth(delta) { calCursor.setMonth(calCursor.getMonth() + delta); renderCalendar(); }
         function resetStats() { if(confirm("Clear all?")) { localStorage.removeItem('coffeeStats'); goFront(); } }
     </script>
 </body>

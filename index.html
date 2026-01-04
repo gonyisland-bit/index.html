@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.17</title>
+    <title>lucky bean - v0.6.19</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -34,7 +34,6 @@
             --input-bg: #ffffff;
         }
 
-        /* [CAFE NIGHT] 다크모드 테마 설정 */
         body.dark-mode {
             --bg-color: #1a1a1a;
             --primary-color: #ffffff;
@@ -114,7 +113,7 @@
         input:checked + .slider { background-color: var(--point-red); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        .lang-btn { background: var(--tablet-border); border: none; padding: 6px 12px; font-size: 0.7rem; font-weight: 800; border-radius: 8px; cursor: pointer; color: #999; transition: 0.2s; }
+        .lang-btn { background: var(--tablet-border); border: none; padding: 6px 8px; font-size: 0.65rem; font-weight: 800; border-radius: 8px; cursor: pointer; color: #999; transition: 0.2s; }
         .lang-btn.active { background: var(--primary-color); color: var(--bg-color); }
 
         .name-mgmt-bar { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px; }
@@ -158,13 +157,11 @@
             max-width: calc(33.33% - 8px); transition: transform 0.4s ease; z-index: 1; 
         }
         .hand-img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
-        
-        /* [변경 사항] 이름 가시성 및 2줄 처리 강화 */
         .hand-name, .bowl-name { 
             font-size: 0.65rem; font-weight: 900; color: #444; margin-top: 6px; 
             white-space: normal; word-break: keep-all; line-height: 1.2; overflow: hidden;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-align: center;
-            height: 2.4em; /* 2줄 고정 높이 확보 */
+            height: 2.4em; 
         }
         body.dark-mode .hand-name, body.dark-mode .bowl-name { color: #888; }
 
@@ -242,8 +239,13 @@
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
         .calendar-day-label { font-size: 0.6rem; font-weight: 800; color: #bbb; padding: 5px 0; }
-        .calendar-cell { aspect-ratio: 1/1; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--tablet-border); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .calendar-cell.has-data { border-color: #ffca28; background: #fffdf5; }
+        .calendar-cell { 
+            aspect-ratio: 1/1; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--tablet-border); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; 
+            transition: transform 0.1s, border-color 0.2s;
+        }
+        .calendar-cell.has-data { border-color: #ffca28; background: #fffdf5; cursor: pointer; }
+        .calendar-cell.has-data:active { transform: scale(0.92); background: #fffae6; }
         body.dark-mode .calendar-cell.has-data { background: #2a2618; }
         .calendar-date-num { font-size: 0.65rem; font-weight: 700; color: var(--text-main); }
         .calendar-bean-icon { font-size: 0.7rem; margin-top: 2px; }
@@ -251,7 +253,6 @@
         .about-text { font-size: 0.85rem; color: var(--text-gray-70); line-height: 1.7; text-align: left; word-break: keep-all; }
         .about-label { font-weight: 800; color: var(--text-main); margin-top: 18px; display: block; font-size: 0.9rem; }
 
-        /* [변경 사항] 영수증 디자인 - 안정 버전 스타일 복원 */
         .receipt-container { width: 100%; display: flex; justify-content: center; margin: 15px 0; overflow: hidden; }
         .receipt {
             background: #fff !important; color: #333 !important; width: 280px; padding: 35px 25px 25px; font-family: 'Courier Prime', monospace;
@@ -279,7 +280,7 @@
         .hidden { display: none !important; }
     </style>
 </head>
-<body class="">
+<body>
 
     <div id="splash-screen">
         <img src="coffee.png" alt="Logo" style="width:110px; animation: floating 2s ease-in-out infinite;">
@@ -361,6 +362,7 @@
                         <div class="lang-toggle-container">
                             <button id="lang-ko" class="lang-btn" onclick="setLanguage('ko')">KO</button>
                             <button id="lang-en" class="lang-btn" onclick="setLanguage('en')" style="margin-left:5px;">EN</button>
+                            <button id="lang-jp" class="lang-btn" onclick="setLanguage('jp')" style="margin-left:5px;">JP</button>
                         </div>
                     </div>
                     <div class="divider" style="margin-bottom: 15px;"></div>
@@ -522,7 +524,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.17 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.19 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -571,7 +573,7 @@
                 lbl_empty: "Empty",
                 lbl_history_onoff: "HISTORY RECORDING",
                 confirm_replay: "Are you sure you want to replay?",
-                txt_about_content: `<span class="about-label">WHAT IS LUCKY BEAN?</span> Lucky Bean is the ultimate mini-game app for coffee-loving teams! It turns the daily "Who pays?" moment into a thrilling mini-game.<br><br><span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS. You can save groups for quick access later!<br>2. Go to ENTER SHOP and pick your favorite game: Random Hand, Roulette, or Cat.<br>3. Interact with the game. The 'Chosen One' pays! You can capture and share the receipt.<br><br><span class="about-label">HISTORY & RANKING</span> Win records are automatically stored in HISTORY. Track who is the 'Monthly King' or 'Donation King' on the home screen.`,
+                txt_about_content: `<span class="about-label">WHAT IS LUCKY BEAN?</span> Lucky Bean is the ultimate mini-game app for coffee-loving teams! It turns the daily "Who pays?" moment into a thrilling mini-game.<br><br><span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS. You can save groups for quick access later!<br>2. Go to ENTER SHOP and pick your favorite game: Random Hand, Roulette, or Cat.<br>3. Interact with the game. The 'Chosen One' pays! You can capture and share the receipt.<br><br><span class="about-label">HISTORY & RANKING</span> Win records are automatically stored in HISTORY. You can track donation stats in LIST mode or tap the coffee icon in CALENDAR mode to see who paid on that day.`,
                 fortunes: ["Great luck will come to you!", "Kindness returns to you.", "Small loss, big luck later!", "Your team respects you!"],
                 menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner"],
                 days: ["S", "M", "T", "W", "T", "F", "S"]
@@ -615,14 +617,64 @@
                 lbl_selected: "당첨자",
                 lbl_get_receipt: "영수증 받기",
                 lbl_monthly_king: "이달의 기부왕",
+                lbl_darkmode: "카페 나이트 (다크 모드)",
                 lbl_times: "회",
                 lbl_empty: "비어있음",
                 lbl_history_onoff: "게임 기록 저장",
                 confirm_replay: "정말 게임을 다시 시작하시겠습니까?",
-                txt_about_content: `<span class="about-label">럭키빈이란?</span> 커피를 사랑하는 동료들을 위한 최고의 복불복 도구입니다. 매일 돌아오는 "누가 커피 살까?"의 고민을 짜릿한 미니 게임으로 즐겨보세요!<br><br><span class="about-label">게임 방법</span> 1. SETTINGS에서 팀원 이름을 입력하세요. 그룹 저장이 가능해 편리합니다.<br>2. ENTER SHOP에서 원하는 게임을 선택하세요.<br>3. 게임에 참여하면 행운의 당첨자가 결정됩니다. 당첨된 사람이 결제! 영수증을 캡처해 공유해보세요.<br><br><span class="about-label">히스토리 및 랭킹</span> 게임 기록이 켜져 있으면 히스토리에 자동 기록됩니다. 메인 화면에서 이달의 기부왕을 확인하세요.`,
+                txt_about_content: `<span class="about-label">럭키빈이란?</span> 커피를 사랑하는 동료들을 위한 최고의 복불복 도구입니다. 매일 돌아오는 "누가 커피 살까?"의 고민을 짜릿한 미니 게임으로 즐겨보세요!<br><br><span class="about-label">게임 방법</span> 1. SETTINGS에서 팀원 이름을 입력하세요. 그룹 저장이 가능해 편리합니다.<br>2. ENTER SHOP에서 원하는 게임을 선택하세요.<br>3. 게임에 참여하면 행운의 당첨자가 결정됩니다. 당첨된 사람이 결제! 영수증을 캡처해 공유해보세요.<br><br><span class="about-label">히스토리 및 랭킹</span> 게임 기록이 켜져 있으면 히스토리에 자동 기록됩니다. LIST 모드에서 랭킹을 확인하거나, CALENDAR 모드에서 커피 아이콘을 눌러 해당 날짜의 당첨자를 확인하세요.`,
                 fortunes: ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 비었어도 인심은 꽉 찼네요!"],
                 menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루"],
                 days: ["일", "월", "화", "수", "목", "금", "토"]
+            },
+            jp: {
+                welcome: "ラッキービーンへようこそ！",
+                choose_luck: "一番ラッキーなゲームを選んでください！",
+                setting_msg: "設定：チームメンバーを管理します。",
+                how_to: "遊び方と履歴のご案内",
+                history_msg: "誰が一番コーヒーをおごりましたか？",
+                pick_hand: "誰が払う？ 手を選んで！",
+                hands_mixed: "手がシャッフルされました！",
+                safe_msg: " さんは生存！",
+                pay_msg: " さんが当選しました！",
+                lucky_round: "ラッキー！全員生存です！ 🌟",
+                spin_msg: "ルーレットを回して運試し！",
+                cat_msg: "猫が悩んでいます...",
+                cat_start: "猫は誰のところへ行くかな？",
+                all_pass: "🌟 Lucky Pass 🌟",
+                all_pass_unbelievable: "🌟 すごい！Lucky Passです！ 🌟",
+                btn_start: "スタート",
+                btn_enter_shop: "入場する",
+                btn_setup: "設定",
+                btn_history: "履歴",
+                btn_about: "情報",
+                btn_back_menu: "ホームへ戻る",
+                btn_back_home: "ホームへ戻る",
+                btn_save_exit: "保存して終了",
+                btn_shuffle: "シャッフル",
+                btn_again: "もう一度",
+                btn_spin: "回す",
+                btn_change_game: "ゲーム変更",
+                lbl_group: "グループ",
+                lbl_members: "人数",
+                lbl_random: "ランダム",
+                lbl_clear: "クリア",
+                lbl_save: "保存",
+                lbl_kings: "🏆 今日の寄付王",
+                lbl_unit_price: "単価",
+                lbl_subtotal: "合計",
+                lbl_selected: "当選者",
+                lbl_get_receipt: "レシートを保存",
+                lbl_monthly_king: "今月の寄付王",
+                lbl_darkmode: "カフェナイト (ダークモード)",
+                lbl_times: "回",
+                lbl_empty: "空",
+                lbl_history_onoff: "履歴を保存する",
+                confirm_replay: "ゲームをやり直しますか？",
+                txt_about_content: `<span class="about-label">ラッキービーンとは？</span> コーヒーを愛するチームのための最高の運試しツールです。毎日の「誰がコーヒーを買うか？」という悩みを、刺激的なミニゲームに変えましょう！<br><br><span class="about-label">遊び方</span> 1. SETTINGSでチームメンバーの名前を入力します。グループ保存機能が便利です。<br>2. ENTER SHOPでお好みのゲームを選択します。<br>3. ゲームに参加して当選者が決まったら、その人がおごり！レシートを保存して共有しましょう。<br><br><span class="about-label">履歴とランキング</span> 履歴保存がオンの場合、結果が自動的に保存されます。LISTモードでランキングを確認したり、CALENDARモードでコーヒーアイコンをタップして当選者を確認できます。`,
+                fortunes: ["今日コーヒーをおごったあなたに、大きな幸運が訪れます！", "親切は必ず自分に返ってきます。", "財布は空でも心は満たされましたね！"],
+                menus: ["アメリカーノ", "カフェラテ", "バニララテ", "フラットホワイト", "コールドブリュー"],
+                days: ["日", "月", "火", "水", "木", "金", "土"]
             }
         };
 
@@ -716,10 +768,19 @@
             applyLanguage();
         };
 
+        /* [변경 사항] 다크모드 시 이미지 자동 변경 처리 */
         function toggleDarkMode() {
             isDarkMode = document.getElementById('dark-toggle').checked;
-            if(isDarkMode) document.body.classList.add('dark-mode');
-            else document.body.classList.remove('dark-mode');
+            const mainImg = document.getElementById('main-img');
+            if(isDarkMode) {
+                document.body.classList.add('dark-mode');
+                if(mainImg.src.includes('cafe_facade.png')) mainImg.src = 'cafe_facade_night.png';
+                if(mainImg.src.includes('cafe_facade_zoom.png')) mainImg.src = 'cafe_facade_zoom_night.png';
+            } else {
+                document.body.classList.remove('dark-mode');
+                if(mainImg.src.includes('cafe_facade_night.png')) mainImg.src = 'cafe_facade.png';
+                if(mainImg.src.includes('cafe_facade_zoom_night.png')) mainImg.src = 'cafe_facade_zoom.png';
+            }
             localStorage.setItem('luckyBeanDark', isDarkMode);
         }
 
@@ -734,6 +795,7 @@
             const t = i18n[currentLang];
             document.getElementById('lang-ko').classList.toggle('active', currentLang === 'ko');
             document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+            document.getElementById('lang-jp').classList.toggle('active', currentLang === 'jp');
             
             const transMap = {
                 'btn-start': t.btn_start, 'btn-enter-shop': t.btn_enter_shop, 'btn-go-setup': t.btn_setup,
@@ -743,7 +805,8 @@
                 'btn-save-exit': t.btn_save_exit, 'btn-shuffle': t.btn_shuffle, 'hand-again-btn': t.btn_again,
                 'roulette-again-btn': t.btn_again, 'cat-again-btn': t.btn_again, 'roulette-spin-btn': t.btn_spin,
                 'cat-start-btn': t.btn_start, 'btn-back-selector-hand': t.btn_change_game, 'btn-back-selector-roulette': t.btn_change_game,
-                'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : "LIST", 'btn-view-cal': currentLang === 'ko' ? "달력" : "CALENDAR"
+                'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : (currentLang === 'jp' ? "リスト" : "LIST"),
+                'btn-view-cal': currentLang === 'ko' ? "달력" : (currentLang === 'jp' ? "カレンダー" : "CALENDAR")
             };
 
             Object.keys(transMap).forEach(id => {
@@ -762,18 +825,18 @@
             document.getElementById('txt-choose-luck').innerText = t.choose_luck;
             document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
             document.getElementById('display-group-name').innerText = currentTeamName === 'Empty' ? t.lbl_empty : currentTeamName;
-            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : ' Members'}`;
+            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : ' Members')}`;
             
-            document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
-            document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : "Lucky Roulette";
-            document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : "Cat's Choice";
+            document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
+            document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : (currentLang === 'jp' ? "幸運のルーレット" : "Lucky Roulette");
+            document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : (currentLang === 'jp' ? "猫の選択" : "Cat's Choice");
             
-            document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
-            document.getElementById('txt-roulette-title').innerText = currentLang === 'ko' ? "🎡 행운의 룰렛" : "🎡 LUCKY ROULETTE";
-            document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : "🐈 CAT'S CHOICE";
-            document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "주문 메뉴 설정" : "ORDER MENU SETTING"}`;
-            document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : "ABOUT LUCKY BEAN"}`;
-            document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : "DONATION HISTORY"}`;
+            document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
+            document.getElementById('txt-roulette-title').innerText = currentLang === 'ko' ? "🎡 행운의 룰렛" : (currentLang === 'jp' ? "🎡 幸運のルーレット" : "🎡 LUCKY ROULETTE");
+            document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : (currentLang === 'jp' ? "🐈 猫の選択" : "🐈 CAT'S CHOICE");
+            document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "주문 메뉴 설정" : (currentLang === 'jp' ? "メニュー設定" : "ORDER MENU SETTING")}`;
+            document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : (currentLang === 'jp' ? "ラッキービーン情報" : "ABOUT LUCKY BEAN")}`;
+            document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : (currentLang === 'jp' ? "寄付履歴" : "DONATION HISTORY")}`;
         }
 
         function updateText(msgKey, isDirect = false) {
@@ -801,14 +864,14 @@
         function goFront() {
             fromView = 'front'; hideAllViews();
             document.getElementById('front-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_facade.png';
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_facade_night.png' : 'cafe_facade.png';
             updateText('welcome'); showStats();
         }
 
         function showGameSelector() {
             fromView = 'selector'; hideAllViews();
             document.getElementById('selector-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_facade_zoom.png';
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_facade_zoom_night.png' : 'cafe_facade_zoom.png';
             updateText('choose_luck');
         }
 
@@ -822,7 +885,7 @@
 
         function goAbout() {
             hideAllViews(); document.getElementById('about-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_facade.png'; updateText('how_to');
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_facade_night.png' : 'cafe_facade.png'; updateText('how_to');
         }
 
         function goHistory() {
@@ -841,11 +904,8 @@
             document.getElementById('cat-result-anchor').innerHTML = '';
 
             document.getElementById('btn-shuffle').classList.remove('hidden');
-            document.getElementById('btn-shuffle').disabled = false;
             document.getElementById('roulette-spin-btn').classList.remove('hidden');
-            document.getElementById('roulette-spin-btn').disabled = false;
             document.getElementById('cat-start-btn').classList.remove('hidden');
-            document.getElementById('cat-start-btn').disabled = false;
 
             document.getElementById('hand-again-btn').classList.add('hidden');
             document.getElementById('roulette-again-btn').classList.add('hidden');
@@ -877,7 +937,7 @@
             for (let i = 2; i <= 12; i++) {
                 const div = document.createElement('div');
                 div.className = 'modal-item';
-                div.innerHTML = `<span>${i}${currentLang === 'ko' ? '명' : ' Members'}</span><span>▾</span>`; 
+                div.innerHTML = `<span>${i}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : ' Members')}</span><span>▾</span>`; 
                 div.onclick = () => { currentMemberCount = i; generateNameInputs(); closeModal(); };
                 container.appendChild(div);
             }
@@ -895,7 +955,7 @@
                 input.placeholder = `User ${i+1}`; if (namesToUse && namesToUse[i]) input.value = namesToUse[i];
                 container.appendChild(input);
             }
-            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : ' Members'}`;
+            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : ' Members')}`;
         }
 
         function fillRandomNames() {
@@ -946,7 +1006,6 @@
                 handImg.onclick = () => handleHandClick(i, memberNames.length);
                 const nameTag = document.createElement('div'); 
                 nameTag.className = 'hand-name'; 
-                // [v0.6.15 개선] 사용자 명칭 2줄 처리 로직 (고양이 게임 이식)
                 nameTag.innerText = memberNames[i];
                 wrapper.appendChild(handImg); wrapper.appendChild(nameTag); display.appendChild(wrapper);
             }
@@ -998,7 +1057,7 @@
             }, 800);
         }
 
-        /* --- Roulette (v0.6.12 정밀 수정 복원) --- */
+        /* --- [v0.6.5 복원] Roulette 로직 --- */
         function goRoulette() {
             hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers');
             const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
@@ -1011,7 +1070,7 @@
         function drawRoulette() {
             const canvas = document.getElementById('rouletteCanvas'); const ctx = canvas.getContext('2d');
             const cx = 200, cy = 200, r = 190;
-            const weights = currentRouletteItems.map(item => (item.includes('Lucky Pass') || item.includes('Lucky Round') || item.includes('전원 통과')) ? 0.2 : 1);
+            const weights = currentRouletteItems.map(item => (item.includes('Lucky Pass') || item.includes('Lucky Round') || item.includes('전원 통과') || item.includes('生存')) ? 0.2 : 1);
             const totalWeight = weights.reduce((a, b) => a + b, 0);
             ctx.clearRect(0, 0, 400, 400); let startAngle = rouletteAngle;
             for (let i = 0; i < currentRouletteItems.length; i++) {
@@ -1045,7 +1104,7 @@
         }
 
         function finishSpin() {
-            const weights = currentRouletteItems.map(item => (item.includes('Lucky Pass') || item.includes('Lucky Round') || item.includes('전원 통과')) ? 0.2 : 1);
+            const weights = currentRouletteItems.map(item => (item.includes('Lucky Pass') || item.includes('Lucky Round') || item.includes('전원 통과') || item.includes('生存')) ? 0.2 : 1);
             const totalWeight = weights.reduce((a, b) => a + b, 0);
             let normalizedAngle = (rouletteAngle % (Math.PI * 2)); if (normalizedAngle < 0) normalizedAngle += Math.PI * 2;
             const pinPos = (Math.PI * 1.5); let checkAngle = normalizedAngle, winnerIdx = 0;
@@ -1142,7 +1201,6 @@
             const t = i18n[currentLang];
             const prototype = document.getElementById('receipt-prototype-area').querySelector('.receipt-container').cloneNode(true);
             const receipt = prototype.querySelector('.receipt');
-            
             receipt.querySelector('.receipt-date').innerText = now.toLocaleDateString();
             receipt.querySelector('.receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
             receipt.querySelector('.receipt-qty').innerText = "x" + total;
@@ -1151,20 +1209,13 @@
             receipt.querySelector('.receipt-payer').innerText = payerName;
             receipt.querySelector('.receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
             receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
-            
-            // [v0.6.5 복원] 영수증 필드 매핑
             receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price;
             receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal;
             receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected;
             receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
-            
             const anchor = document.getElementById(anchorId);
             anchor.innerHTML = ''; anchor.appendChild(prototype);
-            
-            requestAnimationFrame(() => {
-                AudioEngine.play('print');
-                receipt.classList.add('print-ani');
-            });
+            requestAnimationFrame(() => { AudioEngine.play('print'); receipt.classList.add('print-ani'); });
             receipt.querySelector('.btn-capture-run').onclick = function() { shareAsImage(receipt, this); };
         }
 
@@ -1240,10 +1291,15 @@
                 let payers = [];
                 Object.entries(stats).forEach(([name, data]) => { if(data.daily && data.daily.includes(dateStr)) payers.push(name); });
                 const hasDataClass = payers.length > 0 ? 'has-data' : '';
-                html += `<div class="calendar-cell ${hasDataClass}"><span class="calendar-date-num">${d}</span>${payers.length > 0 ? '<span class="calendar-bean-icon">☕</span>' : ''}</div>`;
+                const clickAttr = payers.length > 0 ? `onclick="showPayerAlert('${dateStr}', '${payers.join(', ')}')"` : "";
+                html += `<div class="calendar-cell ${hasDataClass}" ${clickAttr}><span class="calendar-date-num">${d}</span>${payers.length > 0 ? '<span class="calendar-bean-icon">☕</span>' : ''}</div>`;
             }
             html += `</div>`;
             area.innerHTML = html;
+        }
+
+        function showPayerAlert(date, names) {
+            alert(`${date}\n${currentLang === 'ko' ? '당첨자' : (currentLang === 'jp' ? '当選者' : 'Chosen')}: ${names}`);
         }
 
         function changeCalMonth(delta) { calCursor.setMonth(calCursor.getMonth() + delta); renderCalendar(); }

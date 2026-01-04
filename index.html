@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.20</title>
+    <title>lucky bean - v0.6.22</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -34,7 +34,6 @@
             --input-bg: #ffffff;
         }
 
-        /* [CAFE NIGHT] 다크모드 테마 설정 */
         body.dark-mode {
             --bg-color: #1a1a1a;
             --primary-color: #ffffff;
@@ -117,17 +116,6 @@
         .lang-btn { background: var(--tablet-border); border: none; padding: 6px 8px; font-size: 0.65rem; font-weight: 800; border-radius: 8px; cursor: pointer; color: #999; transition: 0.2s; }
         .lang-btn.active { background: var(--primary-color); color: var(--bg-color); }
 
-        .icon-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
-        .icon-btn-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
-        .icon-btn-item:active { transform: scale(0.95); }
-        .icon-square {
-            width: 100%; aspect-ratio: 1/1; border: 3px solid var(--primary-color); border-radius: 15px;
-            background: #fff; overflow: hidden; margin-bottom: 8px; box-shadow: 0 4px 0 var(--btn-shadow);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .icon-square img { width: 80%; height: 80%; object-fit: contain; }
-        .icon-label { font-size: 0.65rem; font-weight: 900; color: var(--text-main); letter-spacing: 0px; text-transform: uppercase; line-height: 1.2; height: 2.4em; display: flex; align-items: center; justify-content: center; }
-
         .name-mgmt-bar { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 8px; }
         .btn-text { background: none; border: none; color: #bbb; font-size: 0.7rem; font-weight: 800; cursor: pointer; padding: 5px 10px; transition: 0.2s; letter-spacing: 1px; text-align: center; }
 
@@ -150,6 +138,17 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             transition: min-height 0.3s ease-out;
         }
+
+        .icon-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
+        .icon-btn-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
+        .icon-btn-item:active { transform: scale(0.95); }
+        .icon-square {
+            width: 100%; aspect-ratio: 1/1; border: 3px solid var(--primary-color); border-radius: 15px;
+            background: #fff; overflow: hidden; margin-bottom: 8px; box-shadow: 0 4px 0 var(--btn-shadow);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icon-square img { width: 80%; height: 80%; object-fit: contain; }
+        .icon-label { font-size: 0.65rem; font-weight: 900; color: var(--text-main); letter-spacing: 0px; text-transform: uppercase; line-height: 1.2; height: 2.4em; display: flex; align-items: center; justify-content: center; }
 
         #hand-display { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 25px 10px; width: 100%; box-sizing: border-box; }
         .hand-wrapper { 
@@ -252,11 +251,9 @@
         .calendar-date-num { font-size: 0.65rem; font-weight: 700; color: var(--text-main); }
         .calendar-bean-icon { font-size: 0.7rem; margin-top: 2px; }
 
-        /* [변경 사항] 일본어 모드 설명 글 그레이 박스 이탈 방지 최적화 */
         .about-text { 
             font-size: 0.8rem; color: var(--text-gray-70); line-height: 1.6; text-align: left; 
-            word-break: break-all; /* 일본어 단어 분리 방지 대신 강제 줄바꿈 사용 */
-            hyphens: auto;
+            word-break: break-all; hyphens: auto;
         }
         .about-label { font-weight: 800; color: var(--text-main); margin-top: 15px; display: block; font-size: 0.85rem; }
 
@@ -282,6 +279,27 @@
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #000 !important; }
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .loading-bar-fill { height: 100%; width: 0%; background: #000 !important; transition: width 0.1s; }
+
+        /* Lounge Styles */
+        .lounge-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 12px; font-size: 0.75rem; font-weight: 800; border: 1px solid var(--tablet-border); border-radius: 12px; background: var(--input-bg); color: #bbb; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); }
+        .lounge-content { min-height: 250px; }
+        
+        .fortune-card-container { perspective: 1000px; width: 200px; height: 280px; margin: 20px auto; cursor: pointer; }
+        .fortune-card { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .fortune-card.flipped { transform: rotateY(180deg); }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; padding: 15px; }
+        .card-front { background: var(--primary-color); color: var(--bg-color); }
+        .card-back { background: var(--card-bg); color: var(--text-main); transform: rotateY(180deg); border: 2px solid var(--primary-color); }
+        .fortune-text { font-size: 0.8rem; line-height: 1.4; margin: 10px 0; font-weight: 700; word-break: keep-all; }
+        .fortune-item { font-size: 1.5rem; margin-bottom: 10px; }
+        
+        .dict-list { max-height: 300px; overflow-y: auto; text-align: left; }
+        .dict-item { padding: 12px; border-bottom: 1px solid var(--divider-color); display: flex; align-items: flex-start; gap: 10px; }
+        .dict-icon { font-size: 1.5rem; }
+        .dict-info h4 { margin: 0 0 4px 0; font-size: 0.85rem; font-weight: 800; }
+        .dict-info p { margin: 0; font-size: 0.7rem; color: var(--text-gray-70); line-height: 1.4; }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
         .hidden { display: none !important; }
@@ -336,6 +354,7 @@
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <button class="btn-main" id="btn-enter-shop" onclick="showGameSelector()">ENTER SHOP</button>
                     <button class="btn-sub" id="btn-go-setup" onclick="goSetup()">SETTINGS</button>
+                    <button class="btn-sub" id="btn-go-lounge" onclick="goLounge()">LOUNGE</button>
                     <button class="btn-sub" id="btn-go-history" onclick="goHistory()">HISTORY</button>
                     <button class="btn-sub" id="btn-go-about" onclick="goAbout()">ABOUT</button>
                 </div>
@@ -500,6 +519,41 @@
                 </div>
             </div>
 
+            <div id="lounge-view" class="hidden">
+                <div class="card-container" style="text-align: left;">
+                    <div class="order-menu-header" id="txt-lounge-title">☕ COFFEE LOUNGE</div>
+                    <div class="divider"></div>
+                    
+                    <div class="lounge-tabs">
+                        <button id="btn-tab-fortune" class="tab-btn active" onclick="switchLoungeTab('fortune')">FORTUNE</button>
+                        <button id="btn-tab-dict" class="tab-btn" onclick="switchLoungeTab('dict')">DICTIONARY</button>
+                    </div>
+
+                    <div class="lounge-content">
+                        <div id="lounge-fortune-sec">
+                            <div class="fortune-card-container" onclick="drawDailyFortune()">
+                                <div class="fortune-card" id="daily-fortune-card">
+                                    <div class="card-front">
+                                        <div style="font-size:3rem;">😺</div>
+                                        <div style="font-size:0.8rem; font-weight:800; margin-top:10px;" id="txt-tap-card">TAP FOR LUCK</div>
+                                    </div>
+                                    <div class="card-back">
+                                        <div class="fortune-item" id="fortune-icon">☕</div>
+                                        <div class="fortune-text" id="fortune-msg" style="color:var(--point-red);"></div>
+                                        <div class="fortune-text" id="fortune-menu" style="font-size:0.7rem; color:#666;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="lounge-dict-sec" class="hidden">
+                            <div class="dict-list" id="coffee-dict-list"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-main" id="btn-back-home-lounge" onclick="goFront()">BACK TO HOME</button>
+            </div>
+
             <div id="about-view" class="hidden">
                 <div class="card-container" style="text-align: left;">
                     <div class="order-menu-header" id="txt-about-title">☕ ABOUT LUCKY BEAN</div>
@@ -531,7 +585,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.20 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.22 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -554,6 +608,7 @@
                 all_pass_unbelievable: "🌟 UNBELIEVABLE! Lucky Pass! 🌟",
                 btn_start: "START GAME",
                 btn_enter_shop: "ENTER SHOP",
+                btn_lounge: "LOUNGE",
                 btn_setup: "SETTINGS",
                 btn_history: "HISTORY",
                 btn_about: "ABOUT",
@@ -581,9 +636,31 @@
                 lbl_history_onoff: "HISTORY RECORDING",
                 confirm_replay: "Are you sure you want to replay?",
                 txt_about_content: `<span class="about-label">WHAT IS LUCKY BEAN?</span> Lucky Bean is the ultimate mini-game app for coffee-loving teams! It turns the daily "Who pays?" moment into a thrilling mini-game.<br><br><span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS. You can save groups for quick access later!<br>2. Go to ENTER SHOP and pick your favorite game: Random Hand, Roulette, or Cat.<br>3. Interact with the game. The 'Chosen One' pays! You can capture and share the receipt.<br><br><span class="about-label">HISTORY & RANKING</span> Win records are automatically stored in HISTORY. You can track donation stats in LIST mode or tap the coffee icon in CALENDAR mode to see who paid on that day.`,
-                fortunes: ["Great luck will come to you!", "Kindness returns to you.", "Small loss, big luck later!", "Your team respects you!"],
-                menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner"],
-                days: ["S", "M", "T", "W", "T", "F", "S"]
+                fortunes: [
+                    "Work efficiency up!", "Unexpected gift coming!", "Sweet break time!", "Creative ideas flow!", "Good news soon!",
+                    "Meet a helpful person!", "Small luck in pocket!", "Coffee tastes best today!", "Compliment from boss!", "Problem solved easily!",
+                    "Peaceful afternoon!", "Perfect milk foam!", "Finding lost item!", "Battery 100%!", "No traffic jam!",
+                    "Great lunch menu!", "Favorite song plays!", "Quick meeting finish!", "Fresh beans aroma!", "Warm sunshine!",
+                    "High focus mode!", "Stress free day!", "New opportunity!", "Funny joke hearing!", "Nice weather!",
+                    "Clear mind!", "Sweet dessert gift!", "Early finish work!", "Best condition!", "Dream come true!"
+                ],
+                menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Cappuccino", "Cafe Mocha", "Long Black", "Espresso"],
+                days: ["S", "M", "T", "W", "T", "F", "S"],
+                lounge_title: "☕ COFFEE LOUNGE",
+                lounge_tab_fortune: "FORTUNE",
+                lounge_tab_dict: "DICTIONARY",
+                fortune_tap: "TAP FOR LUCK",
+                coffee_dict: {
+                    "Americano": "Espresso diluted with hot water. Clean and simple.",
+                    "Cafe Latte": "Espresso with steamed milk. Smooth and creamy.",
+                    "Flat White": "Similar to Latte but with less foam. Stronger taste.",
+                    "Cold Brew": "Brewed with cold water for a long time. Smooth finish.",
+                    "Einspanner": "Espresso topped with cool whipped cream. Sweet & bitter.",
+                    "Cappuccino": "Espresso + Steamed Milk + Thick Foam.",
+                    "Cafe Mocha": "Espresso + Chocolate + Milk + Cream.",
+                    "Long Black": "Hot water + Espresso (Crema preserved).",
+                    "Espresso": "Pure coffee extract. Strong & intense."
+                }
             },
             ko: {
                 welcome: "럭키빈에 오신 것을 환영합니다!",
@@ -603,6 +680,7 @@
                 all_pass_unbelievable: "🌟 대박! Lucky Pass입니다! 🌟",
                 btn_start: "게임 시작",
                 btn_enter_shop: "입장하기",
+                btn_lounge: "휴게실",
                 btn_setup: "설정",
                 btn_history: "히스토리",
                 btn_about: "정보",
@@ -630,9 +708,31 @@
                 lbl_history_onoff: "게임 기록 저장",
                 confirm_replay: "정말 게임을 다시 시작하시겠습니까?",
                 txt_about_content: `<span class="about-label">럭키빈이란?</span> 커피를 사랑하는 동료들을 위한 최고의 복불복 도구입니다. 매일 돌아오는 "누가 커피 살까?"의 고민을 짜릿한 미니 게임으로 즐겨보세요!<br><br><span class="about-label">게임 방법</span> 1. SETTINGS에서 팀원 이름을 입력하세요. 그룹 저장이 가능해 편리합니다.<br>2. ENTER SHOP에서 원하는 게임을 선택하세요.<br>3. 게임에 참여하면 행운의 당첨자가 결정됩니다. 당첨된 사람이 결제! 영수증을 캡처해 공유해보세요.<br><br><span class="about-label">히스토리 및 랭킹</span> 게임 기록이 켜져 있으면 히스토리에 자동 기록됩니다. LIST 모드에서 랭킹을 확인하거나, CALENDAR 모드에서 커피 아이콘을 눌러 해당 날짜의 당첨자를 확인하세요.`,
-                fortunes: ["오늘 커피를 쏜 당신, 대박 행운이 올 거예요!", "베푼 만큼 더 큰 복이 들어옵니다.", "지갑은 비었어도 인심은 꽉 찼네요!"],
-                menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루"],
-                days: ["일", "월", "화", "수", "목", "금", "토"]
+                fortunes: [
+                    "업무 효율 급상승!", "뜻밖의 선물 도착!", "달콤한 휴식 시간!", "창의적인 아이디어 폭발!", "기다리던 좋은 소식!",
+                    "귀인을 만날 운세!", "주머니 속 소소한 행운!", "오늘따라 커피가 꿀맛!", "상사의 칭찬!", "골치 아픈 문제 해결!",
+                    "평화로운 오후!", "완벽한 우유 거품!", "잃어버린 물건 찾음!", "배터리 100% 충전!", "출퇴근길 뻥 뚫림!",
+                    "점심 메뉴 대성공!", "최애곡이 흘러나옴!", "회의가 빨리 끝남!", "신선한 원두 향기!", "따스한 햇살 가득!",
+                    "집중력 최고조!", "스트레스 제로!", "새로운 기회 포착!", "재미있는 농담!", "맑고 화창한 날씨!",
+                    "머리가 맑아짐!", "달달한 디저트 득템!", "칼퇴근 예감!", "컨디션 최상!", "꿈은 이루어진다!"
+                ],
+                menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루", "아인슈페너", "카푸치노", "카페모카", "롱블랙", "에스프레소"],
+                days: ["일", "월", "화", "수", "목", "금", "토"],
+                lounge_title: "☕ 커피 휴게실",
+                lounge_tab_fortune: "오늘의 운세",
+                lounge_tab_dict: "커피 도감",
+                fortune_tap: "카드를 눌러보세요",
+                coffee_dict: {
+                    "아메리카노": "에스프레소에 뜨거운 물을 희석한 커피. 깔끔함의 정석.",
+                    "카페라떼": "에스프레소와 스팀 우유의 조화. 부드럽고 고소한 맛.",
+                    "플랫화이트": "라떼보다 폼이 얇고 에스프레소 맛이 진한 커피.",
+                    "콜드브루": "찬물로 오랜 시간 우려내어 쓴맛이 적고 부드러움.",
+                    "아인슈페너": "아메리카노 위에 차가운 휘핑크림을 얹은 달콤 쌉쌀한 커피.",
+                    "카푸치노": "에스프레소 + 우유 + 풍성한 거품.",
+                    "카페모카": "에스프레소 + 초콜릿 + 우유 + 휘핑크림.",
+                    "롱블랙": "뜨거운 물 위에 에스프레소를 부어 크레마를 살린 커피.",
+                    "에스프레소": "강렬하고 진한 커피 추출 원액."
+                }
             },
             jp: {
                 welcome: "ラッキービーンへようこそ！",
@@ -652,6 +752,7 @@
                 all_pass_unbelievable: "🌟 すごい！Lucky Passです！ 🌟",
                 btn_start: "スタート",
                 btn_enter_shop: "入場する",
+                btn_lounge: "ラウンジ",
                 btn_setup: "設定",
                 btn_history: "履歴",
                 btn_about: "情報",
@@ -679,9 +780,31 @@
                 lbl_history_onoff: "履歴を保存する",
                 confirm_replay: "ゲームをやり直しますか？",
                 txt_about_content: `<span class="about-label">ラッキービーンとは？</span> コーヒーを愛するチームのための最高の運試しツールです。毎日の「誰がコーヒーを買うか？」という悩みを、刺激的なミニゲームに変えましょう！<br><br><span class="about-label">遊び方</span> 1. SETTINGSでチームメンバーの名前を入力します。グループ保存機能が便利です。<br>2. ENTER SHOPでお好みのゲームを選択します。<br>3. ゲームに参加して当選者が決まったら、その人がおごり！レシートを保存して共有しましょう。<br><br><span class="about-label">履歴とランキング</span> 履歴保存がオンの場合、結果が自動的に保存されます。LISTモードでランキングを確認したり、CALENDARモードでコーヒーアイコンをタップして当選者を確認できます。`,
-                fortunes: ["今日コーヒーをおごったあなたに、大きな幸運が訪れます！", "親切は必ず自分に返ってきます。", "財布は空でも心は満たされましたね！"],
-                menus: ["アメリカーノ", "カフェラテ", "バニララテ", "フラットホワイト", "コールドブリュー"],
-                days: ["日", "月", "火", "水", "木", "金", "土"]
+                fortunes: [
+                    "仕事効率アップ！", "思いがけないプレゼント！", "甘い休息時間！", "アイデアが溢れ出す！", "嬉しいニュース！",
+                    "助っ人に会える予感！", "ポケットの中の小さな幸せ！", "今日のコーヒーは格別！", "上司からのお褒めの言葉！", "問題があっさり解決！",
+                    "平和な午後！", "完璧なミルクフォーム！", "失くし物が見つかる！", "バッテリー満タン！", "通勤ラッシュ回避！",
+                    "ランチメニュー大正解！", "お気に入りの曲が流れる！", "会議が早く終わる！", "新鮮な豆の香り！", "暖かい日差し！",
+                    "集中力最高潮！", "ストレスフリーな一日！", "新しいチャンス到来！", "面白い冗談を聞ける！", "快晴の空！",
+                    "頭がスッキリ！", "甘いデザートの差し入れ！", "定時退社できそう！", "コンディション最高！", "夢が叶う予感！"
+                ],
+                menus: ["アメリカーノ", "カフェラテ", "バニララテ", "フラットホワイト", "コールドブリュー", "アインシュペナー", "カプチーノ", "カフェモカ", "ロングブラック", "エスプレッソ"],
+                days: ["日", "月", "火", "水", "木", "金", "土"],
+                lounge_title: "☕ コーヒーラウンジ",
+                lounge_tab_fortune: "今日の運勢",
+                lounge_tab_dict: "コーヒー図鑑",
+                fortune_tap: "カードをタップ",
+                coffee_dict: {
+                    "アメリカーノ": "エスプレッソをお湯で割ったコーヒー。すっきりとした味わい。",
+                    "カフェラテ": "エスプレッソとスチームミルクの調和。まろやかで香ばしい。",
+                    "フラットホワイト": "ラテよりフォームが薄く、エスプレッソの味が濃い。",
+                    "コールドブリュー": "冷水で長時間抽出。苦味が少なくまろやか。",
+                    "アインシュペナー": "エスプレッソの上に冷たいホイップクリームを乗せた甘苦いコーヒー。",
+                    "カプチーノ": "エスプレッソ+スチームミルク+厚い泡。",
+                    "カフェモカ": "エスプレッソ+チョコ+ミルク+ホイップ。",
+                    "ロングブラック": "お湯の上にエスプレッソを注ぎクレマを生かしたもの。",
+                    "エスプレッソ": "コーヒー抽出原液。強烈で濃厚。"
+                }
             }
         };
 
@@ -699,6 +822,7 @@
         let recordStats = localStorage.getItem('luckyBeanRecord') !== 'false';
         let historyViewMode = 'list';
         let calCursor = new Date();
+        let loungeTabMode = 'fortune';
 
         const AudioEngine = {
             ctx: null, bgm: null,
@@ -804,15 +928,17 @@
             document.getElementById('lang-jp').classList.toggle('active', currentLang === 'jp');
             
             const transMap = {
-                'btn-start': t.btn_start, 'btn-enter-shop': t.btn_enter_shop, 'btn-go-setup': t.btn_setup,
-                'btn-go-history': t.btn_history, 'btn-go-about': t.btn_about, 'btn-back-menu-selector': t.btn_back_menu,
-                'btn-back-menu-hand': t.btn_back_menu, 'btn-back-menu-roulette': t.btn_back_menu, 'btn-back-menu-cat': t.btn_back_menu,
-                'btn-back-home': t.btn_back_home, 'btn-back-home-about': t.btn_back_home, 'btn-back-home-history': t.btn_back_home,
+                'btn-start': t.btn_start, 'btn-enter-shop': t.btn_enter_shop, 'btn-go-lounge': t.btn_lounge,
+                'btn-go-setup': t.btn_setup, 'btn-go-history': t.btn_history, 'btn-go-about': t.btn_about,
+                'btn-back-menu-selector': t.btn_back_menu, 'btn-back-menu-hand': t.btn_back_menu,
+                'btn-back-menu-roulette': t.btn_back_menu, 'btn-back-menu-cat': t.btn_back_menu,
+                'btn-back-home': t.btn_back_home, 'btn-back-home-about': t.btn_back_home, 'btn-back-home-history': t.btn_back_home, 'btn-back-home-lounge': t.btn_back_home,
                 'btn-save-exit': t.btn_save_exit, 'btn-shuffle': t.btn_shuffle, 'hand-again-btn': t.btn_again,
                 'roulette-again-btn': t.btn_again, 'cat-again-btn': t.btn_again, 'roulette-spin-btn': t.btn_spin,
                 'cat-start-btn': t.btn_start, 'btn-back-selector-hand': t.btn_change_game, 'btn-back-selector-roulette': t.btn_change_game,
                 'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : (currentLang === 'jp' ? "リスト" : "LIST"),
-                'btn-view-cal': currentLang === 'ko' ? "달력" : (currentLang === 'jp' ? "カレンダー" : "CALENDAR")
+                'btn-view-cal': currentLang === 'ko' ? "달력" : (currentLang === 'jp' ? "カレンダー" : "CALENDAR"),
+                'btn-tab-fortune': t.lounge_tab_fortune, 'btn-tab-dict': t.lounge_tab_dict
             };
 
             Object.keys(transMap).forEach(id => {
@@ -840,12 +966,13 @@
             document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
             document.getElementById('txt-roulette-title').innerText = currentLang === 'ko' ? "🎡 행운의 룰렛" : (currentLang === 'jp' ? "🎡 幸運のルーレット" : "🎡 LUCKY ROULETTE");
             document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : (currentLang === 'jp' ? "🐈 猫の選択" : "🐈 CAT'S CHOICE");
-            
-            /* [변경 사항] ORDER MENU SETTING -> GAME SETTING 언어별 수정 */
             document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "게임 설정" : (currentLang === 'jp' ? "ゲーム設定" : "GAME SETTING")}`;
-            
             document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : (currentLang === 'jp' ? "ラッキービーン情報" : "ABOUT LUCKY BEAN")}`;
             document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : (currentLang === 'jp' ? "寄付履歴" : "DONATION HISTORY")}`;
+            document.getElementById('txt-lounge-title').innerHTML = `☕ ${t.lounge_title}`;
+            
+            const cardFrontText = document.querySelector('.card-front > div:nth-child(2)');
+            if(cardFrontText) cardFrontText.innerText = t.fortune_tap;
         }
 
         function updateText(msgKey, isDirect = false) {
@@ -903,8 +1030,60 @@
             updateText('history_msg'); switchHistoryView(historyViewMode);
         }
 
+        function goLounge() {
+            hideAllViews();
+            document.getElementById('lounge-view').classList.remove('hidden');
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_facade_night.png' : 'cafe_facade.png';
+            switchLoungeTab('fortune');
+        }
+
+        function switchLoungeTab(tab) {
+            loungeTabMode = tab;
+            document.getElementById('btn-tab-fortune').classList.toggle('active', tab === 'fortune');
+            document.getElementById('btn-tab-dict').classList.toggle('active', tab === 'dict');
+            document.getElementById('lounge-fortune-sec').classList.toggle('hidden', tab !== 'fortune');
+            document.getElementById('lounge-dict-sec').classList.toggle('hidden', tab !== 'dict');
+            
+            if (tab === 'fortune') {
+                document.getElementById('daily-fortune-card').classList.remove('flipped');
+            } else {
+                renderCoffeeDict();
+            }
+        }
+
+        function drawDailyFortune() {
+            const card = document.getElementById('daily-fortune-card');
+            if (card.classList.contains('flipped')) {
+                card.classList.remove('flipped');
+                return;
+            }
+            
+            AudioEngine.play('whoosh');
+            const t = i18n[currentLang];
+            const randomMenu = t.menus[Math.floor(Math.random() * t.menus.length)];
+            const randomMsg = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
+            
+            document.getElementById('fortune-menu').innerText = randomMenu;
+            document.getElementById('fortune-msg').innerText = randomMsg;
+            
+            setTimeout(() => {
+                card.classList.add('flipped');
+                AudioEngine.play('safe'); 
+            }, 300);
+        }
+
+        function renderCoffeeDict() {
+            const listArea = document.getElementById('coffee-dict-list');
+            const dict = i18n[currentLang].coffee_dict;
+            let html = '';
+            for (const [name, desc] of Object.entries(dict)) {
+                html += `<div class="dict-item"><div class="dict-icon">☕</div><div class="dict-info"><h4>${name}</h4><p>${desc}</p></div></div>`;
+            }
+            listArea.innerHTML = html;
+        }
+
         function hideAllViews() {
-            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view', 'cat-view'].forEach(v => {
+            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view', 'cat-view', 'lounge-view'].forEach(v => {
                 const el = document.getElementById(v); if(el) el.classList.add('hidden');
             });
             document.getElementById('lucky-area').classList.add('hidden');
@@ -1066,7 +1245,7 @@
             }, 800);
         }
 
-        /* --- [v0.6.5 복원] Roulette 로직 (Lucky Pass 0.2 비중) --- */
+        /* --- Roulette --- */
         function goRoulette() {
             hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers');
             const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
@@ -1127,7 +1306,6 @@
             const winnerName = currentRouletteItems[winnerIdx];
             document.getElementById('roulette-spin-btn').classList.add('hidden');
             document.getElementById('roulette-again-btn').classList.remove('hidden');
-            
             if (weights[winnerIdx] < 1) {
                 AudioEngine.play('start'); updateText('all_pass_unbelievable');
                 document.getElementById('main-img').src = 'cafe_counter_lucky.png';
@@ -1211,7 +1389,6 @@
             const t = i18n[currentLang];
             const prototype = document.getElementById('receipt-prototype-area').querySelector('.receipt-container').cloneNode(true);
             const receipt = prototype.querySelector('.receipt');
-            
             receipt.querySelector('.receipt-date').innerText = now.toLocaleDateString();
             receipt.querySelector('.receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000);
             receipt.querySelector('.receipt-qty').innerText = "x" + total;
@@ -1220,15 +1397,12 @@
             receipt.querySelector('.receipt-payer').innerText = payerName;
             receipt.querySelector('.receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
             receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
-            
             receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price;
             receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal;
             receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected;
             receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
-            
             const anchor = document.getElementById(anchorId);
             anchor.innerHTML = ''; anchor.appendChild(prototype);
-            
             requestAnimationFrame(() => {
                 AudioEngine.play('print');
                 receipt.classList.add('print-ani');
@@ -1249,7 +1423,6 @@
             } catch (e) { btn.innerText = "ERROR"; }
         }
 
-        /* --- Stats & Calendar Interaction --- */
         function updateStats(name) { 
             let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
             const now = new Date();

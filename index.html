@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.14</title>
+    <title>lucky bean - v0.6.15</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -157,7 +157,12 @@
             max-width: calc(33.33% - 8px); transition: transform 0.4s ease; z-index: 1; 
         }
         .hand-img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: contain; cursor: pointer; -webkit-tap-highlight-color: transparent; animation: floating 3s ease-in-out infinite; }
-        .hand-name { font-size: 0.7rem; font-weight: 800; margin-top: 5px; color: #555; text-align: center; word-break: break-all; line-height: 1.1; }
+        /* [변경 사항] 랜덤핸드 이름 표기 로직 - 고양이 게임 방식 적용 */
+        .hand-name { 
+            font-size: 0.55rem; font-weight: 800; color: #888; margin-top: 5px; 
+            white-space: normal; word-break: keep-all; line-height: 1.1; overflow: hidden;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-align: center;
+        }
 
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .tension-shake { animation: tension-animation 0.1s infinite !important; }
@@ -176,14 +181,7 @@
         .bowl-highlight { transform: scale(1.15); z-index: 10 !important; filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)); }
         .bowl-dimmed { opacity: 0.2; filter: blur(2px); z-index: 1 !important; }
 
-        /* [변경 사항] 룰렛 사이즈 최적화 (모바일 좌우 잘림 방지) */
-        #roulette-container { 
-            position: relative; 
-            width: 90%; /* 화면 너비의 90%만 차지 */
-            max-width: 300px; /* 최대 크기를 300px로 제한하여 작은 폰 대응 */
-            margin: 0 auto; 
-            display: flex; flex-direction: column; align-items: center; box-sizing: border-box; 
-        }
+        #roulette-container { position: relative; width: 90%; max-width: 300px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
         .roulette-pin { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 34px; height: 44px; z-index: 20; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3)); }
 
         .btn-main {
@@ -255,15 +253,11 @@
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .loading-bar-fill { height: 100%; width: 0%; background: #000 !important; transition: width 0.1s; }
 
-        /* 기부 캘린더 스타일 */
         .calendar-container { width: 100%; margin-top: 10px; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
         .calendar-day-label { font-size: 0.6rem; font-weight: 800; color: #bbb; padding: 5px 0; }
-        .calendar-cell { 
-            aspect-ratio: 1/1; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--tablet-border);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
-        }
+        .calendar-cell { aspect-ratio: 1/1; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--tablet-border); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         .calendar-cell.has-data { border-color: #ffca28; background: #fffdf5; }
         body.dark-mode .calendar-cell.has-data { background: #2a2618; }
         .calendar-date-num { font-size: 0.65rem; font-weight: 700; color: var(--text-main); }
@@ -334,15 +328,15 @@
                 <div class="card-container">
                     <div class="order-menu-header" id="txt-choose-luck" style="text-align: center; margin-bottom: 25px;">CHOOSE YOUR LUCK</div>
                     <div class="icon-selector-grid">
-                        <div class="icon-btn-item" onclick="startGame()">
+                        <div class="icon-btn-item" onclick="handleGameSelection('hand')">
                             <div class="icon-square"><img src="random_hand.png" alt="Hand"></div>
                             <div class="icon-label" id="txt-game-hand">Random Hand</div>
                         </div>
-                        <div class="icon-btn-item" onclick="goRoulette()">
+                        <div class="icon-btn-item" onclick="handleGameSelection('roulette')">
                             <div class="icon-square"><img src="lucky_roulette.png" alt="Roulette"></div>
                             <div class="icon-label" id="txt-game-roulette">Lucky Roulette</div>
                         </div>
-                        <div class="icon-btn-item" onclick="goCatGame()">
+                        <div class="icon-btn-item" onclick="handleGameSelection('cat')">
                             <div class="icon-square"><img src="cat_icon.png" alt="Cat" style="width:70%;"></div>
                             <div class="icon-label" id="txt-game-cat">Cat's Choice</div>
                         </div>
@@ -361,7 +355,6 @@
                         </div>
                     </div>
                     <div class="divider" style="margin-bottom: 15px;"></div>
-
                     <div class="setting-row">
                         <span class="toggle-label" id="lbl-darkmode">CAFE NIGHT (DARK MODE)</span>
                         <label class="switch">
@@ -369,7 +362,6 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-
                     <div class="picker-group">
                         <div class="picker-btn" onclick="openGroupModal()">
                             <span class="picker-label" id="lbl-group">GROUP</span>
@@ -380,7 +372,6 @@
                             <div class="picker-value"><span id="display-member-count">3 Members</span></div>
                         </div>
                     </div>
-                    
                     <div class="setting-row">
                         <span class="toggle-label" id="lbl-history-onoff">HISTORY RECORDING</span>
                         <label class="switch">
@@ -388,7 +379,6 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-
                     <div class="name-mgmt-bar">
                         <button class="btn-text" id="btn-random" onclick="fillRandomNames()">RANDOM</button>
                         <button class="btn-text" id="btn-clear" onclick="clearNames()">CLEAR</button>
@@ -431,12 +421,12 @@
                         <button class="settings-icon-btn" onclick="goSetup('roulette')">⚙️</button>
                     </div>
                     <div class="divider"></div>
-                    <div class="game-canvas-area" style="min-height: 380px;">
+                    <div class="game-canvas-area" style="min-height: 380px; justify-content: center;">
                         <div id="roulette-container">
                             <svg class="roulette-pin" viewBox="0 0 30 40">
                                 <path d="M15 0 L30 20 L15 40 L0 20 Z" fill="#e74c3c" stroke="#000" stroke-width="2"/>
                             </svg>
-                            <canvas id="rouletteCanvas" width="400" height="400" style="width:100%; border-radius:50%; border:6px solid #333;"></canvas>
+                            <canvas id="rouletteCanvas" width="400" height="400" style="width:100%; max-width:320px; border-radius:50%; border:6px solid #333;"></canvas>
                         </div>
                     </div>
                     <button id="roulette-spin-btn" class="btn-spin" onclick="spinRoulette()">SPIN</button>
@@ -482,7 +472,7 @@
                         <div class="divider" style="margin: 10px 0; border-top: 1px dashed #bbb;"></div>
                         <div class="receipt-item" style="font-weight:800;"><span class="txt-lbl-sub">SUBTOTAL</span><span class="receipt-subtotal"></span></div>
                         <div class="receipt-total">
-                            <span class="label-customer txt-lbl-selected">SELECTED CUSTOMER</span>
+                            <span class="label-customer txt-lbl-payer">SELECTED CUSTOMER</span>
                             <span class="receipt-payer value-customer"></span>
                         </div>
                         <div class="receipt-line"></div>
@@ -505,12 +495,10 @@
                 <div class="card-container" style="text-align: left;">
                     <div class="order-menu-header" id="txt-history-title">🏆 DONATION HISTORY</div>
                     <div class="divider"></div>
-                    
                     <div class="view-toggle-bar">
                         <button id="btn-view-list" class="view-btn active" onclick="switchHistoryView('list')">LIST</button>
                         <button id="btn-view-cal" class="view-btn" onclick="switchHistoryView('cal')">CALENDAR</button>
                     </div>
-
                     <div id="history-content-area">
                         <div id="history-list-view">
                             <div id="monthly-king-area"></div>
@@ -520,13 +508,12 @@
                             <div class="calendar-container" id="calendar-render-area"></div>
                         </div>
                     </div>
-
                     <button class="btn-text" id="btn-reset-all" onclick="resetStats()" style="width:100%; margin-top:15px; color:var(--point-red);">RESET ALL DATA</button>
                 </div>
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.14 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.15 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -696,11 +683,6 @@
             }
         };
 
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) AudioEngine.pauseBGM();
-            else AudioEngine.resumeBGM();
-        });
-
         window.onload = () => {
             const fill = document.getElementById('progress-fill');
             let progress = 0;
@@ -715,7 +697,6 @@
                 }
                 fill.style.width = progress + '%';
             }, 50);
-            
             if(isDarkMode) document.body.classList.add('dark-mode');
             document.getElementById('history-toggle').checked = recordStats;
             applyLanguage();
@@ -739,7 +720,6 @@
             const t = i18n[currentLang];
             document.getElementById('lang-ko').classList.toggle('active', currentLang === 'ko');
             document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
-            
             const transMap = {
                 'btn-start': t.btn_start, 'btn-enter-shop': t.btn_enter_shop, 'btn-go-setup': t.btn_setup,
                 'btn-go-history': t.btn_history, 'btn-go-about': t.btn_about, 'btn-back-menu-selector': t.btn_back_menu,
@@ -750,12 +730,7 @@
                 'cat-start-btn': t.btn_start, 'btn-back-selector-hand': t.btn_change_game, 'btn-back-selector-roulette': t.btn_change_game,
                 'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : "LIST", 'btn-view-cal': currentLang === 'ko' ? "달력" : "CALENDAR"
             };
-
-            Object.keys(transMap).forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.innerText = transMap[id];
-            });
-
+            Object.keys(transMap).forEach(id => { const el = document.getElementById(id); if(el) el.innerText = transMap[id]; });
             document.getElementById('lbl-group').innerText = t.lbl_group;
             document.getElementById('lbl-members').innerText = t.lbl_members;
             document.getElementById('lbl-darkmode').innerText = t.lbl_darkmode;
@@ -768,11 +743,9 @@
             document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
             document.getElementById('display-group-name').innerText = currentTeamName === 'Empty' ? t.lbl_empty : currentTeamName;
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : ' Members'}`;
-            
             document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
             document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : "Lucky Roulette";
             document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : "Cat's Choice";
-            
             document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : "Random Hand";
             document.getElementById('txt-roulette-title').innerText = currentLang === 'ko' ? "🎡 행운의 룰렛" : "🎡 LUCKY ROULETTE";
             document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : "🐈 CAT'S CHOICE";
@@ -794,6 +767,14 @@
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
             setTimeout(() => { splash.style.display = 'none'; goFront(); }, 600);
+        }
+
+        /* [변경 사항] 게임 선택 시 각각 소리 나도록 수정 */
+        function handleGameSelection(gameType) {
+            AudioEngine.play('start'); // 소리 재생
+            if (gameType === 'hand') startGame();
+            else if (gameType === 'roulette') goRoulette();
+            else if (gameType === 'cat') goCatGame();
         }
 
         function goFront() {
@@ -837,18 +818,12 @@
             document.getElementById('hand-result-anchor').innerHTML = '';
             document.getElementById('roulette-result-anchor').innerHTML = '';
             document.getElementById('cat-result-anchor').innerHTML = '';
-
             document.getElementById('btn-shuffle').classList.remove('hidden');
-            document.getElementById('btn-shuffle').disabled = false;
             document.getElementById('roulette-spin-btn').classList.remove('hidden');
-            document.getElementById('roulette-spin-btn').disabled = false;
             document.getElementById('cat-start-btn').classList.remove('hidden');
-            document.getElementById('cat-start-btn').disabled = false;
-
             document.getElementById('hand-again-btn').classList.add('hidden');
             document.getElementById('roulette-again-btn').classList.add('hidden');
             document.getElementById('cat-again-btn').classList.add('hidden');
-            
             document.querySelectorAll('button').forEach(btn => btn.disabled = false);
         }
 
@@ -906,9 +881,8 @@
             overlay.style.display = 'flex'; container.innerHTML = '';
             const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}');
             const keys = Object.keys(teams);
-            if(keys.length === 0) {
-                container.innerHTML = `<div style="padding:40px; text-align:center; color:#ccc; font-weight:700;">NO SAVED GROUPS</div>`;
-            } else {
+            if(keys.length === 0) { container.innerHTML = `<div style="padding:40px; text-align:center; color:#ccc; font-weight:700;">NO SAVED GROUPS</div>`; }
+            else {
                 keys.forEach(name => {
                     const div = document.createElement('div');
                     div.className = 'modal-item';
@@ -993,7 +967,7 @@
             }, 800);
         }
 
-        /* --- Roulette (v0.6.12 정밀 수정 복원) --- */
+        /* --- Roulette --- */
         function goRoulette() {
             hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers');
             const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
@@ -1011,8 +985,7 @@
             ctx.clearRect(0, 0, 400, 400); let startAngle = rouletteAngle;
             for (let i = 0; i < currentRouletteItems.length; i++) {
                 const sliceAngle = (weights[i] / totalWeight) * Math.PI * 2;
-                ctx.beginPath(); 
-                ctx.fillStyle = (weights[i] < 1) ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
+                ctx.beginPath(); ctx.fillStyle = (weights[i] < 1) ? "#000" : (i % 2 === 0 ? "#f8f8f8" : "#ebebeb");
                 ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, startAngle, startAngle + sliceAngle); ctx.fill();
                 ctx.strokeStyle = "#333"; ctx.lineWidth = 2; ctx.stroke();
                 ctx.save(); ctx.translate(cx, cy); ctx.rotate(startAngle + sliceAngle / 2); ctx.textAlign = "right";
@@ -1054,7 +1027,6 @@
             const winnerName = currentRouletteItems[winnerIdx];
             document.getElementById('roulette-spin-btn').classList.add('hidden');
             document.getElementById('roulette-again-btn').classList.remove('hidden');
-            
             if (weights[winnerIdx] < 1) {
                 AudioEngine.play('start'); updateText('all_pass_unbelievable');
                 document.getElementById('main-img').src = 'cafe_counter_lucky.png';
@@ -1168,7 +1140,6 @@
             } catch (e) { btn.innerText = "ERROR"; }
         }
 
-        /* --- Stats & History (Calendar) --- */
         function updateStats(name) { 
             let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
             const now = new Date();

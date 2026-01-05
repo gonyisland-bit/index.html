@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.24</title>
+    <title>lucky bean - v0.6.25</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -250,7 +250,10 @@
         .calendar-date-num { font-size: 0.65rem; font-weight: 700; color: var(--text-main); }
         .calendar-bean-icon { font-size: 0.7rem; margin-top: 2px; }
 
-        .about-text { font-size: 0.8rem; color: var(--text-gray-70); line-height: 1.6; text-align: left; word-break: break-all; hyphens: auto; }
+        .about-text { 
+            font-size: 0.8rem; color: var(--text-gray-70); line-height: 1.6; text-align: left; 
+            word-break: break-all; hyphens: auto;
+        }
         .about-label { font-weight: 800; color: var(--text-main); margin-top: 15px; display: block; font-size: 0.85rem; }
 
         .receipt-container { width: 100%; display: flex; justify-content: center; margin: 15px 0; overflow: hidden; }
@@ -296,11 +299,10 @@
         .dict-info h4 { margin: 0 0 4px 0; font-size: 0.85rem; font-weight: 800; }
         .dict-info p { margin: 0; font-size: 0.7rem; color: var(--text-gray-70); line-height: 1.4; }
 
-        /* [NEW] Map Link Buttons - Centered and Styled */
         .map-link-container { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; align-items: center; width: 100%; }
         .map-btn {
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 90%; max-width: 280px; /* Fixed width for center alignment */
+            width: 90%; max-width: 280px; 
             padding: 14px; border-radius: 15px; border: none;
             font-size: 0.9rem; font-weight: 800; color: #fff; cursor: pointer;
             text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -312,15 +314,21 @@
         .map-btn.google { background-color: #4285F4; }
         .map-desc { font-size: 0.75rem; color: var(--text-gray-70); margin-bottom: 20px; line-height: 1.5; word-break: keep-all; text-align: center; }
 
-        /* [NEW] Toast Message UI */
+        /* Toast Message UI */
         #toast-box {
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.85); color: #fff; padding: 12px 24px;
-            border-radius: 25px; font-size: 0.85rem; font-weight: 700;
+            position: absolute; /* Changed to absolute for dynamic pos */
+            background: rgba(0,0,0,0.85); color: #fff; padding: 10px 18px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 700;
             opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 11000;
             white-space: nowrap; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(-50%); /* Center horizontally relative to left */
         }
         #toast-box.show { opacity: 1; }
+        /* Toast tail */
+        #toast-box::after {
+            content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+            border-width: 6px 6px 0; border-style: solid; border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+        }
 
         .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
         .hidden { display: none !important; }
@@ -577,15 +585,9 @@
                         <div id="lounge-map-sec" class="hidden" style="text-align:center; padding:10px 0;">
                             <div class="map-desc" id="txt-map-desc">Find the best coffee spots near you!</div>
                             <div class="map-link-container">
-                                <a href="https://map.naver.com/p/search/%EB%82%B4%EC%A3%BC%EB%B3%80%20%EC%B9%B4%ED%8E%98" target="_blank" class="map-btn naver">
-                                    <span>N</span> NAVER MAP
-                                </a>
-                                <a href="https://map.kakao.com/link/search/%EC%B9%B4%ED%8E%98" target="_blank" class="map-btn kakao">
-                                    <span>K</span> KAKAO MAP
-                                </a>
-                                <a href="https://www.google.com/maps/search/coffee+near+me" target="_blank" class="map-btn google">
-                                    <span>G</span> GOOGLE MAPS
-                                </a>
+                                <a href="https://map.naver.com/p/search/%EB%82%B4%EC%A3%BC%EB%B3%80%20%EC%B9%B4%ED%8E%98" target="_blank" class="map-btn naver"><span>N</span> NAVER MAP</a>
+                                <a href="https://map.kakao.com/link/search/%EC%B9%B4%ED%8E%98" target="_blank" class="map-btn kakao"><span>K</span> KAKAO MAP</a>
+                                <a href="https://www.google.com/maps/search/coffee+near+me" target="_blank" class="map-btn google"><span>G</span> GOOGLE MAPS</a>
                             </div>
                         </div>
                     </div>
@@ -624,7 +626,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.24 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.25 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -675,7 +677,6 @@
                 lbl_history_onoff: "HISTORY RECORDING",
                 confirm_replay: "Are you sure you want to replay?",
                 txt_about_content: `<span class="about-label">WHAT IS LUCKY BEAN?</span> Lucky Bean is the ultimate mini-game app for coffee-loving teams! It turns the daily "Who pays?" moment into a thrilling mini-game.<br><br><span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS. You can save groups for quick access later!<br>2. Go to ENTER SHOP and pick your favorite game: Random Hand, Roulette, or Cat.<br>3. Interact with the game. The 'Chosen One' pays! You can capture and share the receipt.<br><br><span class="about-label">HISTORY & RANKING</span> Win records are automatically stored in HISTORY. You can track donation stats in LIST mode or tap the coffee icon in CALENDAR mode to see who paid on that day.`,
-                /* [Update] Expanded Fortunes to 40+ items */
                 fortunes: [
                     "Work efficiency up!", "Unexpected gift coming!", "Sweet break time!", "Creative ideas flow!", "Good news soon!",
                     "Meet a helpful person!", "Small luck in pocket!", "Coffee tastes best today!", "Compliment from boss!", "Problem solved easily!",
@@ -752,7 +753,6 @@
                 lbl_history_onoff: "게임 기록 저장",
                 confirm_replay: "정말 게임을 다시 시작하시겠습니까?",
                 txt_about_content: `<span class="about-label">럭키빈이란?</span> 커피를 사랑하는 동료들을 위한 최고의 복불복 도구입니다. 매일 돌아오는 "누가 커피 살까?"의 고민을 짜릿한 미니 게임으로 즐겨보세요!<br><br><span class="about-label">게임 방법</span> 1. SETTINGS에서 팀원 이름을 입력하세요. 그룹 저장이 가능해 편리합니다.<br>2. ENTER SHOP에서 원하는 게임을 선택하세요.<br>3. 게임에 참여하면 행운의 당첨자가 결정됩니다. 당첨된 사람이 결제! 영수증을 캡처해 공유해보세요.<br><br><span class="about-label">히스토리 및 랭킹</span> 게임 기록이 켜져 있으면 히스토리에 자동 기록됩니다. LIST 모드에서 랭킹을 확인하거나, CALENDAR 모드에서 커피 아이콘을 눌러 해당 날짜의 당첨자를 확인하세요.`,
-                /* [Update] Expanded Fortunes to 40+ items */
                 fortunes: [
                     "업무 효율 급상승!", "뜻밖의 선물 도착!", "달콤한 휴식 시간!", "창의적인 아이디어 폭발!", "기다리던 좋은 소식!",
                     "귀인을 만날 운세!", "주머니 속 소소한 행운!", "오늘따라 커피가 꿀맛!", "상사의 칭찬!", "골치 아픈 문제 해결!",
@@ -927,19 +927,35 @@
             }
         };
 
-        /* [NEW] Haptic Helper */
         function triggerHaptic(pattern) {
             if (navigator.vibrate) {
                 try { navigator.vibrate(pattern); } catch(e) {}
             }
         }
 
-        /* [NEW] Toast Helper */
-        function showToast(msg) {
+        /* [NEW] Improved Toast Logic: Positions relative to clicked element */
+        function showToast(msg, targetEl) {
             const toast = document.getElementById('toast-box');
             toast.innerText = msg;
+            
+            // Positioning logic
+            if (targetEl) {
+                const rect = targetEl.getBoundingClientRect();
+                const toastHeight = 40; // Approx height
+                // Center horizontally relative to target
+                toast.style.left = (rect.left + rect.width / 2) + 'px';
+                // Position above target
+                toast.style.top = (rect.top - toastHeight - 8) + 'px';
+                toast.style.bottom = 'auto'; // Reset bottom
+            } else {
+                // Fallback to center bottom if no target
+                toast.style.left = '50%';
+                toast.style.top = 'auto';
+                toast.style.bottom = '80px';
+            }
+            
             toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
         document.addEventListener("visibilitychange", () => {
@@ -1369,7 +1385,6 @@
                 const easeOut = 1 - Math.pow(1 - progress, 4);
                 rouletteAngle = startRot + (targetRot - startRot) * easeOut;
                 
-                // Haptic Tick
                 if(now - lastTick > 150) { triggerHaptic(5); lastTick = now; }
 
                 drawRoulette();
@@ -1485,14 +1500,15 @@
             receipt.querySelector('.receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2);
             receipt.querySelector('.receipt-payer').innerText = payerName;
             
-            /* [NEW] Expanded fortune variety logic */
-            receipt.querySelector('.receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
-            receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
-            
+            // [v0.6.12 복원] 영수증 필드 매핑
             receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price;
             receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal;
             receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected;
             receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
+            
+            /* [NEW] Expanded fortune variety logic */
+            receipt.querySelector('.receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
+            receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
             
             const anchor = document.getElementById(anchorId);
             anchor.innerHTML = ''; anchor.appendChild(prototype);
@@ -1518,19 +1534,29 @@
             } catch (e) { btn.innerText = "ERROR"; }
         }
 
-        /* [NEW] Haptic Helper Function */
-        function triggerHaptic(pattern) {
-            if (navigator.vibrate) {
-                try { navigator.vibrate(pattern); } catch(e) {}
-            }
-        }
-
-        /* [NEW] Toast Helper */
-        function showToast(msg) {
+        /* [NEW] Improved Toast Logic: Positions relative to clicked element */
+        function showToast(msg, targetEl) {
             const toast = document.getElementById('toast-box');
             toast.innerText = msg;
+            
+            // Positioning logic
+            if (targetEl) {
+                const rect = targetEl.getBoundingClientRect();
+                const toastHeight = 40; // Approx height
+                // Center horizontally relative to target
+                toast.style.left = (rect.left + rect.width / 2) + 'px';
+                // Position above target
+                toast.style.top = (rect.top - toastHeight - 8) + 'px';
+                toast.style.bottom = 'auto'; // Reset bottom
+            } else {
+                // Fallback to center bottom if no target
+                toast.style.left = '50%';
+                toast.style.top = 'auto';
+                toast.style.bottom = '80px';
+            }
+            
             toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
         function updateStats(name) { 
@@ -1565,6 +1591,7 @@
             if(mode === 'list') renderHistoryList(); else renderCalendar();
         }
 
+        /* [v0.6.25 복구] Monthly King Badge HTML 구조 복구 (중복 div 제거) */
         function renderHistoryList() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
             const month = new Date().toISOString().slice(0, 7); 
@@ -1573,7 +1600,10 @@
             const content = document.getElementById('history-list-content'); 
             if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; return; } 
             const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0]; 
-            if(king && king.monthly > 0) kingArea.innerHTML = `<div class="monthly-king-badge"><div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`; 
+            
+            // [Fixed] Reverted to single div structure
+            if(king && king.monthly > 0) kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`; 
+            
             content.innerHTML = entries.map(item => `<div class="history-item"><span>${item.name}</span><span style="color:var(--point-red)">${item.total}${i18n[currentLang].lbl_times}</span></div>`).join(''); 
         }
 
@@ -1592,18 +1622,19 @@
                 let payers = [];
                 Object.entries(stats).forEach(([name, data]) => { if(data.daily && data.daily.includes(dateStr)) payers.push(name); });
                 const hasDataClass = payers.length > 0 ? 'has-data' : '';
-                const clickAttr = payers.length > 0 ? `onclick="showPayerAlert('${dateStr}', '${payers.join(', ')}')"` : "";
+                // [Update] Pass 'this' to showPayerAlert for positioning
+                const clickAttr = payers.length > 0 ? `onclick="showPayerAlert(this, '${dateStr}', '${payers.join(', ')}')"` : "";
                 html += `<div class="calendar-cell ${hasDataClass}" ${clickAttr}><span class="calendar-date-num">${d}</span>${payers.length > 0 ? '<span class="calendar-bean-icon">☕</span>' : ''}</div>`;
             }
             html += `</div>`;
             area.innerHTML = html;
         }
 
-        /* [Update] Replaced Alert with Toast */
-        function showPayerAlert(date, names) {
+        /* [Update] Replaced Alert with Positioned Toast */
+        function showPayerAlert(el, date, names) {
             triggerHaptic(10);
             const label = currentLang === 'ko' ? '당첨자' : (currentLang === 'jp' ? '当選者' : 'Chosen');
-            showToast(`${date} ${label}: ${names}`);
+            showToast(`${date} ${label}: ${names}`, el);
         }
 
         function changeCalMonth(delta) { triggerHaptic(10); calCursor.setMonth(calCursor.getMonth() + delta); renderCalendar(); }

@@ -90,7 +90,9 @@
             text-align: left; margin-bottom: 12px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
         }
         
+        .header-icon-group { display: flex; gap: 5px; }
         .settings-icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #bbb; padding: 0 5px; transition: color 0.2s; }
+        .settings-icon-btn:hover { color: var(--text-main); }
 
         .picker-group { width: 100%; display: flex; gap: 12px; margin-bottom: 20px; }
         .picker-btn {
@@ -476,13 +478,16 @@
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
                         <span id="txt-game-hand-title">RANDOM HAND</span>
-                        <button class="settings-icon-btn" onclick="goSetup('hand')">⚙️</button>
+                        <div class="header-icon-group">
+                            <button class="settings-icon-btn" onclick="shufflePositions()">🔀</button>
+                            <button class="settings-icon-btn" onclick="goSetup('hand')">⚙️</button>
+                        </div>
                     </div>
                     <div class="divider"></div>
                     <div class="game-canvas-area" style="min-height: 200px;">
                         <div id="hand-display"></div>
                     </div>
-                    <button id="btn-shuffle" class="btn-spin" onclick="shufflePositions()">SHUFFLE</button>
+                    <button id="btn-hand-start" class="btn-spin" onclick="startHandGame()">START GAME</button>
                     <div id="hand-result-anchor"></div>
                     <div id="lucky-area" class="hidden" style="margin-bottom:20px; font-weight:900; color:#f1c40f; font-size:1.2rem; text-shadow: 1px 1px 0px #000; text-align: center;">🌟 EXTRA LUCK! ALL PASS! 🌟</div>
                     <button id="hand-again-btn" class="btn-spin btn-again hidden" onclick="confirmReplay('hand')">REPLAY</button>
@@ -672,7 +677,7 @@
                 btn_spin: "SPIN",
                 btn_change_game: "CHANGE GAME",
                 lbl_group: "GROUP",
-                lbl_members: "MEMBERS",
+                lbl_members: "P", 
                 lbl_random: "RANDOM",
                 lbl_clear: "CLEAR",
                 lbl_save: "SAVE",
@@ -1032,6 +1037,7 @@
                 'btn-back-home': t.btn_back_home, 'btn-back-home-about': t.btn_back_home, 'btn-back-home-history': t.btn_back_home, 'btn-back-home-lounge': t.btn_back_home,
                 'btn-save-exit': t.btn_save_exit, 'btn-shuffle': t.btn_shuffle, 'hand-again-btn': t.btn_again,
                 'roulette-again-btn': t.btn_again, 'cat-again-btn': t.btn_again, 'roulette-spin-btn': t.btn_spin,
+                'btn-hand-start': t.btn_start, 
                 'cat-start-btn': t.btn_start, 'btn-back-selector-hand': t.btn_change_game, 'btn-back-selector-roulette': t.btn_change_game,
                 'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : (currentLang === 'jp' ? "リスト" : "LIST"),
                 'btn-view-cal': currentLang === 'ko' ? "달력" : (currentLang === 'jp' ? "カレンダー" : "CALENDAR"),
@@ -1055,7 +1061,8 @@
             document.getElementById('txt-choose-luck').innerText = t.choose_luck;
             document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
             document.getElementById('display-group-name').innerText = currentTeamName === 'Empty' ? t.lbl_empty : currentTeamName;
-            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : ' Members')}`;
+            
+            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
             
             document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
             document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : (currentLang === 'jp' ? "幸運のルーレット" : "Lucky Roulette");
@@ -1064,7 +1071,7 @@
             document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
             document.getElementById('txt-roulette-title').innerText = currentLang === 'ko' ? "🎡 행운의 룰렛" : (currentLang === 'jp' ? "🎡 幸運のルーレット" : "🎡 LUCKY ROULETTE");
             document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : (currentLang === 'jp' ? "🐈 猫の選択" : "🐈 CAT'S CHOICE");
-            document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "게임 설정" : (currentLang === 'jp' ? "ゲーム設定" : "GAME SETTING")}`;
+            document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "게임 설정" : (currentLang === 'jp' ? "게임設定" : "GAME SETTING")}`;
             document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : (currentLang === 'jp' ? "ラッキービーン情報" : "ABOUT LUCKY BEAN")}`;
             document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : (currentLang === 'jp' ? "寄付履歴" : "DONATION HISTORY")}`;
             document.getElementById('txt-lounge-title').innerHTML = `☕ ${t.lounge_title}`;
@@ -1197,7 +1204,7 @@
             document.getElementById('roulette-result-anchor').innerHTML = '';
             document.getElementById('cat-result-anchor').innerHTML = '';
 
-            document.getElementById('btn-shuffle').classList.remove('hidden');
+            document.getElementById('btn-hand-start').classList.remove('hidden');
             document.getElementById('roulette-spin-btn').classList.remove('hidden');
             document.getElementById('cat-start-btn').classList.remove('hidden');
 
@@ -1231,7 +1238,7 @@
             for (let i = 2; i <= 12; i++) {
                 const div = document.createElement('div');
                 div.className = 'modal-item';
-                div.innerHTML = `<span>${i}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : ' Members')}</span><span>▾</span>`; 
+                div.innerHTML = `<span>${i}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}</span><span>▾</span>`; 
                 div.onclick = () => { triggerHaptic(10); currentMemberCount = i; generateNameInputs(); closeModal(); };
                 container.appendChild(div);
             }
@@ -1249,7 +1256,7 @@
                 input.placeholder = `User ${i+1}`; if (namesToUse && namesToUse[i]) input.value = namesToUse[i];
                 container.appendChild(input);
             }
-            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : ' Members')}`;
+            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
         }
 
         function fillRandomNames() {
@@ -1299,7 +1306,6 @@
             for (let i = 0; i < memberNames.length; i++) {
                 const wrapper = document.createElement('div'); wrapper.className = 'hand-wrapper';
                 const handImg = document.createElement('img'); handImg.src = 'hand_nothing.png'; handImg.className = 'hand-img';
-                handImg.onclick = () => handleHandClick(i, memberNames.length);
                 const nameTag = document.createElement('div'); 
                 nameTag.className = 'hand-name'; 
                 nameTag.innerText = memberNames[i];
@@ -1321,38 +1327,53 @@
             }, 450);
         }
 
-        function handleHandClick(index, total) {
+        function startHandGame() {
             if (isGameOver || isShuffling) return;
-            const hands = document.getElementsByClassName('hand-img');
-            if (hands[index].dataset.opened === "true") return;
-            document.getElementById('btn-shuffle').disabled = true;
-            hands[index].classList.add('tension-shake');
-            triggerHaptic(10);
+            document.getElementById('btn-hand-start').disabled = true;
+            AudioEngine.play('whoosh');
+            triggerHaptic(20);
+            
+            const hands = document.querySelectorAll('.hand-img');
+            hands.forEach(h => h.classList.add('tension-shake'));
+
             setTimeout(() => {
-                hands[index].classList.remove('tension-shake');
-                if (isLuckyRound) {
-                    isGameOver = true; lastWasLucky = true; AudioEngine.play('start'); triggerHaptic([50, 50, 50]);
-                    for(let h of hands) { h.src = 'hand_open.png'; h.style.animation = "floating 0.5s infinite"; }
-                    updateText('lucky_round'); document.getElementById('main-img').src = 'cafe_counter_lucky.png';
-                    document.getElementById('lucky-area').classList.remove('hidden');
-                    document.getElementById('hand-again-btn').classList.remove('hidden');
-                    document.getElementById('btn-shuffle').classList.add('hidden');
-                } else if (index === winnerIndex) {
-                    isGameOver = true; lastWasLucky = false; AudioEngine.play('fail'); triggerHaptic([100, 50, 100]);
-                    hands[index].src = 'hand_money.png'; hands[index].classList.add('shake');
-                    for (let i = 0; i < hands.length; i++) if (i !== winnerIndex) hands[i].src = 'hand_clap.gif';
-                    updateText(`${memberNames[index]}${i18n[currentLang].pay_msg}`, true);
-                    document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
-                    if (recordStats) updateStats(memberNames[index]); 
-                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-                    showFinish(total, memberNames[index], 'hand-result-anchor');
-                    document.getElementById('hand-again-btn').classList.remove('hidden');
-                    document.getElementById('btn-shuffle').classList.add('hidden');
-                } else {
-                    AudioEngine.play('safe'); hands[index].src = 'hand_open.png'; hands[index].dataset.opened = "true";
-                    updateText(`${memberNames[index]}${i18n[currentLang].safe_msg}`, true);
-                }
-            }, 800);
+                hands.forEach(h => h.classList.remove('tension-shake'));
+                revealHandResult();
+            }, 2000); 
+        }
+
+        function revealHandResult() {
+            const hands = document.querySelectorAll('.hand-img');
+            isGameOver = true;
+            document.getElementById('btn-hand-start').classList.add('hidden'); 
+            
+            if (isLuckyRound) {
+                lastWasLucky = true; AudioEngine.play('start'); triggerHaptic([50, 50, 50]);
+                hands.forEach(h => { 
+                    h.src = 'hand_open.png'; 
+                    h.style.animation = "floating 0.5s infinite"; 
+                });
+                updateText('lucky_round'); document.getElementById('main-img').src = 'cafe_counter_lucky.png';
+                document.getElementById('lucky-area').classList.remove('hidden');
+                document.getElementById('hand-again-btn').classList.remove('hidden');
+            } else {
+                lastWasLucky = false; AudioEngine.play('fail'); triggerHaptic([100, 50, 100]);
+                hands.forEach((h, index) => {
+                    if (index === winnerIndex) {
+                        h.src = 'hand_money.png'; 
+                        h.classList.add('shake');
+                    } else {
+                        h.src = 'hand_clap.gif';
+                    }
+                });
+                
+                updateText(`${memberNames[winnerIndex]}${i18n[currentLang].pay_msg}`, true);
+                document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                if (recordStats) updateStats(memberNames[winnerIndex]); 
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                showFinish(memberNames.length, memberNames[winnerIndex], 'hand-result-anchor');
+                document.getElementById('hand-again-btn').classList.remove('hidden');
+            }
         }
 
         /* --- Roulette --- */
@@ -1471,10 +1492,17 @@
             const bowlEls = document.querySelectorAll('.cat-bowl');
             const gameArea = document.getElementById('cat-white-box');
             let visits = 0; const maxVisits = 7 + Math.floor(Math.random() * 4);
+            
             function moveCat() {
                 const parentRect = gameArea.getBoundingClientRect();
                 if (visits < maxVisits) {
-                    const target = bowlEls[Math.floor(Math.random() * memberNames.length)].getBoundingClientRect();
+                    /* [MODIFIED] Random pick logic: Exclude winnerIdx during random wandering phase for dramatic effect */
+                    let nextIdx;
+                    do {
+                        nextIdx = Math.floor(Math.random() * memberNames.length);
+                    } while (nextIdx === winnerIdx && memberNames.length > 1);
+
+                    const target = bowlEls[nextIdx].getBoundingClientRect();
                     cat.style.left = (target.left - parentRect.left + (target.width / 2)) - (cat.offsetWidth / 2) + 'px';
                     cat.style.top = (15 + Math.random() * 40) + 'px';
                     visits++; setTimeout(moveCat, 450 + Math.random() * 200);
@@ -1513,13 +1541,11 @@
             receipt.querySelector('.receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2);
             receipt.querySelector('.receipt-payer').innerText = payerName;
             
-            // [v0.6.12 복원] 영수증 필드 매핑
             receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price;
             receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal;
             receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected;
             receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
             
-            /* [NEW] Expanded fortune variety logic */
             receipt.querySelector('.receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
             receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
             
@@ -1547,30 +1573,23 @@
             } catch (e) { btn.innerText = "ERROR"; }
         }
 
-        /* [NEW] Haptic Helper Function */
         function triggerHaptic(pattern) {
             if (navigator.vibrate) {
                 try { navigator.vibrate(pattern); } catch(e) {}
             }
         }
 
-        /* [NEW] Improved Toast Logic: Positions relative to clicked element */
         function showToast(msg, targetEl) {
             const toast = document.getElementById('toast-box');
-            // [v0.6.26] Add Close Button to HTML
             toast.innerHTML = `<span>${msg}</span><span class="toast-close" onclick="this.parentElement.classList.remove('show')">×</span>`;
             
-            // Positioning logic
             if (targetEl) {
                 const rect = targetEl.getBoundingClientRect();
-                const toastHeight = 40; // Approx height
-                // Center horizontally relative to target
+                const toastHeight = 40; 
                 toast.style.left = (rect.left + rect.width / 2) + 'px';
-                // Position above target
                 toast.style.top = (rect.top - toastHeight - 8) + 'px';
-                toast.style.bottom = 'auto'; // Reset bottom
+                toast.style.bottom = 'auto'; 
             } else {
-                // Fallback to center bottom if no target
                 toast.style.left = '50%';
                 toast.style.top = 'auto';
                 toast.style.bottom = '80px';
@@ -1613,7 +1632,6 @@
             if(mode === 'list') renderHistoryList(); else renderCalendar();
         }
 
-        /* [v0.6.25 복구] Monthly King Badge HTML 구조 복구 (중복 div 제거) */
         function renderHistoryList() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
             const month = new Date().toISOString().slice(0, 7); 
@@ -1623,7 +1641,6 @@
             if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; return; } 
             const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0]; 
             
-            // [Fixed] Reverted to single div structure
             if(king && king.monthly > 0) kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`; 
             
             content.innerHTML = entries.map(item => `<div class="history-item"><span>${item.name}</span><span style="color:var(--point-red)">${item.total}${i18n[currentLang].lbl_times}</span></div>`).join(''); 
@@ -1644,7 +1661,6 @@
                 let payers = [];
                 Object.entries(stats).forEach(([name, data]) => { if(data.daily && data.daily.includes(dateStr)) payers.push(name); });
                 const hasDataClass = payers.length > 0 ? 'has-data' : '';
-                // [Update] Pass 'this' to showPayerAlert for positioning
                 const clickAttr = payers.length > 0 ? `onclick="showPayerAlert(this, '${dateStr}', '${payers.join(', ')}')"` : "";
                 html += `<div class="calendar-cell ${hasDataClass}" ${clickAttr}><span class="calendar-date-num">${d}</span>${payers.length > 0 ? '<span class="calendar-bean-icon">☕</span>' : ''}</div>`;
             }
@@ -1652,7 +1668,6 @@
             area.innerHTML = html;
         }
 
-        /* [Update] Replaced Alert with Positioned Toast */
         function showPayerAlert(el, date, names) {
             triggerHaptic(10);
             const label = currentLang === 'ko' ? '당첨자' : (currentLang === 'jp' ? '当選者' : 'Chosen');

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.36</title>
+    <title>lucky bean - v0.6.38</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -32,6 +32,7 @@
             --btn-dark-gray: #444444;
             --card-bg: #f8f8f8;
             --input-bg: #ffffff;
+            --white-dash-bg: #ffffff;
         }
 
         body.dark-mode {
@@ -47,6 +48,7 @@
             --btn-light-shadow: #111111;
             --card-bg: #252525;
             --input-bg: #333333;
+            --white-dash-bg: #2a2a2a;
         }
 
         html, body { height: 100%; margin: 0; padding: 0; touch-action: pan-x pan-y; -webkit-text-size-adjust: none; }
@@ -151,10 +153,6 @@
             outline: none; text-align: center; width: 100%; box-sizing: border-box; background: var(--input-bg);
             transition: all 0.2s; font-weight: 600; color: var(--text-main);
         }
-
-        .stats-container { width: 100%; background: var(--input-bg); padding: 15px; border-radius: 20px; font-size: 0.8rem; box-sizing: border-box; border: 1px solid var(--tablet-border); }
-        .stats-title { font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; color: #bbb; font-size: 0.7rem; letter-spacing: 1px; }
-        .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-gray-70); font-weight: 600; }
 
         .game-canvas-area { 
             width: 100%; min-height: 220px; height: auto; position: relative; margin: 15px 0; padding-bottom: 0; overflow: hidden; 
@@ -278,7 +276,18 @@
         body.dark-mode .king-name { color: #f0f0f0; }
         .king-tag { font-size: 0.65rem; font-weight: 800; color: #ffca28; letter-spacing: 1px; white-space: nowrap; }
         .king-count-area { margin-left: auto; font-weight: 800; color: #ffca28; white-space: nowrap; flex-shrink: 0; }
+        
+        /* [New Style] White Dashboard Restore */
+        .white-dashboard {
+            background-color: var(--white-dash-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            border: 1px solid var(--tablet-border);
+        }
+
         .history-item { display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--divider-color); font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
+        .history-item:last-child { border-bottom: none; }
         
         .view-toggle-bar { display: flex; gap: 10px; margin-bottom: 15px; }
         .view-btn { flex: 1; padding: 10px; font-size: 0.7rem; font-weight: 800; border-radius: 12px; border: 1px solid var(--tablet-border); background: var(--input-bg); color: #bbb; cursor: pointer; }
@@ -470,7 +479,7 @@
                     <div class="icon-selector-grid">
                         <div class="icon-btn-item" onclick="handleGameSelection('hand')">
                             <div class="icon-square"><img src="images/random_hand.png" alt="Hand"></div>
-                            <div class="icon-label" id="txt-game-hand">Random Hand</div>
+                            <div class="icon-label" id="txt-game-hand">👊 Random Hand</div>
                         </div>
                         <div class="icon-btn-item" onclick="handleGameSelection('roulette')">
                             <div class="icon-square"><img src="images/lucky_roulette.png" alt="Roulette"></div>
@@ -628,7 +637,7 @@
 
             <div id="lounge-view" class="hidden">
                 <div class="card-container" style="text-align: left;">
-                    <div class="order-menu-header" id="txt-lounge-title">☕ COFFEE LOUNGE</div>
+                    <div class="order-menu-header" id="txt-lounge-title">🪑 COFFEE LOUNGE</div>
                     <div class="divider"></div>
                     
                     <div class="lounge-tabs">
@@ -690,12 +699,10 @@
                     </div>
                     <div id="history-content-area">
                         <div id="history-list-view">
-                            <div id="stats-dashboard-history" class="stats-container" style="margin-bottom:15px;">
-                                <div class="stats-title"><span id="txt-donation-kings-hist">🏆 DONATION KINGS</span></div>
-                                <div id="stats-list-hist"></div>
-                            </div>
                             <div id="monthly-king-area"></div>
-                            <div id="history-list-content"></div>
+                            <div class="white-dashboard">
+                                <div id="history-list-content"></div>
+                            </div>
                         </div>
                         <div id="history-cal-view" class="hidden">
                             <div class="calendar-container" id="calendar-render-area"></div>
@@ -706,7 +713,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.36 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.38 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -761,7 +768,7 @@
                 fortunes: ["Work efficiency up!", "Unexpected gift coming!", "Sweet break time!", "Creative ideas flow!", "Good news soon!", "Meet a helpful person!", "Small luck in pocket!", "Coffee tastes best today!", "Compliment from boss!", "Problem solved easily!"],
                 menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Cappuccino", "Cafe Mocha", "Long Black", "Espresso"],
                 days: ["S", "M", "T", "W", "T", "F", "S"],
-                lounge_title: "☕ COFFEE LOUNGE",
+                lounge_title: "🪑 COFFEE LOUNGE",
                 lounge_tab_fortune: "FORTUNE",
                 lounge_tab_dict: "DICT",
                 lounge_tab_map: "NEARBY",
@@ -830,7 +837,7 @@
                 fortunes: ["업무 효율 급상승!", "뜻밖의 선물 도착!", "달콤한 휴식 시간!", "창의적인 아이디어 폭발!", "기다리던 좋은 소식!", "귀인을 만날 운세!", "주머니 속 소소한 행운!", "오늘따라 커피가 꿀맛!", "상사의 칭찬!", "골치 아픈 문제 해결!"],
                 menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루", "아인슈페너", "카푸치노", "카페모카", "롱블랙", "에스프레소"],
                 days: ["일", "월", "화", "수", "목", "금", "토"],
-                lounge_title: "☕ 커피 휴게실",
+                lounge_title: "🪑 커피 휴게실",
                 lounge_tab_fortune: "오늘의 운세",
                 lounge_tab_dict: "커피 도감",
                 lounge_tab_map: "주변 카페",
@@ -851,7 +858,6 @@
             },
             jp: {
                 welcome: "ラッキービーンへようこそ！",
-                // ... 생략 ...
                 choose_luck: "一番ラッキーなゲームを選んでください！",
                 setting_msg: "設定：チームメンバーを管理します。",
                 how_to: "遊び方と履歴のご案内",
@@ -896,11 +902,11 @@
                 lbl_history_onoff: "履歴を保存する",
                 confirm_replay: "ゲームをやり直しますか？",
                 btn_mix: "混ぜる",
-                txt_about_content: `<span class="about-label">ラッキービーンとは？</span>...`,
+                txt_about_content: `<span class="about-label">ラッキービーンとは？</span> コーヒーを愛するチームのための最高の運試しツールです。毎日の「誰がコーヒーを買うか？」という悩みを、刺激的なミニゲームに変えましょう！<br><br><span class="about-label">遊び方</span> 1. SETTINGSでチームメンバーの名前を入力します。グループ保存機能が便利です。<br>2. ENTER SHOPでお好みのゲームを選択します。<br>3. ゲームに参加して当選者が決まったら、その人がおごり！レシートを保存して共有しましょう。<br><br><span class="about-label">履歴とランキング</span> 履歴保存がオンの場合、結果が自動的に保存されます。LISTモードでランキングを確認したり、CALENDARモードでコーヒーアイコンをタップして当選者を確認できます。`,
                 fortunes: ["仕事効率アップ！", "思いがけないプレゼント！", "甘い休息時間！", "アイデアが溢れ出す！", "嬉しいニュース！", "助っ人に会える予感！", "ポケットの中の小さな幸せ！", "今日のコーヒーは格別！", "上司からのお褒めの言葉！", "問題があっさり解決！"],
                 menus: ["アメリカーノ", "カフェラテ", "バニララテ", "フラットホワイト", "コールドブリュー", "アインシュペナー", "カプチーノ", "카페모카", "롱블랙", "에스프레소"],
                 days: ["日", "月", "火", "水", "木", "金", "土"],
-                lounge_title: "☕ コーヒーラウンジ",
+                lounge_title: "🪑 コーヒーラウンジ",
                 lounge_tab_fortune: "今日の運勢",
                 lounge_tab_dict: "コーヒー図鑑",
                 lounge_tab_map: "周辺カフェ",
@@ -908,7 +914,7 @@
                 fortune_tap: "カードをタップ",
                 coffee_dict: {
                     "アメリカーノ": "エスプレッソをお湯で割ったコーヒー。すっきりとした味わい。",
-                    "カフェラテ": "エスプレッソとスチームミルクの調和。まろやかで香ばしい。",
+                    "カフェラテ": "エスプレッソとスチームミルクの調和. まろやかで香ばしい。",
                     "バニララテ": "ラテに甘いバニラシロップを加えたコーヒー。",
                     "フラットホワイト": "ラテよりフォームが薄く、エスプレッソの味が濃い。",
                     "コールドブリュー": "冷水で長時間抽出。苦味が少なくまろやか。",
@@ -937,9 +943,7 @@
         let calCursor = new Date();
         let loungeTabMode = 'fortune';
 
-        /* [v0.6.35] Cafe Vibe Logic - Integrated BGM */
         const vibeTracks = [
-            /* 0 Index is Default BGM */
             { name: "Lucky Bean Cafe", desc: "Original Soundtrack", file: "sounds/cafe_music_bgm.mp3", icon: "☕" },
             { name: "Lazy Sunday Jazz", desc: "Relaxing piano vibes", file: "sounds/jazz.mp3", icon: "🎷" },
             { name: "Rainy Window Seat", desc: "Heavy rain & thunder", file: "sounds/rain.mp3", icon: "🌧️" },
@@ -947,8 +951,8 @@
             { name: "Writer's Deadline", desc: "Typewriter & Fireplace", file: "sounds/typing.mp3", icon: "⌨️" },
             { name: "Forest Break", desc: "Birds & Stream water", file: "sounds/forest.mp3", icon: "🌲" }
         ];
-        let currentVibeIndex = 0; // Default is 0
-        let vibePlaying = false; // Will be set true on init
+        let currentVibeIndex = 0; 
+        let vibePlaying = false; 
         let vibeBackgroundMode = false;
 
         const AudioEngine = {
@@ -956,19 +960,16 @@
             initAndPlayBGM() {
                 if (!this.ctx) {
                     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    /* [v0.6.35] Single Player */
                     this.player = document.getElementById('bgm-player');
-                    this.player.volume = 0.30;
+                    this.player.volume = 0.15;
                 }
                 if (this.ctx.state === 'suspended') this.ctx.resume();
-                
-                // Play Default Track (Index 0)
                 if (this.player && this.player.paused) {
                     this.player.src = vibeTracks[0].file;
                     this.player.play().then(() => { 
                         isAudioStarted = true; 
                         vibePlaying = true;
-                        renderVibeList(); // Update UI
+                        renderVibeList();
                     }).catch(e => console.log(e));
                 }
             },
@@ -1009,7 +1010,6 @@
                     noise.start(now); noise.stop(now + 0.8);
                 }
             },
-            /* [v0.6.35] Unified Vibe Control */
             playVibe(idx) {
                 if(!this.player) return;
                 this.player.src = vibeTracks[idx].file;
@@ -1024,15 +1024,12 @@
             }
         }
 
-        /* [v0.6.34] Fixed Position Toast for Calendar */
         function showToast(msg, targetEl) {
             const toast = document.getElementById('toast-box');
             toast.innerHTML = `<span>${msg}</span><span class="toast-close" onclick="this.parentElement.classList.remove('show')">×</span>`;
-            
             if (targetEl) {
                 const rect = targetEl.getBoundingClientRect();
                 const toastHeight = 40; 
-                // Set fixed position based on element rect
                 toast.style.position = 'fixed';
                 toast.style.left = (rect.left + rect.width / 2) + 'px';
                 toast.style.top = (rect.top - toastHeight - 8) + 'px';
@@ -1042,7 +1039,6 @@
                 toast.style.top = 'auto';
                 toast.style.bottom = '80px';
             }
-            
             toast.classList.add('show');
             if(window.toastTimeout) clearTimeout(window.toastTimeout);
             window.toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
@@ -1050,7 +1046,6 @@
 
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
-                // Background Play Logic
                 if (vibePlaying && !vibeBackgroundMode) AudioEngine.stopVibe();
             } else {
                 if (vibePlaying) AudioEngine.player.play();
@@ -1078,10 +1073,9 @@
             renderVibeList();
         };
 
-        /* [v0.6.35] CAFE VIBE Functions - Updated */
         function toggleVibeModal(show) {
             document.getElementById('vibe-modal-overlay').style.display = show ? 'flex' : 'none';
-            if(show) renderVibeList(); // Refresh list UI to show current status
+            if(show) renderVibeList();
         }
         function toggleVibeBgMode() {
             vibeBackgroundMode = document.getElementById('vibe-bg-toggle').checked;
@@ -1100,7 +1094,6 @@
             `).join('');
         }
         function playVibeTrack(index) {
-            // Toggle Logic
             if (currentVibeIndex === index && vibePlaying) {
                 AudioEngine.stopVibe();
                 vibePlaying = false;
@@ -1112,7 +1105,6 @@
             renderVibeList();
         }
 
-        // ... (나머지 기존 함수들: toggleDarkMode, setLanguage, applyLanguage, handleStartGame 등) ...
         function toggleDarkMode() {
             isDarkMode = document.getElementById('dark-toggle').checked;
             const mainImg = document.getElementById('main-img');
@@ -1180,7 +1172,8 @@
             
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
             
-            document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
+            // [Modified] Hand Game Text with Fist
+            document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "👊 랜덤 손 뽑기" : (currentLang === 'jp' ? "👊 ランダム手招き" : "👊 Random Hand");
             document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : (currentLang === 'jp' ? "幸運のルーレット" : "Lucky Roulette");
             document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : (currentLang === 'jp' ? "猫の選択" : "Cat's Choice");
             
@@ -1190,7 +1183,8 @@
             document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "게임 설정" : (currentLang === 'jp' ? "ゲーム設定" : "GAME SETTING")}`;
             document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : (currentLang === 'jp' ? "ラッキービーン情報" : "ABOUT LUCKY BEAN")}`;
             document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : (currentLang === 'jp' ? "寄付履歴" : "DONATION HISTORY")}`;
-            document.getElementById('txt-lounge-title').innerHTML = `☕ ${t.lounge_title}`;
+            // [Modified] Lounge Title with Sofa
+            document.getElementById('txt-lounge-title').innerHTML = `🪑 ${t.lounge_title.replace("☕ ", "").replace("🪑 ", "")}`;
             
             const cardFrontText = document.querySelector('.card-front > div:nth-child(2)');
             if(cardFrontText) cardFrontText.innerText = t.fortune_tap;
@@ -1237,7 +1231,6 @@
         function goSetup(source = 'front') {
             fromView = source; hideAllViews();
             document.getElementById('setup-view').classList.remove('hidden');
-            // [MODIFIED] REVERSED: Use guy version for DARK Mode
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_setting_guy.png' : 'images/cafe_setting.png';
             updateText('setting_msg'); generateNameInputs();
             document.getElementById('dark-toggle').checked = isDarkMode;
@@ -1250,7 +1243,6 @@
 
         function goHistory() {
             hideAllViews(); document.getElementById('history-view').classList.remove('hidden');
-            // [MODIFIED] REVERSED: Use guy version for DARK Mode
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_history_guy.png' : 'images/cafe_history.png';
             updateText('history_msg'); switchHistoryView(historyViewMode);
         }
@@ -1258,7 +1250,6 @@
         function goLounge() {
             hideAllViews();
             document.getElementById('lounge-view').classList.remove('hidden');
-            /* [v0.6.31] Lounge Image Updated */
             document.getElementById('main-img').src = 'images/cafe_lounge.png';
             switchLoungeTab('fortune');
         }
@@ -1324,14 +1315,12 @@
             localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
             if (fromView === 'hand') startGame(); else if (fromView === 'roulette') goRoulette(); else if (fromView === 'cat') goCatGame(); else goFront();
         }
-
         function confirmReplay(gameType) {
             if (confirm(i18n[currentLang].confirm_replay)) {
                 if (AudioEngine.ctx) AudioEngine.ctx.resume();
                 if (gameType === 'hand') startGame(); else if (gameType === 'roulette') goRoulette(); else if (gameType === 'cat') goCatGame();
             }
         }
-
         function openMemberModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             overlay.style.display = 'flex'; container.innerHTML = '';
@@ -1342,7 +1331,6 @@
                 container.appendChild(div);
             }
         }
-
         function generateNameInputs(providedNames = null) {
             const container = document.getElementById('name-input-container');
             const saved = localStorage.getItem('lastCoffeeMembers');
@@ -1357,13 +1345,11 @@
             }
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
         }
-
         function fillRandomNames() {
             triggerHaptic(10);
             let shuffled = [...randomNicknames].sort(() => Math.random() - 0.5);
             document.querySelectorAll('.name-input').forEach((input, idx) => { input.value = shuffled[idx % shuffled.length]; });
         }
-
         function openGroupModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             overlay.style.display = 'flex'; container.innerHTML = '';
@@ -1385,7 +1371,6 @@
         function saveCurrentTeam() { const name = prompt(currentLang === 'ko' ? "그룹 이름을 입력하세요:" : "Group Name:"); if (!name) return; const names = Array.from(document.querySelectorAll('.name-input')).map(i => i.value.trim() || `User`); const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}'); teams[name] = { count: currentMemberCount, names: names }; localStorage.setItem('coffeeTeams', JSON.stringify(teams)); currentTeamName = name; document.getElementById('display-group-name').innerText = name; }
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
 
-        // Hand Game
         function startGame() {
             triggerHaptic(10);
             const saved = localStorage.getItem('lastCoffeeMembers');
@@ -1395,7 +1380,6 @@
             isGameOver = false; hideAllViews();
             document.getElementById('game-view').classList.remove('hidden');
             updateText('pick_hand');
-            // [MODIFIED] REVERSED: Use guy version for DARK Mode
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png';
             renderHands();
         }
@@ -1461,7 +1445,6 @@
             }
         }
 
-        // Roulette, Cat, etc... (기존 코드 유지)
         function goRoulette() { triggerHaptic(10); hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers'); const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; currentRouletteItems = [...members, i18n[currentLang].all_pass]; document.getElementById('roulette-view').classList.remove('hidden'); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; updateText('spin_msg'); rouletteAngle = 0; drawRoulette(); }
         function drawRoulette() {
             const canvas = document.getElementById('rouletteCanvas'); const ctx = canvas.getContext('2d');
@@ -1547,8 +1530,7 @@
             receipt.querySelector('.btn-capture-run').onclick = function() { shareAsImage(receipt, this); };
         }
         async function shareAsImage(element, btn) { const originalText = btn.innerText; btn.innerText = "..."; try { const canvas = await html2canvas(element, { backgroundColor: "#ffffff", scale: 3 }); canvas.toBlob(async (blob) => { const file = new File([blob], "receipt.png", { type: "image/png" }); if (navigator.share) await navigator.share({ files: [file] }); else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'receipt.png'; a.click(); } btn.innerText = originalText; }); } catch (e) { btn.innerText = "ERROR"; } }
-        function triggerHaptic(pattern) { if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch(e) {} } }
-
+        
         function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); const now = new Date(); const monthKey = now.toISOString().slice(0, 7); const dateKey = now.toISOString().slice(0, 10); if(!stats[name]) stats[name] = { total: 0, monthly: {}, daily: [] }; stats[name].total += 1; stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1; if(!stats[name].daily) stats[name].daily = []; stats[name].daily.push(dateKey); localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
         
         function switchHistoryView(mode) {
@@ -1560,28 +1542,71 @@
             if(mode === 'list') renderHistoryList(); else renderCalendar();
         }
 
-        /* [v0.6.34] Update History Render */
+        // [Modified] Render History Logic with Merged 0-count Members & Medals
         function renderHistoryList() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
-            const month = new Date().toISOString().slice(0, 7); 
-            const entries = Object.entries(stats).map(([n, d]) => ({ name: n, total: d.total || 0, monthly: (d.monthly && d.monthly[month]) || 0 })).sort((a, b) => b.total - a.total); 
+            const month = new Date().toISOString().slice(0, 7);
             
-            // Top 3 for Dashboard
-            const dash = document.getElementById('stats-dashboard-history');
-            if(entries.length === 0) {
-                document.getElementById('stats-list-hist').innerHTML = `<div style="text-align:center; padding:10px; color:#bbb;">NO DATA</div>`;
-            } else {
-                document.getElementById('stats-list-hist').innerHTML = entries.slice(0, 3).map(e => `<div class="stats-row"><span>${e.name}</span><span>${e.total} ${i18n[currentLang].lbl_times}</span></div>`).join(''); 
-            }
+            // Get Current Members to ensure they are in the list
+            const savedMembers = localStorage.getItem('lastCoffeeMembers');
+            const currentMembers = savedMembers ? JSON.parse(savedMembers) : [];
 
+            let displayList = [];
+
+            // 1. Add people from stats
+            Object.keys(stats).forEach(name => {
+                displayList.push({ 
+                    name: name, 
+                    total: stats[name].total || 0, 
+                    monthly: (stats[name].monthly && stats[name].monthly[month]) || 0 
+                });
+            });
+
+            // 2. Add current members if missing (0 count)
+            currentMembers.forEach(name => {
+                if (!displayList.find(item => item.name === name)) {
+                    displayList.push({ name: name, total: 0, monthly: 0 });
+                }
+            });
+
+            // 3. Sort by total descending
+            displayList.sort((a, b) => b.total - a.total);
+
+            // 4. Render Layout
             const kingArea = document.getElementById('monthly-king-area'); 
             const content = document.getElementById('history-list-content'); 
-            if (entries.length === 0) { kingArea.innerHTML = ""; content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; return; } 
             
-            const king = [...entries].sort((a,b) => b.monthly - a.monthly)[0]; 
-            if(king && king.monthly > 0) kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`; 
+            if (displayList.length === 0) { 
+                kingArea.innerHTML = ""; 
+                content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; 
+                return; 
+            } 
             
-            content.innerHTML = entries.map(item => `<div class="history-item"><span>${item.name}</span><span style="color:var(--point-red)">${item.total}${i18n[currentLang].lbl_times}</span></div>`).join(''); 
+            // Monthly King Logic (Yellow Box)
+            const king = [...displayList].sort((a,b) => b.monthly - a.monthly)[0]; 
+            if(king && king.monthly > 0) {
+                kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`; 
+            } else {
+                kingArea.innerHTML = "";
+            }
+
+            // List Render with Medals and Clovers
+            const maxVal = Math.max(...displayList.map(i => i.total));
+            const minVal = Math.min(...displayList.map(i => i.total));
+
+            content.innerHTML = displayList.map(item => {
+                let prefix = '';
+                // 1st Place (Gold Medal) if count > 0
+                if (item.total === maxVal && item.total > 0) {
+                    prefix = '🥇 ';
+                }
+                // Last Place (Clover) - ties included
+                else if (item.total === minVal) {
+                    prefix = '🍀 ';
+                }
+
+                return `<div class="history-item"><span>${prefix}${item.name}</span><span style="color:var(--point-red)">${item.total}${i18n[currentLang].lbl_times}</span></div>`;
+            }).join(''); 
         }
 
         function renderCalendar() {

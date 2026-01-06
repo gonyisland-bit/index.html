@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.27</title>
+    <title>lucky bean - v0.6.29</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Lucky Bean">
-    <link rel="icon" type="image/png" href="coffeegame_icon.png">
-    <link rel="apple-touch-icon" href="coffeegame_icon.png">
+    <link rel="icon" type="image/png" href="luckybean_icon.png">
+    <link rel="apple-touch-icon" href="luckybean_icon.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -311,23 +311,21 @@
             text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.1s;
         }
-        .map-btn:active { transform: translateY(2px); }
+        .map-btn.active { transform: translateY(2px); }
         .map-btn.naver { background-color: #03C75A; }
         .map-btn.kakao { background-color: #FEE500; color: #000; }
         .map-btn.google { background-color: #4285F4; }
         .map-desc { font-size: 0.75rem; color: var(--text-gray-70); margin-bottom: 20px; line-height: 1.5; word-break: keep-all; text-align: center; }
 
-        /* [v0.6.26] Toast UI Optimized: pointer-events auto, width limit, close btn styling */
         #toast-box {
             position: absolute; 
             background: rgba(0,0,0,0.85); color: #fff; padding: 10px 18px;
             border-radius: 20px; font-size: 0.8rem; font-weight: 700;
             opacity: 0; transition: opacity 0.3s; 
-            pointer-events: auto; /* Enable Click */
+            pointer-events: auto;
             z-index: 11000;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             transform: translateX(-50%);
-            /* Prevent too wide */
             max-width: 220px; 
             width: max-content;
             white-space: normal;
@@ -642,7 +640,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.27 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.29 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -793,8 +791,8 @@
                     "플랫화이트": "라떼보다 폼이 얇고 에스프레소 맛이 진한 커피.",
                     "콜드브루": "찬물로 오랜 시간 우려내어 쓴맛이 적고 부드러움.",
                     "아인슈페너": "아메리카노 위에 차가운 휘핑크림을 얹은 달콤 쌉쌀한 커피.",
-                    "카푸치노": "에스프레소 + 우유 + 풍성한 거품.",
-                    "카페모카": "에스프레소 + 초콜릿 + 우유 + 휘핑크림.",
+                    "카푸치노": "에스프레소+스팀 우유+두꺼운 거품.",
+                    "카페모카": "에스프레소+초콜릿+우유+휘핑크림.",
                     "롱블랙": "뜨거운 물 위에 에스프레소를 부어 크레마를 살린 커피.",
                     "에스프레소": "강렬하고 진한 커피 추출 원액."
                 }
@@ -1013,6 +1011,12 @@
                 if(mainImg.src.includes('cafe_facade_night.png')) mainImg.src = 'cafe_facade.png';
                 if(mainImg.src.includes('cafe_facade_zoom_night.png')) mainImg.src = 'cafe_facade_zoom.png';
             }
+            
+            /* [v0.6.29] REVERSED: Use guy version for DARK Mode */
+            if (!document.getElementById('setup-view').classList.contains('hidden')) {
+                mainImg.src = isDarkMode ? 'cafe_setting_guy.png' : 'cafe_setting.png';
+            }
+            
             localStorage.setItem('luckyBeanDark', isDarkMode);
         }
 
@@ -1071,7 +1075,7 @@
             document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
             document.getElementById('txt-roulette-title').innerText = currentLang === 'ko' ? "🎡 행운의 룰렛" : (currentLang === 'jp' ? "🎡 幸運のルーレット" : "🎡 LUCKY ROULETTE");
             document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : (currentLang === 'jp' ? "🐈 猫の選択" : "🐈 CAT'S CHOICE");
-            document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "게임 설정" : (currentLang === 'jp' ? "게임設定" : "GAME SETTING")}`;
+            document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "게임 설정" : (currentLang === 'jp' ? "ゲーム設定" : "GAME SETTING")}`;
             document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : (currentLang === 'jp' ? "ラッキービーン情報" : "ABOUT LUCKY BEAN")}`;
             document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : (currentLang === 'jp' ? "寄付履歴" : "DONATION HISTORY")}`;
             document.getElementById('txt-lounge-title').innerHTML = `☕ ${t.lounge_title}`;
@@ -1121,7 +1125,8 @@
         function goSetup(source = 'front') {
             fromView = source; hideAllViews();
             document.getElementById('setup-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_setting.png';
+            // [MODIFIED] REVERSED: Use guy version for DARK Mode
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_setting_guy.png' : 'cafe_setting.png';
             updateText('setting_msg'); generateNameInputs();
             document.getElementById('dark-toggle').checked = isDarkMode;
         }
@@ -1133,7 +1138,8 @@
 
         function goHistory() {
             hideAllViews(); document.getElementById('history-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_history.png';
+            // [MODIFIED] REVERSED: Use guy version for DARK Mode
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_history_guy.png' : 'cafe_history.png';
             updateText('history_msg'); switchHistoryView(historyViewMode);
         }
 
@@ -1297,7 +1303,8 @@
             isGameOver = false; hideAllViews();
             document.getElementById('game-view').classList.remove('hidden');
             updateText('pick_hand');
-            document.getElementById('main-img').src = 'cafe_counter.png';
+            // [MODIFIED] REVERSED: Use guy version for DARK Mode
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_guy.png' : 'cafe_counter.png';
             renderHands();
         }
 
@@ -1353,7 +1360,9 @@
                     h.src = 'hand_open.png'; 
                     h.style.animation = "floating 0.5s infinite"; 
                 });
-                updateText('lucky_round'); document.getElementById('main-img').src = 'cafe_counter_lucky.png';
+                updateText('lucky_round');
+                // [MODIFIED] REVERSED: Use guy version for DARK Mode
+                document.getElementById('main-img').src = isDarkMode ? 'cafe_lucky_guy.png' : 'cafe_counter_lucky.png';
                 document.getElementById('lucky-area').classList.remove('hidden');
                 document.getElementById('hand-again-btn').classList.remove('hidden');
             } else {
@@ -1368,7 +1377,8 @@
                 });
                 
                 updateText(`${memberNames[winnerIndex]}${i18n[currentLang].pay_msg}`, true);
-                document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                // [MODIFIED] REVERSED: Use guy version for DARK Mode
+                document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.png' : 'cafe_counter_thanks.gif';
                 if (recordStats) updateStats(memberNames[winnerIndex]); 
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(memberNames.length, memberNames[winnerIndex], 'hand-result-anchor');
@@ -1383,7 +1393,8 @@
             const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
             currentRouletteItems = [...members, i18n[currentLang].all_pass];
             document.getElementById('roulette-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_counter.png';
+            // [MODIFIED] REVERSED: Use guy version for DARK Mode
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_guy.png' : 'cafe_counter.png';
             updateText('spin_msg'); rouletteAngle = 0; drawRoulette();
         }
 
@@ -1444,11 +1455,13 @@
             document.getElementById('roulette-again-btn').classList.remove('hidden');
             if (weights[winnerIdx] < 1) {
                 AudioEngine.play('start'); updateText('all_pass_unbelievable'); triggerHaptic([50, 50, 50]);
-                document.getElementById('main-img').src = 'cafe_counter_lucky.png';
+                // [MODIFIED] REVERSED: Use guy version for DARK Mode
+                document.getElementById('main-img').src = isDarkMode ? 'cafe_lucky_guy.png' : 'cafe_counter_lucky.png';
                 confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] });
             } else {
                 AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]);
-                document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                // [MODIFIED] REVERSED: Use guy version for DARK Mode
+                document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.png' : 'cafe_counter_thanks.gif';
                 if (recordStats) updateStats(winnerName); 
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } });
                 showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-result-anchor');
@@ -1461,7 +1474,8 @@
             hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers');
             memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
             document.getElementById('cat-view').classList.remove('hidden');
-            document.getElementById('main-img').src = 'cafe_counter.png';
+            // [MODIFIED] REVERSED: Use guy version for DARK Mode
+            document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_guy.png' : 'cafe_counter.png';
             updateText('cat_start');
             const cat = document.getElementById('moving-cat');
             cat.src = 'cat_stand.png'; cat.style.transition = 'none'; cat.style.left = '50%'; cat.style.top = '15px'; cat.style.transform = 'translateX(-50%)'; cat.className = '';
@@ -1514,7 +1528,8 @@
                         cat.classList.remove('cat-moving'); cat.src = 'cat_eat.png';
                         bowlEls.forEach((b, idx) => { if(idx !== winnerIdx) b.classList.add('bowl-dimmed'); else { b.classList.add('bowl-highlight'); setTimeout(() => { document.getElementById(`img-bowl-${winnerIdx}`).src = 'cat_bowl_empty.png'; }, 500); } });
                         AudioEngine.play('fail'); updateText(`${memberNames[winnerIdx]}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]);
-                        document.getElementById('main-img').src = 'cafe_counter_thanks.gif';
+                        // [MODIFIED] REVERSED: Use guy version for DARK Mode
+                        document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.png' : 'cafe_counter_thanks.gif';
                         if (recordStats) updateStats(memberNames[winnerIdx]); 
                         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                         showFinish(memberNames.length, memberNames[winnerIdx], 'cat-result-anchor');

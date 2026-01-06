@@ -1417,7 +1417,7 @@
                 });
                 updateText('lucky_round');
                 // [MODIFIED] REVERSED: Use guy version for DARK Mode
-                document.getElementById('main-img').src = isDarkMode ? 'cafe_lucky_guy.png' : 'cafe_counter_lucky.png';
+                document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_lucky_guy.png' : 'cafe_counter_lucky.png';
                 document.getElementById('lucky-area').classList.remove('hidden');
                 document.getElementById('hand-again-btn').classList.remove('hidden');
             } else {
@@ -1433,7 +1433,7 @@
                 
                 updateText(`${memberNames[winnerIndex]}${i18n[currentLang].pay_msg}`, true);
                 // [MODIFIED] REVERSED: Use guy version for DARK Mode
-                document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.png' : 'cafe_counter_thanks.gif';
+                document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.gif' : 'cafe_counter_thanks.gif';
                 if (recordStats) updateStats(memberNames[winnerIndex]); 
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(memberNames.length, memberNames[winnerIndex], 'hand-result-anchor');
@@ -1511,12 +1511,12 @@
             if (weights[winnerIdx] < 1) {
                 AudioEngine.play('start'); updateText('all_pass_unbelievable'); triggerHaptic([50, 50, 50]);
                 // [MODIFIED] REVERSED: Use guy version for DARK Mode
-                document.getElementById('main-img').src = isDarkMode ? 'cafe_lucky_guy.png' : 'cafe_counter_lucky.png';
+                document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_lucky_guy.png' : 'cafe_counter_lucky.png';
                 confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] });
             } else {
                 AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]);
                 // [MODIFIED] REVERSED: Use guy version for DARK Mode
-                document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.png' : 'cafe_counter_thanks.gif';
+                document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.gif' : 'cafe_counter_thanks.gif';
                 if (recordStats) updateStats(winnerName); 
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } });
                 showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-result-anchor');
@@ -1584,7 +1584,7 @@
                         bowlEls.forEach((b, idx) => { if(idx !== winnerIdx) b.classList.add('bowl-dimmed'); else { b.classList.add('bowl-highlight'); setTimeout(() => { document.getElementById(`img-bowl-${winnerIdx}`).src = 'cat_bowl_empty.png'; }, 500); } });
                         AudioEngine.play('fail'); updateText(`${memberNames[winnerIdx]}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]);
                         // [MODIFIED] REVERSED: Use guy version for DARK Mode
-                        document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.png' : 'cafe_counter_thanks.gif';
+                        document.getElementById('main-img').src = isDarkMode ? 'cafe_counter_thanks_guy.gif' : 'cafe_counter_thanks.gif';
                         if (recordStats) updateStats(memberNames[winnerIdx]); 
                         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                         showFinish(memberNames.length, memberNames[winnerIdx], 'cat-result-anchor');

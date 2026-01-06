@@ -1453,7 +1453,7 @@
                 lastWasLucky = false; AudioEngine.play('fail'); triggerHaptic([100, 50, 100]);
                 hands.forEach((h, index) => { if (index === winnerIndex) { h.src = 'images/hand_money.png'; h.classList.add('shake'); } else { h.src = 'images/hand_clap.gif'; } });
                 updateText(`${memberNames[winnerIndex]}${i18n[currentLang].pay_msg}`, true);
-                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.png' : 'images/cafe_counter_thanks.gif';
+                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif';
                 if (recordStats) updateStats(memberNames[winnerIndex]); 
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(memberNames.length, memberNames[winnerIndex], 'hand-result-anchor');
@@ -1497,7 +1497,7 @@
             const winnerName = currentRouletteItems[winnerIdx];
             document.getElementById('roulette-spin-btn').classList.add('hidden'); document.getElementById('roulette-again-btn').classList.remove('hidden');
             if (weights[winnerIdx] < 1) { AudioEngine.play('start'); updateText('all_pass_unbelievable'); triggerHaptic([50, 50, 50]); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_lucky_guy.png' : 'images/cafe_counter_lucky.png'; confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] }); } 
-            else { AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.png' : 'images/cafe_counter_thanks.gif'; if (recordStats) updateStats(winnerName); confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } }); showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-result-anchor'); }
+            else { AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif'; if (recordStats) updateStats(winnerName); confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } }); showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-result-anchor'); }
         }
 
         function goCatGame() { triggerHaptic(10); hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers'); memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; document.getElementById('cat-view').classList.remove('hidden'); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; updateText('cat_start'); const cat = document.getElementById('moving-cat'); cat.src = 'images/cat_stand.png'; cat.style.transition = 'none'; cat.style.left = '50%'; cat.style.top = '15px'; cat.style.transform = 'translateX(-50%)'; cat.className = ''; setTimeout(() => { cat.style.transition = 'left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; }, 50); renderCatBowls(); }
@@ -1524,7 +1524,7 @@
                         cat.classList.remove('cat-moving'); cat.src = 'images/cat_eat.png';
                         bowlEls.forEach((b, idx) => { if(idx !== winnerIdx) b.classList.add('bowl-dimmed'); else { b.classList.add('bowl-highlight'); setTimeout(() => { document.getElementById(`img-bowl-${winnerIdx}`).src = 'images/cat_bowl_empty.png'; }, 500); } });
                         AudioEngine.play('fail'); updateText(`${memberNames[winnerIdx]}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]);
-                        document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.png' : 'images/cafe_counter_thanks.gif';
+                        document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif';
                         if (recordStats) updateStats(memberNames[winnerIndex]); 
                         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                         showFinish(memberNames.length, memberNames[winnerIndex], 'cat-result-anchor');

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.29</title>
+    <title>lucky bean - v0.6.33</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -90,9 +90,21 @@
             text-align: left; margin-bottom: 12px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
         }
         
-        .header-icon-group { display: flex; gap: 5px; }
+        .header-icon-group { display: flex; gap: 8px; align-items: center; }
         .settings-icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #bbb; padding: 0 5px; transition: color 0.2s; }
         .settings-icon-btn:hover { color: var(--text-main); }
+
+        /* [v0.6.32] Mix Button Style Adjusted */
+        .btn-mix-rect {
+            padding: 6px 14px; border-radius: 14px;
+            background: var(--input-bg); border: 2px solid var(--text-main);
+            font-size: 0.65rem; font-weight: 900; color: var(--text-main);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+            transition: transform 0.1s; letter-spacing: 0.5px;
+        }
+        .btn-mix-rect:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.15); }
+        body.dark-mode .btn-mix-rect { border-color: #fff; color: #fff; background: #444; }
 
         .picker-group { width: 100%; display: flex; gap: 12px; margin-bottom: 20px; }
         .picker-btn {
@@ -135,7 +147,8 @@
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--text-gray-70); font-weight: 600; }
 
         .game-canvas-area { 
-            width: 100%; min-height: 220px; height: auto; position: relative; margin: 15px 0; padding-bottom: 25px; overflow: hidden; 
+            /* [v0.6.32] Removed padding-bottom */
+            width: 100%; min-height: 220px; height: auto; position: relative; margin: 15px 0; padding-bottom: 0; overflow: hidden; 
             background: #ffffff !important; border: 2px solid #eee; border-radius: 20px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             transition: min-height 0.3s ease-out;
@@ -477,7 +490,7 @@
                     <div class="order-menu-header">
                         <span id="txt-game-hand-title">RANDOM HAND</span>
                         <div class="header-icon-group">
-                            <button class="settings-icon-btn" onclick="shufflePositions()">🔀</button>
+                            <button id="btn-mix-header" class="btn-mix-rect" onclick="shufflePositions()">MIX</button>
                             <button class="settings-icon-btn" onclick="goSetup('hand')">⚙️</button>
                         </div>
                     </div>
@@ -640,7 +653,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.29 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.33 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -690,6 +703,7 @@
                 lbl_empty: "Empty",
                 lbl_history_onoff: "HISTORY RECORDING",
                 confirm_replay: "Are you sure you want to replay?",
+                btn_mix: "MIX",
                 txt_about_content: `<span class="about-label">WHAT IS LUCKY BEAN?</span> Lucky Bean is the ultimate mini-game app for coffee-loving teams! It turns the daily "Who pays?" moment into a thrilling mini-game.<br><br><span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS. You can save groups for quick access later!<br>2. Go to ENTER SHOP and pick your favorite game: Random Hand, Roulette, or Cat.<br>3. Interact with the game. The 'Chosen One' pays! You can capture and share the receipt.<br><br><span class="about-label">HISTORY & RANKING</span> Win records are automatically stored in HISTORY. You can track donation stats in LIST mode or tap the coffee icon in CALENDAR mode to see who paid on that day.`,
                 fortunes: [
                     "Work efficiency up!", "Unexpected gift coming!", "Sweet break time!", "Creative ideas flow!", "Good news soon!",
@@ -766,6 +780,7 @@
                 lbl_empty: "비어있음",
                 lbl_history_onoff: "게임 기록 저장",
                 confirm_replay: "정말 게임을 다시 시작하시겠습니까?",
+                btn_mix: "섞기",
                 txt_about_content: `<span class="about-label">럭키빈이란?</span> 커피를 사랑하는 동료들을 위한 최고의 복불복 도구입니다. 매일 돌아오는 "누가 커피 살까?"의 고민을 짜릿한 미니 게임으로 즐겨보세요!<br><br><span class="about-label">게임 방법</span> 1. SETTINGS에서 팀원 이름을 입력하세요. 그룹 저장이 가능해 편리합니다.<br>2. ENTER SHOP에서 원하는 게임을 선택하세요.<br>3. 게임에 참여하면 행운의 당첨자가 결정됩니다. 당첨된 사람이 결제! 영수증을 캡처해 공유해보세요.<br><br><span class="about-label">히스토리 및 랭킹</span> 게임 기록이 켜져 있으면 히스토리에 자동 기록됩니다. LIST 모드에서 랭킹을 확인하거나, CALENDAR 모드에서 커피 아이콘을 눌러 해당 날짜의 당첨자를 확인하세요.`,
                 fortunes: [
                     "업무 효율 급상승!", "뜻밖의 선물 도착!", "달콤한 휴식 시간!", "창의적인 아이디어 폭발!", "기다리던 좋은 소식!",
@@ -842,6 +857,7 @@
                 lbl_empty: "空",
                 lbl_history_onoff: "履歴を保存する",
                 confirm_replay: "ゲームをやり直しますか？",
+                btn_mix: "混ぜる",
                 txt_about_content: `<span class="about-label">ラッキービーンとは？</span> コーヒーを愛するチームのための最高の運試しツールです。毎日の「誰がコーヒーを買うか？」という悩みを、刺激的なミニゲームに変えましょう！<br><br><span class="about-label">遊び方</span> 1. SETTINGSでチームメンバーの名前を入力します。グループ保存機能が便利です。<br>2. ENTER SHOPでお好みのゲームを選択します。<br>3. ゲームに参加して当選者が決まったら、その人がおごり！レシートを保存して共有しましょう。<br><br><span class="about-label">履歴とランキング</span> 履歴保存がオンの場合、結果が自動的に保存されます。LISTモードでランキングを確認したり、CALENDARモードでコーヒーアイコンをタップして当選者を確認できます。`,
                 fortunes: [
                     "仕事効率アップ！", "思いがけないプレゼント！", "甘い休息時間！", "アイデアが溢れ出す！", "嬉しいニュース！",
@@ -866,11 +882,11 @@
                     "カフェラテ": "エスプレッソとスチームミルクの調和。まろやかで香ばしい。",
                     "フラットホワイト": "ラテよりフォームが薄く、エスプレッソの味が濃い。",
                     "コールドブリュー": "冷水で長時間抽出。苦味が少なくまろやか。",
-                    "アインシュペナー": "エスプレッソの上に冷たいホイップクリームを乗せた甘苦いコーヒー。",
+                    "アインシュペナー": "エスプレッソの上に冷たいホイップクリーム를乗せた甘苦いコーヒー。",
                     "カプチーノ": "エスプレッソ+スチームミルク+厚い泡。",
-                    "カフェモカ": "エスプレッソ+チョコ+ミルク+ホイップ。",
-                    "ロングブラック": "お湯の上にエスプレッソを注ぎクレマを生かしたもの。",
-                    "エスプレッソ": "コーヒー抽出原液。強烈で濃厚。"
+                    "카페모카": "エスプレッソ+チョコ+ミルク+ホイップ。",
+                    "롱블랙": "お湯の上にエスプレッソを注ぎクレマを生かしたもの。",
+                    "에스프레소": "コーヒー抽出原液。強烈で濃厚。"
                 }
             }
         };
@@ -1012,7 +1028,7 @@
                 if(mainImg.src.includes('cafe_facade_zoom_night.png')) mainImg.src = 'cafe_facade_zoom.png';
             }
             
-            /* [v0.6.29] REVERSED: Use guy version for DARK Mode */
+            /* [MODIFIED] REVERSED: Use guy version for DARK Mode */
             if (!document.getElementById('setup-view').classList.contains('hidden')) {
                 mainImg.src = isDarkMode ? 'cafe_setting_guy.png' : 'cafe_setting.png';
             }
@@ -1046,7 +1062,8 @@
                 'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : (currentLang === 'jp' ? "リスト" : "LIST"),
                 'btn-view-cal': currentLang === 'ko' ? "달력" : (currentLang === 'jp' ? "カレンダー" : "CALENDAR"),
                 'btn-tab-fortune': t.lounge_tab_fortune, 'btn-tab-dict': t.lounge_tab_dict, 'btn-tab-map': t.lounge_tab_map,
-                'txt-map-desc': t.map_desc
+                'txt-map-desc': t.map_desc,
+                'btn-mix-header': t.btn_mix /* [v0.6.31] Mix Button Text */
             };
 
             Object.keys(transMap).forEach(id => {
@@ -1146,7 +1163,8 @@
         function goLounge() {
             hideAllViews();
             document.getElementById('lounge-view').classList.remove('hidden');
-            document.getElementById('main-img').src = isDarkMode ? 'cafe_facade_night.png' : 'cafe_facade.png';
+            /* [v0.6.31] Lounge Image Updated */
+            document.getElementById('main-img').src = 'cafe_lounge.png';
             switchLoungeTab('fortune');
         }
 
@@ -1321,17 +1339,54 @@
         }
 
         function shufflePositions() {
+            /* [v0.6.33] Corrected Shuffle Logic: Stop animation -> Move -> Restore animation */
             if (isGameOver || isShuffling) return;
-            triggerHaptic(20);
-            isShuffling = true; AudioEngine.play('whoosh');
-            const wrappers = document.querySelectorAll('.hand-wrapper');
-            wrappers.forEach(w => { w.style.transition = "transform 0.4s"; w.style.transform = `scale(0.5) translate(${(Math.random()-0.5)*50}px, 50px)`; });
+            isShuffling = true;
+            AudioEngine.play('whoosh');
+
+            const wrappers = Array.from(document.querySelectorAll('.hand-wrapper'));
+            const images = wrappers.map(w => w.querySelector('.hand-img'));
+            
+            // 1. Stop floating animation to allow transform
+            images.forEach(img => {
+                img.style.animation = 'none'; 
+            });
+
+            // 2. Get current positions
+            const startRects = images.map(img => img.getBoundingClientRect());
+
+            // 3. Generate shuffle indices
+            let indices = wrappers.map((_, i) => i);
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+
+            // 4. Animate to new positions
+            images.forEach((img, i) => {
+                const targetIndex = indices[i];
+                const dx = startRects[targetIndex].left - startRects[i].left;
+                const dy = startRects[targetIndex].top - startRects[i].top;
+                
+                img.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'; 
+                img.style.transform = `translate(${dx}px, ${dy}px)`;
+            });
+
+            // 5. Cleanup and Restore
             setTimeout(() => {
-                for (let i = memberNames.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [memberNames[i], memberNames[j]] = [memberNames[j], memberNames[i]]; }
+                images.forEach(img => {
+                    img.style.transition = 'none';
+                    img.style.transform = 'none';
+                    // Restore floating animation
+                    img.style.animation = 'floating 3s ease-in-out infinite';
+                });
+                
+                // Silent internal shuffle logic
                 winnerIndex = Math.floor(Math.random() * memberNames.length);
-                wrappers.forEach(w => { w.style.transform = `scale(1) translate(0, 0)`; });
-                setTimeout(() => { renderHands(); isShuffling = false; updateText('hands_mixed'); }, 450);
-            }, 450);
+                
+                isShuffling = false;
+                updateText('hands_mixed');
+            }, 500); // Match transition duration
         }
 
         function startHandGame() {

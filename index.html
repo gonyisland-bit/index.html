@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.39</title>
+    <title>lucky bean - v0.6.41</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -59,14 +59,18 @@
             overflow-x: hidden; overflow-y: auto; transition: background-color 0.3s, color 0.3s;
         }
 
+        .fade-in-view { animation: fadeInUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 40px; }
 
-        /* [Modified] Reduced top padding: 30px -> 10px */
         header { padding: 10px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
         .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 2.8rem; letter-spacing: -1px; color: var(--text-main); }
         .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.1rem; letter-spacing: -2px; margin-left: -5px; color: var(--text-main); }
 
-        /* [Modified] Vibe button position (top 15px) and size (padding 4px 6px) */
         #btn-cafe-vibe {
             position: absolute; right: 20px; top: 15px;
             background: var(--text-main); color: var(--bg-color);
@@ -234,6 +238,13 @@
 
         .btn-again { background-color: var(--btn-dark-gray) !important; box-shadow: 0 6px 0 #222 !important; }
 
+        .backup-btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-backup { flex: 1; padding: 12px; font-size: 0.75rem; font-weight: 800; border-radius: 12px; border: 1px solid var(--tablet-border); background: var(--input-bg); color: var(--text-gray-70); cursor: pointer; transition: 0.2s; }
+        .btn-backup:active { transform: translateY(2px); background: var(--tablet-border); }
+
+        .menu-recommendation-box { text-align: center; padding: 20px 0; }
+        .menu-result-display { font-size: 1.5rem; font-weight: 900; color: var(--point-red); margin: 15px 0; min-height: 2rem; }
+        
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { 
             background: var(--bg-color); width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; 
@@ -343,7 +354,7 @@
         .tab-btn.active { background: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); }
         .lounge-content { min-height: 250px; }
         
-        .fortune-card-container { perspective: 1000px; width: 200px; height: 280px; margin: 20px auto; cursor: pointer; }
+        .fortune-card-container { perspective: 1000px; width: 200px; height: 320px; margin: 20px auto; cursor: pointer; }
         .fortune-card { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .fortune-card.flipped { transform: rotateY(180deg); }
         .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; padding: 15px; }
@@ -397,7 +408,8 @@
             cursor: pointer; font-size: 1.1rem; color: #ffca28; margin-left: 4px; line-height: 1;
         }
 
-        /* [Modified] Footer padding: 40px -> 30px */
+        .btn-share { margin-top:15px; background:none; border:1px solid var(--text-gray-70); border-radius:12px; padding:6px 12px; font-size:0.65rem; color:var(--text-gray-70); cursor:pointer; }
+
         .footer { width: 100%; text-align: center; padding: 30px 0; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
         .hidden { display: none !important; }
     </style>
@@ -462,9 +474,7 @@
                 <div id="rpg-textbox"><div id="rpg-content"></div></div>
             </div>
 
-            <div id="front-view">
-                <div id="no-stats-msg" style="font-size: 0.8rem; color: #ccc; font-weight: 700; margin-bottom: 25px;">WELCOME TO THE CAFE!</div>
-                
+            <div id="front-view" class="fade-in-view">
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <button class="btn-main" id="btn-enter-shop" onclick="showGameSelector()">ENTER SHOP</button>
                     <button class="btn-sub" id="btn-go-setup" onclick="goSetup()">SETTINGS</button>
@@ -537,6 +547,13 @@
                     </div>
                     <div class="divider"></div>
                     <div id="name-input-container"></div>
+                    
+                    <div class="divider" style="margin-top:20px;"></div>
+                    <div style="font-size:0.7rem; color:#bbb; font-weight:800; margin-bottom:5px;" id="lbl-backup-title">DATA BACKUP</div>
+                    <div class="backup-btn-group">
+                         <button class="btn-backup" id="btn-backup-export" onclick="exportData()">EXPORT</button>
+                         <button class="btn-backup" id="btn-backup-import" onclick="importData()">IMPORT</button>
+                    </div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <button class="btn-main" id="btn-save-exit" onclick="saveAndGoHome()">SAVE & EXIT</button>
@@ -643,6 +660,7 @@
                     
                     <div class="lounge-tabs">
                         <button id="btn-tab-fortune" class="tab-btn active" onclick="switchLoungeTab('fortune')">FORTUNE</button>
+                        <button id="btn-tab-menu" class="tab-btn" onclick="switchLoungeTab('menu')">MENU</button>
                         <button id="btn-tab-dict" class="tab-btn" onclick="switchLoungeTab('dict')">DICT</button>
                         <button id="btn-tab-map" class="tab-btn" onclick="switchLoungeTab('map')">NEARBY</button>
                     </div>
@@ -658,10 +676,27 @@
                                     <div class="card-back">
                                         <div class="fortune-item" id="fortune-icon">☕</div>
                                         <div class="fortune-text" id="fortune-msg" style="color:var(--point-red);"></div>
-                                        <div class="fortune-text" id="fortune-menu" style="font-size:0.7rem; color:#666;"></div>
+                                        <div class="fortune-text" style="font-size:0.7rem; color:#444; margin-top:5px; font-weight:normal;" id="fortune-detail"></div>
+                                        <div style="margin-top:8px; font-size:0.75rem; font-weight:800; color:#555;">
+                                            <span id="txt-score-label">SCORE</span>: <span style="color:var(--roulette-gold); font-size:1rem;">⭐</span> <span id="fortune-score"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div style="text-align:center;">
+                                <button class="btn-share" onclick="shareFortune()" id="btn-share-fortune">SHARE CARD</button>
+                            </div>
+                        </div>
+
+                        <div id="lounge-menu-sec" class="hidden">
+                             <div class="menu-recommendation-box">
+                                 <div style="margin-bottom:10px;">
+                                     <img src="images/coffee.png" alt="Coffee" style="width:50px; height:auto; animation: floating 3s ease-in-out infinite;">
+                                 </div>
+                                 <div style="font-size:0.8rem; color:#888;" id="txt-menu-q">What should I drink?</div>
+                                 <div class="menu-result-display" id="menu-recommend-result">???</div>
+                                 <button class="btn-mix-rect" onclick="recommendMenu()" style="margin:0 auto; padding:10px 20px;">PICK MENU</button>
+                             </div>
                         </div>
 
                         <div id="lounge-dict-sec" class="hidden">
@@ -714,7 +749,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.39 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.41 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -766,16 +801,17 @@
                 confirm_replay: "Are you sure you want to replay?",
                 btn_mix: "MIX",
                 txt_about_content: `<span class="about-label">WHAT IS LUCKY BEAN?</span> Lucky Bean is the ultimate mini-game app for coffee-loving teams! It turns the daily "Who pays?" moment into a thrilling mini-game.<br><br><span class="about-label">HOW TO PLAY</span> 1. Enter names in SETTINGS. You can save groups for quick access later!<br>2. Go to ENTER SHOP and pick your favorite game: Random Hand, Roulette, or Cat.<br>3. Interact with the game. The 'Chosen One' pays! You can capture and share the receipt.<br><br><span class="about-label">HISTORY & RANKING</span> Win records are automatically stored in HISTORY. You can track donation stats in LIST mode or tap the coffee icon in CALENDAR mode to see who paid on that day.`,
-                fortunes: ["Work efficiency up!", "Unexpected gift coming!", "Sweet break time!", "Creative ideas flow!", "Good news soon!", "Meet a helpful person!", "Small luck in pocket!", "Coffee tastes best today!", "Compliment from boss!", "Problem solved easily!"],
                 menus: ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Cappuccino", "Cafe Mocha", "Long Black", "Espresso"],
                 days: ["S", "M", "T", "W", "T", "F", "S"],
                 lounge_title: "🪑 COFFEE LOUNGE",
                 lounge_tab_fortune: "FORTUNE",
+                lounge_tab_menu: "MENU",
                 lounge_tab_dict: "DICT",
                 lounge_tab_map: "NEARBY",
                 map_desc: "Find the best coffee spots near you!",
                 fortune_tap: "TAP FOR LUCK",
                 lounge_msg: "Relax with a cup of virtual coffee.",
+                menu_q: "What should I drink?",
                 coffee_dict: {
                     "Americano": "Espresso diluted with hot water. Clean and simple.",
                     "Cafe Latte": "Espresso with steamed milk. Smooth and creamy.",
@@ -787,7 +823,25 @@
                     "Cafe Mocha": "Espresso + Chocolate + Milk + Cream.",
                     "Long Black": "Hot water + Espresso (Crema preserved).",
                     "Espresso": "Pure coffee extract. Strong & intense."
-                }
+                },
+                lbl_backup_title: "DATA BACKUP",
+                btn_export: "EXPORT",
+                btn_import: "IMPORT",
+                btn_share: "SHARE CARD",
+                fortune_score: "Luck Score",
+                msg_retry_fortune: "Draw a new fortune?",
+                fortunes: [
+                    { summary: "Great Luck!", detail: "Your work efficiency will skyrocket today.", score: 98 },
+                    { summary: "Unexpected Gift", detail: "A sweet surprise is coming your way.", score: 92 },
+                    { summary: "Sweet Break", detail: "Enjoy a perfect moment of peace.", score: 85 },
+                    { summary: "Creative Flow", detail: "Brilliant ideas will pop up easily.", score: 94 },
+                    { summary: "Good News", detail: "Something you've waited for will arrive.", score: 88 },
+                    { summary: "Helpful Hand", detail: "You will meet someone who helps you.", score: 90 },
+                    { summary: "Small Luck", detail: "A little happiness is in your pocket.", score: 75 },
+                    { summary: "Tasty Coffee", detail: "Today's coffee will taste exceptional.", score: 80 },
+                    { summary: "Praise Day", detail: "Your efforts will be recognized.", score: 95 },
+                    { summary: "Problem Solved", detail: "A tricky issue will be resolved smoothly.", score: 89 }
+                ]
             },
             ko: {
                 welcome: "럭키빈에 오신 것을 환영합니다!",
@@ -836,16 +890,17 @@
                 confirm_replay: "정말 게임을 다시 시작하시겠습니까?",
                 btn_mix: "섞기",
                 txt_about_content: `<span class="about-label">럭키빈이란?</span> 커피를 사랑하는 동료들을 위한 최고의 복불복 도구입니다. 매일 돌아오는 "누가 커피 살까?"의 고민을 짜릿한 미니 게임으로 즐겨보세요!<br><br><span class="about-label">게임 방법</span> 1. SETTINGS에서 팀원 이름을 입력하세요. 그룹 저장이 가능해 편리합니다.<br>2. ENTER SHOP에서 원하는 게임을 선택하세요.<br>3. 게임에 참여하면 행운의 당첨자가 결정됩니다. 당첨된 사람이 결제! 영수증을 캡처해 공유해보세요.<br><br><span class="about-label">히스토리 및 랭킹</span> 게임 기록이 켜져 있으면 히스토리에 자동 기록됩니다. LIST 모드에서 랭킹을 확인하거나, CALENDAR 모드에서 커피 아이콘을 눌러 해당 날짜의 당첨자를 확인하세요.`,
-                fortunes: ["업무 효율 급상승!", "뜻밖의 선물 도착!", "달콤한 휴식 시간!", "창의적인 아이디어 폭발!", "기다리던 좋은 소식!", "귀인을 만날 운세!", "주머니 속 소소한 행운!", "오늘따라 커피가 꿀맛!", "상사의 칭찬!", "골치 아픈 문제 해결!"],
                 menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루", "아인슈페너", "카푸치노", "카페모카", "롱블랙", "에스프레소"],
                 days: ["일", "월", "화", "수", "목", "금", "토"],
                 lounge_title: "🪑 커피 휴게실",
                 lounge_tab_fortune: "오늘의 운세",
+                lounge_tab_menu: "메뉴 추천",
                 lounge_tab_dict: "커피 도감",
                 lounge_tab_map: "주변 카페",
                 map_desc: "현재 위치 주변의 맛있는 카페를 찾아보세요!",
                 fortune_tap: "카드를 눌러보세요",
                 lounge_msg: "따뜻한 커피와 함께 잠시 쉬어가세요.",
+                menu_q: "오늘 뭐 마시지?",
                 coffee_dict: {
                     "아메리카노": "에스프레소에 뜨거운 물을 희석한 커피. 깔끔함의 정석.",
                     "카페라떼": "에스프레소와 스팀 우유의 조화. 부드럽고 고소한 맛.",
@@ -857,7 +912,25 @@
                     "카페모카": "에스프레소+초콜릿+우유+휘핑크림.",
                     "롱블랙": "뜨거운 물 위에 에스프레소를 부어 크레마를 살린 커피.",
                     "에스프레소": "강렬하고 진한 커피 추출 원액."
-                }
+                },
+                lbl_backup_title: "데이터 백업",
+                btn_export: "내보내기",
+                btn_import: "불러오기",
+                btn_share: "카드 공유하기",
+                fortune_score: "운세 점수",
+                msg_retry_fortune: "운세를 다시 뽑으시겠습니까?",
+                fortunes: [
+                    { summary: "업무 효율 급상승!", detail: "오늘따라 일이 술술 풀리는 날입니다.", score: 98 },
+                    { summary: "뜻밖의 선물", detail: "기분 좋은 서프라이즈가 기다리고 있어요.", score: 92 },
+                    { summary: "달콤한 휴식", detail: "완벽한 평화와 휴식을 즐기세요.", score: 85 },
+                    { summary: "아이디어 폭발", detail: "창의적인 생각이 샘솟는 하루입니다.", score: 94 },
+                    { summary: "기다리던 소식", detail: "오래 기다린 좋은 소식이 찾아옵니다.", score: 88 },
+                    { summary: "귀인을 만남", detail: "당신에게 큰 도움이 될 사람을 만납니다.", score: 90 },
+                    { summary: "소소한 행운", detail: "주머니 속 작은 행복을 발견할 거예요.", score: 75 },
+                    { summary: "꿀맛 커피", detail: "오늘 마시는 커피는 유난히 맛있을 거예요.", score: 80 },
+                    { summary: "칭찬받는 날", detail: "당신의 노력이 빛을 발하고 인정받습니다.", score: 95 },
+                    { summary: "문제 해결", detail: "골치 아픈 문제가 시원하게 해결됩니다.", score: 89 }
+                ]
             },
             jp: {
                 welcome: "ラッキービーンへようこそ！",
@@ -906,16 +979,17 @@
                 confirm_replay: "ゲームをやり直しますか？",
                 btn_mix: "混ぜる",
                 txt_about_content: `<span class="about-label">ラッキービーンとは？</span> コーヒーを愛するチームのための最高の運試しツールです。毎日の「誰がコーヒーを買うか？」という悩みを、刺激的なミニゲームに変えましょう！<br><br><span class="about-label">遊び方</span> 1. SETTINGSでチームメンバーの名前を入力します。グループ保存機能が便利です。<br>2. ENTER SHOPでお好みのゲームを選択します。<br>3. ゲームに参加して当選者が決まったら、その人がおごり！レシートを保存して共有しましょう。<br><br><span class="about-label">履歴とランキング</span> 履歴保存がオンの場合、結果が自動的に保存されます。LISTモードでランキングを確認したり、CALENDARモードでコーヒーアイコンをタップして当選者を確認できます。`,
-                fortunes: ["仕事効率アップ！", "思いがけないプレゼント！", "甘い休息時間！", "アイデアが溢れ出す！", "嬉しいニュース！", "助っ人に会える予感！", "ポケットの中の小さな幸せ！", "今日のコーヒーは格別！", "上司からのお褒めの言葉！", "問題があっさり解決！"],
                 menus: ["アメリカーノ", "カフェラテ", "バニララテ", "フラットホワイト", "コールドブリュー", "アインシュペナー", "カプチーノ", "카페모카", "롱블랙", "에스프레소"],
                 days: ["日", "月", "火", "水", "木", "金", "土"],
                 lounge_title: "🪑 コーヒーラウンジ",
                 lounge_tab_fortune: "今日の運勢",
+                lounge_tab_menu: "メニュー",
                 lounge_tab_dict: "コーヒー図鑑",
                 lounge_tab_map: "周辺カフェ",
                 map_desc: "現在地周辺のおいしいカフェを探してみましょう！",
                 fortune_tap: "カードをタップ",
                 lounge_msg: "温かいコーヒーと一緒に一休みしてください。",
+                menu_q: "何を飲もうかな？",
                 coffee_dict: {
                     "アメリカーノ": "エスプレッソをお湯で割ったコーヒー。すっきりとした味わい。",
                     "カフェラテ": "エスプレッソとスチームミルクの調和. まろやかで香ばしい。",
@@ -927,7 +1001,25 @@
                     "카페모카": "エスプレッソ+チョコ+ミルク+ホイップ。",
                     "롱블랙": "お湯の上にエスプレッソを注ぎクレマを生かしたもの。",
                     "에스프레소": "コーヒー抽出原液。強烈で濃厚。"
-                }
+                },
+                lbl_backup_title: "データバックアップ",
+                btn_export: "エクスポート",
+                btn_import: "インポート",
+                btn_share: "カードを共有",
+                fortune_score: "運勢スコア",
+                msg_retry_fortune: "もう一度引きますか？",
+                fortunes: [
+                    { summary: "仕事効率アップ！", detail: "今日は仕事がスイスイ進む日です。", score: 98 },
+                    { summary: "思いがけないプレゼント", detail: "嬉しいサプライズが待っています。", score: 92 },
+                    { summary: "甘い休息時間", detail: "完璧な平和と休息を楽しんでください。", score: 85 },
+                    { summary: "アイデアが溢れ出す", detail: "創造的な考えが湧き出る一日です。", score: 94 },
+                    { summary: "嬉しいニュース", detail: "待ちわびていた良い知らせが届きます。", score: 88 },
+                    { summary: "助っ人に会える予感", detail: "あなたを助けてくれる人に出会います。", score: 90 },
+                    { summary: "小さな幸せ", detail: "ポケットの中の小さな幸せを見つけます。", score: 75 },
+                    { summary: "今日のコーヒーは格別", detail: "今日飲むコーヒーは一段と美味しいでしょう。", score: 80 },
+                    { summary: "お褒めの言葉", detail: "あなたの努力が輝き、認められます。", score: 95 },
+                    { summary: "問題解決", detail: "頭を悩ませていた問題があっさり解決します。", score: 89 }
+                ]
             }
         };
 
@@ -1153,9 +1245,16 @@
                 'btn-back-selector-cat': t.btn_change_game, 'btn-view-list': currentLang === 'ko' ? "리스트" : (currentLang === 'jp' ? "リスト" : "LIST"),
                 'btn-view-cal': currentLang === 'ko' ? "달력" : (currentLang === 'jp' ? "カレンダー" : "CALENDAR"),
                 'btn-tab-fortune': t.lounge_tab_fortune, 'btn-tab-dict': t.lounge_tab_dict, 'btn-tab-map': t.lounge_tab_map,
+                'btn-tab-menu': t.lounge_tab_menu,
                 'txt-map-desc': t.map_desc,
+                'txt-menu-q': t.menu_q,
                 'btn-mix-header': t.btn_mix,
-                'txt-donation-kings-hist': t.lbl_kings
+                'txt-donation-kings-hist': t.lbl_kings,
+                'lbl-backup-title': t.lbl_backup_title,
+                'btn-backup-export': t.btn_export,
+                'btn-backup-import': t.btn_import,
+                'btn-share-fortune': t.btn_share,
+                'txt-score-label': t.fortune_score
             };
 
             Object.keys(transMap).forEach(id => {
@@ -1176,7 +1275,6 @@
             
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
             
-            // [Modified] Removed emoji from selector buttons, added emoji to game page title
             document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
             document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : (currentLang === 'jp' ? "幸運のルーレット" : "Lucky Roulette");
             document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : (currentLang === 'jp' ? "猫の選択" : "Cat's Choice");
@@ -1221,6 +1319,7 @@
         function goFront() {
             fromView = 'front'; hideAllViews();
             document.getElementById('front-view').classList.remove('hidden');
+            document.getElementById('front-view').classList.add('fade-in-view');
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_facade_night.png' : 'images/cafe_facade.png';
             updateText('welcome'); 
         }
@@ -1228,6 +1327,7 @@
         function showGameSelector() {
             fromView = 'selector'; hideAllViews();
             document.getElementById('selector-view').classList.remove('hidden');
+            document.getElementById('selector-view').classList.add('fade-in-view');
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_facade_zoom_night.png' : 'images/cafe_facade_zoom.png';
             updateText('choose_luck');
         }
@@ -1235,6 +1335,7 @@
         function goSetup(source = 'front') {
             fromView = source; hideAllViews();
             document.getElementById('setup-view').classList.remove('hidden');
+            document.getElementById('setup-view').classList.add('fade-in-view');
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_setting_guy.png' : 'images/cafe_setting.png';
             updateText('setting_msg'); generateNameInputs();
             document.getElementById('dark-toggle').checked = isDarkMode;
@@ -1242,11 +1343,13 @@
 
         function goAbout() {
             hideAllViews(); document.getElementById('about-view').classList.remove('hidden');
+            document.getElementById('about-view').classList.add('fade-in-view');
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_facade_night.png' : 'images/cafe_facade.png'; updateText('how_to');
         }
 
         function goHistory() {
             hideAllViews(); document.getElementById('history-view').classList.remove('hidden');
+            document.getElementById('history-view').classList.add('fade-in-view');
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_history_guy.png' : 'images/cafe_history.png';
             updateText('history_msg'); switchHistoryView(historyViewMode);
         }
@@ -1254,8 +1357,8 @@
         function goLounge() {
             hideAllViews();
             document.getElementById('lounge-view').classList.remove('hidden');
+            document.getElementById('lounge-view').classList.add('fade-in-view');
             document.getElementById('main-img').src = 'images/cafe_lounge.png';
-            // [Modified] Update RPG text with dedicated lounge message
             updateText('lounge_msg');
             switchLoungeTab('fortune');
         }
@@ -1264,25 +1367,91 @@
             triggerHaptic(10);
             loungeTabMode = tab;
             document.getElementById('btn-tab-fortune').classList.toggle('active', tab === 'fortune');
+            document.getElementById('btn-tab-menu').classList.toggle('active', tab === 'menu');
             document.getElementById('btn-tab-dict').classList.toggle('active', tab === 'dict');
             document.getElementById('btn-tab-map').classList.toggle('active', tab === 'map');
             document.getElementById('lounge-fortune-sec').classList.toggle('hidden', tab !== 'fortune');
+            document.getElementById('lounge-menu-sec').classList.toggle('hidden', tab !== 'menu');
             document.getElementById('lounge-dict-sec').classList.toggle('hidden', tab !== 'dict');
             document.getElementById('lounge-map-sec').classList.toggle('hidden', tab !== 'map');
             if (tab === 'fortune') { document.getElementById('daily-fortune-card').classList.remove('flipped'); }
             else if (tab === 'dict') { renderCoffeeDict(); }
         }
 
+        function recommendMenu() {
+            triggerHaptic(10); AudioEngine.play('whoosh');
+            const resultEl = document.getElementById('menu-recommend-result');
+            resultEl.style.opacity = '0.3';
+            const menus = i18n[currentLang].menus;
+            let count = 0;
+            const interval = setInterval(() => {
+                resultEl.innerText = menus[Math.floor(Math.random() * menus.length)];
+                count++;
+                if(count > 8) {
+                    clearInterval(interval);
+                    resultEl.style.opacity = '1';
+                    AudioEngine.play('start');
+                    triggerHaptic(30);
+                }
+            }, 80);
+        }
+
         function drawDailyFortune() {
             const card = document.getElementById('daily-fortune-card');
-            if (card.classList.contains('flipped')) { triggerHaptic(10); card.classList.remove('flipped'); return; }
+            
+            // Re-draw confirmation
+            if (card.classList.contains('flipped')) { 
+                if(!confirm(i18n[currentLang].msg_retry_fortune)) return;
+                triggerHaptic(10); 
+                card.classList.remove('flipped'); 
+                return; 
+            }
+            
             triggerHaptic(20); AudioEngine.play('whoosh');
             const t = i18n[currentLang];
-            const randomMenu = t.menus[Math.floor(Math.random() * t.menus.length)];
-            const randomMsg = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
-            document.getElementById('fortune-menu').innerText = randomMenu;
-            document.getElementById('fortune-msg').innerText = randomMsg;
+            const randomFortune = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
+            
+            document.getElementById('fortune-msg').innerText = randomFortune.summary;
+            document.getElementById('fortune-detail').innerText = randomFortune.detail;
+            document.getElementById('fortune-score').innerText = randomFortune.score;
+            
             setTimeout(() => { triggerHaptic(40); card.classList.add('flipped'); AudioEngine.play('safe'); }, 300);
+        }
+        
+        async function shareFortune() {
+            const card = document.getElementById('daily-fortune-card');
+            if (!card.classList.contains('flipped')) {
+                showToast(currentLang === 'ko' ? "먼저 운세를 뽑아주세요!" : "Draw a fortune first!");
+                return;
+            }
+            
+            // Temporarily hide share button during capture
+            const btn = document.getElementById('btn-share-fortune');
+            const originalText = btn.innerText;
+            btn.innerText = "...";
+            
+            // Target the back card face directly for better capture
+            const elementToCapture = card.querySelector('.card-back');
+            
+            try {
+                const canvas = await html2canvas(elementToCapture, { backgroundColor: "#f8f8f8", scale: 3 });
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], "fortune_card.png", { type: "image/png" });
+                    if (navigator.share) {
+                        await navigator.share({ files: [file] });
+                    } else {
+                        const a = document.createElement('a');
+                        a.href = URL.createObjectURL(blob);
+                        a.download = 'fortune_card.png';
+                        a.click();
+                    }
+                    btn.innerText = originalText;
+                });
+            } catch (e) {
+                console.error(e);
+                btn.innerText = "ERROR";
+                setTimeout(() => btn.innerText = originalText, 1000);
+            }
         }
 
         function renderCoffeeDict() {
@@ -1297,7 +1466,8 @@
 
         function hideAllViews() {
             ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view', 'cat-view', 'lounge-view'].forEach(v => {
-                const el = document.getElementById(v); if(el) el.classList.add('hidden');
+                const el = document.getElementById(v); 
+                if(el) { el.classList.add('hidden'); el.classList.remove('fade-in-view'); }
             });
             document.getElementById('lucky-area').classList.add('hidden');
             document.getElementById('hand-result-anchor').innerHTML = '';
@@ -1321,6 +1491,48 @@
             localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
             if (fromView === 'hand') startGame(); else if (fromView === 'roulette') goRoulette(); else if (fromView === 'cat') goCatGame(); else goFront();
         }
+
+        function exportData() {
+            const data = {
+                members: localStorage.getItem('lastCoffeeMembers'),
+                teams: localStorage.getItem('coffeeTeams'),
+                stats: localStorage.getItem('coffeeStats'),
+                history: localStorage.getItem('coffeeHistory'), 
+                settings: {
+                    lang: localStorage.getItem('luckyBeanLang'),
+                    dark: localStorage.getItem('luckyBeanDark'),
+                    record: localStorage.getItem('luckyBeanRecord')
+                }
+            };
+            const str = JSON.stringify(data);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(str).then(() => showToast(currentLang === 'ko' ? "데이터가 복사되었습니다!" : "Data Copied to Clipboard!")).catch(() => prompt("Copy this:", str));
+            } else {
+                prompt("Copy this:", str);
+            }
+        }
+
+        function importData() {
+            const input = prompt(currentLang === 'ko' ? "복사한 데이터를 여기에 붙여넣으세요:" : "Paste your backup data here:");
+            if(!input) return;
+            try {
+                const data = JSON.parse(input);
+                if(data.members) localStorage.setItem('lastCoffeeMembers', data.members);
+                if(data.teams) localStorage.setItem('coffeeTeams', data.teams);
+                if(data.stats) localStorage.setItem('coffeeStats', data.stats);
+                if(data.history) localStorage.setItem('coffeeHistory', data.history);
+                if(data.settings) {
+                    if(data.settings.lang) localStorage.setItem('luckyBeanLang', data.settings.lang);
+                    if(data.settings.dark) localStorage.setItem('luckyBeanDark', data.settings.dark);
+                    if(data.settings.record) localStorage.setItem('luckyBeanRecord', data.settings.record);
+                }
+                alert(currentLang === 'ko' ? "복원 완료! 페이지를 새로고침합니다." : "Restored! Reloading...");
+                location.reload();
+            } catch(e) {
+                alert(currentLang === 'ko' ? "유효하지 않은 데이터입니다." : "Invalid Data String.");
+            }
+        }
+
         function confirmReplay(gameType) {
             if (confirm(i18n[currentLang].confirm_replay)) {
                 if (AudioEngine.ctx) AudioEngine.ctx.resume();
@@ -1385,6 +1597,7 @@
             isLuckyRound = !lastWasLucky && Math.random() < 0.15;
             isGameOver = false; hideAllViews();
             document.getElementById('game-view').classList.remove('hidden');
+            document.getElementById('game-view').classList.add('fade-in-view');
             updateText('pick_hand');
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png';
             renderHands();
@@ -1451,7 +1664,7 @@
             }
         }
 
-        function goRoulette() { triggerHaptic(10); hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers'); const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; currentRouletteItems = [...members, i18n[currentLang].all_pass]; document.getElementById('roulette-view').classList.remove('hidden'); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; updateText('spin_msg'); rouletteAngle = 0; drawRoulette(); }
+        function goRoulette() { triggerHaptic(10); hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers'); const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; currentRouletteItems = [...members, i18n[currentLang].all_pass]; document.getElementById('roulette-view').classList.remove('hidden'); document.getElementById('roulette-view').classList.add('fade-in-view'); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; updateText('spin_msg'); rouletteAngle = 0; drawRoulette(); }
         function drawRoulette() {
             const canvas = document.getElementById('rouletteCanvas'); const ctx = canvas.getContext('2d');
             const cx = 200, cy = 200, r = 190;
@@ -1489,7 +1702,7 @@
             else { AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif'; if (recordStats) updateStats(winnerName); confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } }); showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-result-anchor'); }
         }
 
-        function goCatGame() { triggerHaptic(10); hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers'); memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; document.getElementById('cat-view').classList.remove('hidden'); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; updateText('cat_start'); const cat = document.getElementById('moving-cat'); cat.src = 'images/cat_stand.png'; cat.style.transition = 'none'; cat.style.left = '50%'; cat.style.top = '15px'; cat.style.transform = 'translateX(-50%)'; cat.className = ''; setTimeout(() => { cat.style.transition = 'left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; }, 50); renderCatBowls(); }
+        function goCatGame() { triggerHaptic(10); hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers'); memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; document.getElementById('cat-view').classList.remove('hidden'); document.getElementById('cat-view').classList.add('fade-in-view'); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; updateText('cat_start'); const cat = document.getElementById('moving-cat'); cat.src = 'images/cat_stand.png'; cat.style.transition = 'none'; cat.style.left = '50%'; cat.style.top = '15px'; cat.style.transform = 'translateX(-50%)'; cat.className = ''; setTimeout(() => { cat.style.transition = 'left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; }, 50); renderCatBowls(); }
         function renderCatBowls() { const container = document.getElementById('bowls-container'); container.innerHTML = ''; const count = memberNames.length; const rows = Math.ceil(count / 6); const whiteBox = document.getElementById('cat-white-box'); if(rows >= 2) { whiteBox.style.minHeight = "400px"; container.style.paddingTop = "100px"; } else { whiteBox.style.minHeight = "320px"; container.style.paddingTop = "120px"; } memberNames.forEach((name, i) => { const bowl = document.createElement('div'); bowl.className = 'cat-bowl'; bowl.innerHTML = `<img src="images/cat_bowl_full.png" class="bowl-img" id="img-bowl-${i}"><div class="bowl-name">${name}</div>`; container.appendChild(bowl); }); }
         function startCatGame() {
             if (catRunning) return; catRunning = true;
@@ -1530,7 +1743,12 @@
             const receipt = prototype.querySelector('.receipt');
             receipt.querySelector('.receipt-date').innerText = now.toLocaleDateString(); receipt.querySelector('.receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000); receipt.querySelector('.receipt-qty').innerText = "x" + total; receipt.querySelector('.receipt-price').innerText = "$" + randomPrice; receipt.querySelector('.receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2); receipt.querySelector('.receipt-payer').innerText = payerName;
             receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price; receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal; receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected; receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
-            receipt.querySelector('.receipt-fortune').innerText = t.fortunes[Math.floor(Math.random() * t.fortunes.length)]; receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
+            
+            // Random fortune logic here kept for receipt, independent of daily fortune card
+            const randomFortune = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
+            receipt.querySelector('.receipt-fortune').innerText = randomFortune.summary;
+            
+            receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
             const anchor = document.getElementById(anchorId); anchor.innerHTML = ''; anchor.appendChild(prototype);
             requestAnimationFrame(() => { AudioEngine.play('print'); receipt.classList.add('print-ani'); triggerHaptic(20); });
             receipt.querySelector('.btn-capture-run').onclick = function() { shareAsImage(receipt, this); };

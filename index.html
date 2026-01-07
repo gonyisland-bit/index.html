@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.38</title>
+    <title>lucky bean - v0.6.39</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -61,14 +61,16 @@
 
         .wrapper { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 40px; }
 
-        header { padding: 30px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
+        /* [Modified] Reduced top padding: 30px -> 10px */
+        header { padding: 10px 0 10px; cursor: pointer; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
         .title-lucky { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300; font-size: 2.8rem; letter-spacing: -1px; color: var(--text-main); }
         .title-bean { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 3.1rem; letter-spacing: -2px; margin-left: -5px; color: var(--text-main); }
 
+        /* [Modified] Vibe button position (top 15px) and size (padding 4px 6px) */
         #btn-cafe-vibe {
-            position: absolute; right: 20px; top: 35px;
+            position: absolute; right: 20px; top: 15px;
             background: var(--text-main); color: var(--bg-color);
-            border: none; border-radius: 20px; padding: 6px 12px;
+            border: none; border-radius: 20px; padding: 4px 6px;
             font-size: 0.7rem; font-weight: 800; cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             display: flex; align-items: center; gap: 5px;
@@ -277,7 +279,6 @@
         .king-tag { font-size: 0.65rem; font-weight: 800; color: #ffca28; letter-spacing: 1px; white-space: nowrap; }
         .king-count-area { margin-left: auto; font-weight: 800; color: #ffca28; white-space: nowrap; flex-shrink: 0; }
         
-        /* [New Style] White Dashboard Restore */
         .white-dashboard {
             background-color: var(--white-dash-bg);
             border-radius: 16px;
@@ -396,7 +397,8 @@
             cursor: pointer; font-size: 1.1rem; color: #ffca28; margin-left: 4px; line-height: 1;
         }
 
-        .footer { width: 100%; text-align: center; padding: 40px 0; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
+        /* [Modified] Footer padding: 40px -> 30px */
+        .footer { width: 100%; text-align: center; padding: 30px 0; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -461,9 +463,8 @@
             </div>
 
             <div id="front-view">
-                <div class="card-container">
-                    <div id="no-stats-msg" style="font-size: 0.8rem; color: #ccc; font-weight: 700;">WELCOME TO THE CAFE!</div>
-                </div>
+                <div id="no-stats-msg" style="font-size: 0.8rem; color: #ccc; font-weight: 700; margin-bottom: 25px;">WELCOME TO THE CAFE!</div>
+                
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <button class="btn-main" id="btn-enter-shop" onclick="showGameSelector()">ENTER SHOP</button>
                     <button class="btn-sub" id="btn-go-setup" onclick="goSetup()">SETTINGS</button>
@@ -479,7 +480,7 @@
                     <div class="icon-selector-grid">
                         <div class="icon-btn-item" onclick="handleGameSelection('hand')">
                             <div class="icon-square"><img src="images/random_hand.png" alt="Hand"></div>
-                            <div class="icon-label" id="txt-game-hand">👊 Random Hand</div>
+                            <div class="icon-label" id="txt-game-hand">Random Hand</div>
                         </div>
                         <div class="icon-btn-item" onclick="handleGameSelection('roulette')">
                             <div class="icon-square"><img src="images/lucky_roulette.png" alt="Roulette"></div>
@@ -546,7 +547,7 @@
             <div id="game-view" class="hidden">
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
-                        <span id="txt-game-hand-title">RANDOM HAND</span>
+                        <span id="txt-game-hand-title">👊 RANDOM HAND</span>
                         <div class="header-icon-group">
                             <button id="btn-mix-header" class="btn-mix-rect" onclick="shufflePositions()">MIX</button>
                             <button class="settings-icon-btn" onclick="goSetup('hand')">⚙️</button>
@@ -713,7 +714,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.38 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.39 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -774,6 +775,7 @@
                 lounge_tab_map: "NEARBY",
                 map_desc: "Find the best coffee spots near you!",
                 fortune_tap: "TAP FOR LUCK",
+                lounge_msg: "Relax with a cup of virtual coffee.",
                 coffee_dict: {
                     "Americano": "Espresso diluted with hot water. Clean and simple.",
                     "Cafe Latte": "Espresso with steamed milk. Smooth and creamy.",
@@ -843,6 +845,7 @@
                 lounge_tab_map: "주변 카페",
                 map_desc: "현재 위치 주변의 맛있는 카페를 찾아보세요!",
                 fortune_tap: "카드를 눌러보세요",
+                lounge_msg: "따뜻한 커피와 함께 잠시 쉬어가세요.",
                 coffee_dict: {
                     "아메리카노": "에스프레소에 뜨거운 물을 희석한 커피. 깔끔함의 정석.",
                     "카페라떼": "에스프레소와 스팀 우유의 조화. 부드럽고 고소한 맛.",
@@ -912,6 +915,7 @@
                 lounge_tab_map: "周辺カフェ",
                 map_desc: "現在地周辺のおいしいカフェを探してみましょう！",
                 fortune_tap: "カードをタップ",
+                lounge_msg: "温かいコーヒーと一緒に一休みしてください。",
                 coffee_dict: {
                     "アメリカーノ": "エスプレッソをお湯で割ったコーヒー。すっきりとした味わい。",
                     "カフェラテ": "エスプレッソとスチームミルクの調和. まろやかで香ばしい。",
@@ -1172,18 +1176,18 @@
             
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
             
-            // [Modified] Hand Game Text with Fist
-            document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "👊 랜덤 손 뽑기" : (currentLang === 'jp' ? "👊 ランダム手招き" : "👊 Random Hand");
+            // [Modified] Removed emoji from selector buttons, added emoji to game page title
+            document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
             document.getElementById('txt-game-roulette').innerText = currentLang === 'ko' ? "행운의 룰렛" : (currentLang === 'jp' ? "幸運のルーレット" : "Lucky Roulette");
             document.getElementById('txt-game-cat').innerText = currentLang === 'ko' ? "고양이의 선택" : (currentLang === 'jp' ? "猫の選択" : "Cat's Choice");
             
-            document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
+            document.getElementById('txt-game-hand-title').innerText = currentLang === 'ko' ? "👊 랜덤 손 뽑기" : (currentLang === 'jp' ? "👊 ランダム手招き" : "👊 Random Hand");
             document.getElementById('txt-roulette-title').innerText = currentLang === 'ko' ? "🎡 행운의 룰렛" : (currentLang === 'jp' ? "🎡 幸運のルーレット" : "🎡 LUCKY ROULETTE");
             document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : (currentLang === 'jp' ? "🐈 猫の選択" : "🐈 CAT'S CHOICE");
             document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "게임 설정" : (currentLang === 'jp' ? "ゲーム設定" : "GAME SETTING")}`;
             document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : (currentLang === 'jp' ? "ラッキービーン情報" : "ABOUT LUCKY BEAN")}`;
             document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : (currentLang === 'jp' ? "寄付履歴" : "DONATION HISTORY")}`;
-            // [Modified] Lounge Title with Sofa
+            
             document.getElementById('txt-lounge-title').innerHTML = `🪑 ${t.lounge_title.replace("☕ ", "").replace("🪑 ", "")}`;
             
             const cardFrontText = document.querySelector('.card-front > div:nth-child(2)');
@@ -1251,6 +1255,8 @@
             hideAllViews();
             document.getElementById('lounge-view').classList.remove('hidden');
             document.getElementById('main-img').src = 'images/cafe_lounge.png';
+            // [Modified] Update RPG text with dedicated lounge message
+            updateText('lounge_msg');
             switchLoungeTab('fortune');
         }
 

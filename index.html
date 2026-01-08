@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.46</title>
+    <title>Lucky Bean - v0.6.47 (Stable)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -570,8 +570,8 @@
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-                    <button class="btn-main" id="btn-settings-back" onclick="handleSetupBack()">BACK</button>
-                    <button class="btn-sub" id="btn-back-home" onclick="goFront()">BACK TO HOME</button>
+                    <button class="btn-main" id="btn-save-settings" onclick="handleSaveSettings()">SAVE</button>
+                    <button class="btn-sub" id="btn-settings-back" onclick="handleSetupBack()">BACK</button>
                 </div>
             </div>
 
@@ -604,7 +604,7 @@
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
                         <span id="txt-roulette-title">🎡 LUCKY ROULETTE</span>
-                        <div class="header-icon-group">
+                        <div class="header-icon-group" style="float:right;">
                             <span class="recording-dot"></span>
                             <button class="settings-icon-btn" onclick="goSetup('roulette')">⚙️</button>
                         </div>
@@ -632,7 +632,7 @@
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
                         <span id="txt-cat-title">🐈 CAT'S CHOICE</span>
-                        <div class="header-icon-group">
+                        <div class="header-icon-group" style="float:right;">
                             <span class="recording-dot"></span>
                             <button class="settings-icon-btn" onclick="goSetup('cat')">⚙️</button>
                         </div>
@@ -770,15 +770,17 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.46 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.47 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
-    <script>
+<script>
+        /* --- 1. Localization Data (i18n) --- */
         const i18n = {
             en: {
                 welcome: "Welcome to the Lucky Bean!",
                 choose_luck: "Choose your luckiest game!",
                 setting_msg: "Settings: Manage your team.",
+                msg_setup_guide: "Please select your theme and members.",
                 how_to: "How to play and track donations.",
                 history_msg: "Who donated the most coffee?",
                 pick_hand: "Who will pay? Pick a hand!",
@@ -799,9 +801,11 @@
                 btn_about: "ABOUT",
                 btn_back_menu: "BACK TO HOME",
                 btn_back_home: "BACK TO HOME",
-                btn_save_exit: "SAVE & EXIT",
-                btn_back: "BACK", 
-                msg_save_confirm: "Do you want to save changes?", 
+                btn_save_exit: "SAVE & EXIT", 
+                btn_save_only: "SAVE", 
+                btn_back_only: "BACK", 
+                msg_saved: "Settings Saved!", 
+                msg_confirm_discard: "You have unsaved changes. Save them?", 
                 btn_shuffle: "SHUFFLE",
                 btn_again: "REPLAY",
                 btn_spin: "SPIN",
@@ -870,6 +874,7 @@
                 welcome: "럭키빈에 오신 것을 환영합니다!",
                 choose_luck: "가장 운 좋은 게임을 골라보세요!",
                 setting_msg: "설정: 팀 멤버를 관리하세요.",
+                msg_setup_guide: "원하시는 테마 및 인원을 선택해주세요.",
                 how_to: "게임 방법 및 히스토리 안내",
                 history_msg: "누가 가장 커피를 많이 샀을까요?",
                 pick_hand: "누가 낼까요? 손을 골라보세요!",
@@ -891,8 +896,10 @@
                 btn_back_menu: "홈으로 돌아가기",
                 btn_back_home: "홈으로 돌아가기",
                 btn_save_exit: "저장 및 나가기",
-                btn_back: "뒤로가기", 
-                msg_save_confirm: "변경된 설정을 저장하시겠습니까?", 
+                btn_save_only: "저장하기",
+                btn_back_only: "뒤로가기",
+                msg_saved: "저장 완료!",
+                msg_confirm_discard: "변경사항이 있습니다. 저장하시겠습니까?",
                 btn_shuffle: "셔플",
                 btn_again: "다시하기",
                 btn_spin: "돌리기",
@@ -961,6 +968,7 @@
                 welcome: "ラッキービーンへようこそ！",
                 choose_luck: "一番ラッキーなゲームを選んでください！",
                 setting_msg: "設定：チームメンバーを管理します。",
+                msg_setup_guide: "テーマと人数を選択してください。",
                 how_to: "遊び方と履歴のご案内",
                 history_msg: "誰が一番コーヒーをおごりましたか？",
                 pick_hand: "誰が払う？ 手を選んで！",
@@ -982,8 +990,10 @@
                 btn_back_menu: "ホームへ戻る",
                 btn_back_home: "ホームへ戻る",
                 btn_save_exit: "保存して終了",
-                btn_back: "戻る", 
-                msg_save_confirm: "変更を保存しますか？", 
+                btn_save_only: "保存", 
+                btn_back_only: "戻る", 
+                msg_saved: "保存完了!", 
+                msg_confirm_discard: "変更内容があります。保存しますか？", 
                 btn_shuffle: "シャッフル",
                 btn_again: "もう一度",
                 btn_spin: "回す",
@@ -1050,25 +1060,37 @@
             }
         };
 
+        /* --- 2. Global Variables --- */
         let currentLang = localStorage.getItem('luckyBeanLang') || 'en';
         let isDarkMode = localStorage.getItem('luckyBeanDark') === 'true';
-        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover"];
-
-        let memberNames = []; let typeTimeout; let isGameOver = false; let winnerIndex = -1;
-        let isLuckyRound = false; let lastWasLucky = false;
-        let currentTeamName = 'Empty'; let currentMemberCount = 3; let isShuffling = false;
-        let isAudioStarted = false;
-        let rouletteAngle = 0; let rouletteSpinning = false; let currentRouletteItems = [];
-        let catRunning = false;
-        let fromView = 'front';
         let recordStats = localStorage.getItem('luckyBeanRecord') !== 'false';
+        
+        const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover"];
+        let memberNames = []; 
+        let currentTeamName = 'Empty'; 
+        let currentMemberCount = 3;
+        let isGameOver = false; 
+        let winnerIndex = -1;
+        let isLuckyRound = false; 
+        let lastWasLucky = false;
+        let isShuffling = false; 
+        let catRunning = false;
+        let rouletteAngle = 0; 
+        let rouletteSpinning = false; 
+        let currentRouletteItems = [];
+        let typeTimeout; 
+        let fromView = 'front';
         let historyViewMode = 'list';
         let calCursor = new Date();
         let loungeTabMode = 'fortune';
-        
         let selectedMenuIndex = -1;
         const MENU_KEYS = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Cappuccino", "Cafe Mocha", "Long Black", "Espresso"];
 
+        /* --- 3. Audio Engine --- */
+        let isAudioStarted = false;
+        let vibePlaying = false; 
+        let vibeBackgroundMode = false;
+        let currentVibeIndex = 0; 
         const vibeTracks = [
             { name: "Lucky Bean Cafe", desc: "Original Soundtrack", file: "sounds/cafe_music_bgm.mp3", icon: "☕" },
             { name: "Lazy Sunday Jazz", desc: "Relaxing piano vibes", file: "sounds/jazz.mp3", icon: "🎷" },
@@ -1077,10 +1099,8 @@
             { name: "Writer's Deadline", desc: "Typewriter & Fireplace", file: "sounds/typing.mp3", icon: "⌨️" },
             { name: "Forest Break", desc: "Birds & Stream water", file: "sounds/forest.mp3", icon: "🌲" }
         ];
-        let currentVibeIndex = 0; 
-        let vibePlaying = false; 
-        let vibeBackgroundMode = false;
-const AudioEngine = {
+
+        const AudioEngine = {
             ctx: null, player: null, 
             initAndPlayBGM() {
                 try {
@@ -1093,10 +1113,8 @@ const AudioEngine = {
                     if (this.player && this.player.paused) {
                         this.player.src = vibeTracks[0].file;
                         this.player.play().then(() => { 
-                            isAudioStarted = true; 
-                            vibePlaying = true;
-                            renderVibeList();
-                        }).catch(e => console.log("Audio play failed (interaction needed):", e));
+                            isAudioStarted = true; vibePlaying = true; renderVibeList();
+                        }).catch(e => console.log("Audio play failed:", e));
                     }
                 } catch(e) { console.warn("Audio Init Error", e); }
             },
@@ -1147,11 +1165,7 @@ const AudioEngine = {
             stopVibe() { if(this.player) this.player.pause(); }
         };
 
-        function triggerHaptic(pattern) {
-            if (navigator.vibrate) {
-                try { navigator.vibrate(pattern); } catch(e) {}
-            }
-        }
+        function triggerHaptic(pattern) { if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch(e) {} } }
 
         function showToast(msg, targetEl) {
             const toast = document.getElementById('toast-box');
@@ -1164,23 +1178,14 @@ const AudioEngine = {
                 toast.style.top = (rect.top - toastHeight - 8) + 'px';
                 toast.style.bottom = 'auto'; 
             } else {
-                toast.style.left = '50%';
-                toast.style.top = 'auto';
-                toast.style.bottom = '80px';
+                toast.style.left = '50%'; toast.style.top = 'auto'; toast.style.bottom = '80px';
             }
             toast.classList.add('show');
             if(window.toastTimeout) clearTimeout(window.toastTimeout);
             window.toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
-                if (vibePlaying && !vibeBackgroundMode) AudioEngine.stopVibe();
-            } else {
-                if (vibePlaying) AudioEngine.player.play();
-            }
-        });
-
+        /* --- 4. Initialization --- */
         window.onload = () => {
             try {
                 if(isDarkMode) document.body.classList.add('dark-mode');
@@ -1212,7 +1217,6 @@ const AudioEngine = {
                     }
                     if(fill) fill.style.width = progress + '%';
                 }, 50);
-
             } catch(e) {
                 console.error("Init Error:", e);
                 document.getElementById('loading-progress-area').style.display = 'none';
@@ -1220,13 +1224,19 @@ const AudioEngine = {
             }
         };
 
-        // [New Function] Update Recording Dot Visibility
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                if (vibePlaying && !vibeBackgroundMode) AudioEngine.stopVibe();
+            } else {
+                if (vibePlaying) AudioEngine.player.play();
+            }
+        });
+
+        /* --- 5. UI & View Logic --- */
         function updateRecordingDot() {
             const isRec = localStorage.getItem('luckyBeanRecord') !== 'false';
-            const dots = document.querySelectorAll('.recording-dot');
-            dots.forEach(d => {
-                if(isRec) d.classList.add('active');
-                else d.classList.remove('active');
+            document.querySelectorAll('.recording-dot').forEach(d => {
+                if(isRec) d.classList.add('active'); else d.classList.remove('active');
             });
         }
 
@@ -1284,7 +1294,6 @@ const AudioEngine = {
             currentLang = lang;
             localStorage.setItem('luckyBeanLang', lang);
             applyLanguage();
-            // Don't restart, just stay in setup to allow saving
         }
 
         function applyLanguage() {
@@ -1307,21 +1316,16 @@ const AudioEngine = {
                 'btn-view-cal': currentLang === 'ko' ? "달력" : (currentLang === 'jp' ? "カレンダー" : "CALENDAR"),
                 'btn-tab-fortune': t.lounge_tab_fortune, 'btn-tab-dict': t.lounge_tab_dict, 'btn-tab-map': t.lounge_tab_map,
                 'btn-tab-menu': t.lounge_tab_menu,
-                'txt-map-desc': t.map_desc,
-                'txt-menu-q': t.menu_q,
-                'btn-mix-header': t.btn_mix,
-                'txt-donation-kings-hist': t.lbl_kings,
-                'lbl-backup-title': t.lbl_backup_title,
-                'btn-backup-export': t.btn_export,
-                'btn-backup-import': t.btn_import,
-                'btn-share-fortune': t.btn_share,
-                'txt-score-label': t.fortune_score,
-                'btn-settings-back': t.btn_back 
+                'txt-map-desc': t.map_desc, 'txt-menu-q': t.menu_q, 'btn-mix-header': t.btn_mix,
+                'txt-donation-kings-hist': t.lbl_kings, 'lbl-backup-title': t.lbl_backup_title,
+                'btn-backup-export': t.btn_export, 'btn-backup-import': t.btn_import, 'btn-share-fortune': t.btn_share,
+                'txt-score-label': t.fortune_score, 
+                'btn-settings-back': t.btn_back_only, 
+                'btn-save-settings': t.btn_save_only 
             };
 
             Object.keys(transMap).forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.innerText = transMap[id];
+                const el = document.getElementById(id); if(el) el.innerText = transMap[id];
             });
 
             document.getElementById('lbl-group').innerText = t.lbl_group;
@@ -1334,7 +1338,6 @@ const AudioEngine = {
             document.getElementById('txt-choose-luck').innerText = t.choose_luck;
             document.getElementById('txt-about-content').innerHTML = t.txt_about_content;
             document.getElementById('display-group-name').innerText = currentTeamName === 'Empty' ? t.lbl_empty : currentTeamName;
-            
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
             
             document.getElementById('txt-game-hand').innerText = currentLang === 'ko' ? "랜덤 손 뽑기" : (currentLang === 'jp' ? "ランダム手招き" : "Random Hand");
@@ -1349,9 +1352,13 @@ const AudioEngine = {
             document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : (currentLang === 'jp' ? "寄付履歴" : "DONATION HISTORY")}`;
             
             document.getElementById('txt-lounge-title').innerHTML = `🪑 ${t.lounge_title.replace("☕ ", "").replace("🪑 ", "")}`;
-            
             const cardFrontText = document.querySelector('.card-front > div:nth-child(2)');
             if(cardFrontText) cardFrontText.innerText = t.fortune_tap;
+
+            const setupView = document.getElementById('setup-view');
+            if (setupView && !setupView.classList.contains('hidden')) {
+                updateText('msg_setup_guide');
+            }
 
             renderMenuRecommendation();
             if(loungeTabMode === 'dict') renderCoffeeDict();
@@ -1366,19 +1373,34 @@ const AudioEngine = {
         }
 
         function handleStartGame() {
-            triggerHaptic(10);
-            AudioEngine.initAndPlayBGM();
+            triggerHaptic(10); AudioEngine.initAndPlayBGM();
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
             setTimeout(() => { splash.style.display = 'none'; goFront(); }, 600);
         }
 
         function handleGameSelection(gameType) {
-            triggerHaptic(10);
-            AudioEngine.play('start'); 
+            triggerHaptic(10); AudioEngine.play('start'); 
             if (gameType === 'hand') startGame();
             else if (gameType === 'roulette') goRoulette();
             else if (gameType === 'cat') goCatGame();
+        }
+
+        function hideAllViews() {
+            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view', 'cat-view', 'lounge-view'].forEach(v => {
+                const el = document.getElementById(v); if(el) { el.classList.add('hidden'); el.classList.remove('fade-in-view'); }
+            });
+            document.getElementById('lucky-area').classList.add('hidden');
+            document.getElementById('hand-result-anchor').innerHTML = '';
+            document.getElementById('roulette-result-anchor').innerHTML = '';
+            document.getElementById('cat-result-anchor').innerHTML = '';
+            document.getElementById('btn-hand-start').classList.remove('hidden');
+            document.getElementById('roulette-spin-btn').classList.remove('hidden');
+            document.getElementById('cat-start-btn').classList.remove('hidden');
+            document.getElementById('hand-again-btn').classList.add('hidden');
+            document.getElementById('roulette-again-btn').classList.add('hidden');
+            document.getElementById('cat-again-btn').classList.add('hidden');
+            document.querySelectorAll('button').forEach(btn => btn.disabled = false);
         }
 
         function goFront() {
@@ -1402,7 +1424,8 @@ const AudioEngine = {
             document.getElementById('setup-view').classList.remove('hidden');
             document.getElementById('setup-view').classList.add('fade-in-view');
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_setting_guy.png' : 'images/cafe_setting.png';
-            updateText('setting_msg'); generateNameInputs();
+            updateText('msg_setup_guide'); 
+            generateNameInputs();
             document.getElementById('dark-toggle').checked = isDarkMode;
             document.getElementById('history-toggle').checked = (localStorage.getItem('luckyBeanRecord') !== 'false');
         }
@@ -1430,8 +1453,7 @@ const AudioEngine = {
         }
 
         function switchLoungeTab(tab) {
-            triggerHaptic(10);
-            loungeTabMode = tab;
+            triggerHaptic(10); loungeTabMode = tab;
             document.getElementById('btn-tab-fortune').classList.toggle('active', tab === 'fortune');
             document.getElementById('btn-tab-menu').classList.toggle('active', tab === 'menu');
             document.getElementById('btn-tab-dict').classList.toggle('active', tab === 'dict');
@@ -1440,27 +1462,16 @@ const AudioEngine = {
             document.getElementById('lounge-menu-sec').classList.toggle('hidden', tab !== 'menu');
             document.getElementById('lounge-dict-sec').classList.toggle('hidden', tab !== 'dict');
             document.getElementById('lounge-map-sec').classList.toggle('hidden', tab !== 'map');
-            
-            if (tab === 'fortune') { 
-                document.getElementById('daily-fortune-card').classList.remove('flipped'); 
-            } else if (tab === 'dict') { 
-                renderCoffeeDict(); 
-            } else if (tab === 'menu') {
-                if (selectedMenuIndex === -1) {
-                    renderMenuRecommendation();
-                }
-            }
+            if (tab === 'fortune') document.getElementById('daily-fortune-card').classList.remove('flipped'); 
+            else if (tab === 'dict') renderCoffeeDict(); 
+            else if (tab === 'menu' && selectedMenuIndex === -1) renderMenuRecommendation();
         }
 
         function recommendMenu() {
             triggerHaptic(10); AudioEngine.play('whoosh');
             const resultEl = document.getElementById('menu-recommend-result');
-            
-            selectedMenuIndex = -1;
-            renderMenuRecommendation(); 
-
+            selectedMenuIndex = -1; renderMenuRecommendation(); 
             resultEl.style.opacity = '0.3';
-            
             const menus = i18n[currentLang].menus;
             let count = 0;
             const interval = setInterval(() => {
@@ -1469,14 +1480,10 @@ const AudioEngine = {
                 count++;
                 if(count > 12) {
                     clearInterval(interval);
-                    
                     selectedMenuIndex = Math.floor(Math.random() * MENU_KEYS.length);
-                    
                     renderMenuRecommendation();
-                    
                     resultEl.style.opacity = '1';
-                    AudioEngine.play('start');
-                    triggerHaptic(30);
+                    AudioEngine.play('start'); triggerHaptic(30);
                     confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 }, gravity: 2, colors:['#6f4e37', '#f1c40f'] });
                 }
             }, 80);
@@ -1486,26 +1493,19 @@ const AudioEngine = {
             const imgEl = document.getElementById('menu-img-display');
             const nameEl = document.getElementById('menu-recommend-result');
             const descEl = document.getElementById('txt-menu-q'); 
-
             if (selectedMenuIndex === -1) {
-                imgEl.src = 'images/coffee.png';
-                nameEl.innerText = '?';
+                imgEl.src = 'images/coffee.png'; nameEl.innerText = '?';
                 descEl.innerText = i18n[currentLang].menu_q;
-                descEl.style.fontWeight = "normal";
-                descEl.style.color = "#888";
+                descEl.style.fontWeight = "normal"; descEl.style.color = "#888";
             } else {
                 const engKey = MENU_KEYS[selectedMenuIndex]; 
                 const localName = i18n[currentLang].menus[selectedMenuIndex];
                 const localDesc = i18n[currentLang].coffee_dict[localName];
-
                 const fileName = engKey.replace(/ /g, '_');
                 imgEl.src = `images/${fileName}.png`;
-                
                 nameEl.innerText = localName;
                 descEl.innerText = localDesc ? localDesc : "";
-                
-                descEl.style.fontWeight = "800";
-                descEl.style.color = "var(--text-main)";
+                descEl.style.fontWeight = "800"; descEl.style.color = "var(--text-main)";
             }
         }
 
@@ -1513,9 +1513,7 @@ const AudioEngine = {
             const card = document.getElementById('daily-fortune-card');
             if (card.classList.contains('flipped')) { 
                 if(!confirm(i18n[currentLang].msg_retry_fortune)) return;
-                triggerHaptic(10); 
-                card.classList.remove('flipped'); 
-                return; 
+                triggerHaptic(10); card.classList.remove('flipped'); return; 
             }
             triggerHaptic(20); AudioEngine.play('whoosh');
             const t = i18n[currentLang];
@@ -1528,33 +1526,18 @@ const AudioEngine = {
         
         async function shareFortune() {
             const card = document.getElementById('daily-fortune-card');
-            if (!card.classList.contains('flipped')) {
-                showToast(currentLang === 'ko' ? "먼저 운세를 뽑아주세요!" : "Draw a fortune first!");
-                return;
-            }
-            const btn = document.getElementById('btn-share-fortune');
-            const originalText = btn.innerText;
-            btn.innerText = "...";
+            if (!card.classList.contains('flipped')) { showToast(currentLang === 'ko' ? "먼저 운세를 뽑아주세요!" : "Draw a fortune first!"); return; }
+            const btn = document.getElementById('btn-share-fortune'); const originalText = btn.innerText; btn.innerText = "...";
             const elementToCapture = card.querySelector('.card-back');
             try {
                 const canvas = await html2canvas(elementToCapture, { backgroundColor: "#f8f8f8", scale: 3 });
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], "fortune_card.png", { type: "image/png" });
-                    if (navigator.share) {
-                        await navigator.share({ files: [file] });
-                    } else {
-                        const a = document.createElement('a');
-                        a.href = URL.createObjectURL(blob);
-                        a.download = 'fortune_card.png';
-                        a.click();
-                    }
+                    if (navigator.share) await navigator.share({ files: [file] });
+                    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'fortune_card.png'; a.click(); }
                     btn.innerText = originalText;
                 });
-            } catch (e) {
-                console.error(e);
-                btn.innerText = "ERROR";
-                setTimeout(() => btn.innerText = originalText, 1000);
-            }
+            } catch (e) { btn.innerText = "ERROR"; setTimeout(() => btn.innerText = originalText, 1000); }
         }
 
         function renderCoffeeDict() {
@@ -1567,50 +1550,78 @@ const AudioEngine = {
             listArea.innerHTML = html;
         }
 
-        function hideAllViews() {
-            ['front-view', 'selector-view', 'setup-view', 'game-view', 'about-view', 'history-view', 'roulette-view', 'cat-view', 'lounge-view'].forEach(v => {
-                const el = document.getElementById(v); 
-                if(el) { el.classList.add('hidden'); el.classList.remove('fade-in-view'); }
-            });
-            document.getElementById('lucky-area').classList.add('hidden');
-            document.getElementById('hand-result-anchor').innerHTML = '';
-            document.getElementById('roulette-result-anchor').innerHTML = '';
-            document.getElementById('cat-result-anchor').innerHTML = '';
-            document.getElementById('btn-hand-start').classList.remove('hidden');
-            document.getElementById('roulette-spin-btn').classList.remove('hidden');
-            document.getElementById('cat-start-btn').classList.remove('hidden');
-            document.getElementById('hand-again-btn').classList.add('hidden');
-            document.getElementById('roulette-again-btn').classList.add('hidden');
-            document.getElementById('cat-again-btn').classList.add('hidden');
-            document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+        /* --- 6. Settings Logic --- */
+        function checkSettingsChanged() {
+            // 히스토리 기록 여부 비교
+            const savedRecord = localStorage.getItem('luckyBeanRecord') !== 'false';
+            const currentRecord = document.getElementById('history-toggle').checked;
+            if (savedRecord !== currentRecord) return true;
+
+            // 멤버 이름 비교
+            const savedNames = JSON.parse(localStorage.getItem('lastCoffeeMembers') || '["User 1","User 2","User 3"]');
+            const currentInputs = document.querySelectorAll('.name-input');
+            
+            // 인원수가 다르면 무조건 변경됨
+            if (savedNames.length !== currentMemberCount) return true;
+            
+            // 개별 이름 비교
+            for(let i = 0; i < currentMemberCount; i++) {
+                let currentVal = currentInputs[i].value.trim() || `User ${i+1}`;
+                if (savedNames[i] !== currentVal) return true;
+            }
+            return false;
         }
 
-        // [New Logic] Handle Settings Back Button with Save Confirmation
-        function handleSetupBack() {
-            if(confirm(i18n[currentLang].msg_save_confirm)) {
-                // Save
-                recordStats = document.getElementById('history-toggle').checked;
-                localStorage.setItem('luckyBeanRecord', recordStats);
-                const inputs = document.querySelectorAll('.name-input');
-                const tempNames = [];
-                for (let i = 0; i < currentMemberCount; i++) { tempNames.push(inputs[i].value.trim() || `User ${i+1}`); }
-                localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
-                updateRecordingDot(); 
-            } else {
-                // No save: reset variable to storage
-                recordStats = (localStorage.getItem('luckyBeanRecord') !== 'false');
-            }
+        function revertSettings() {
+            // 저장된 값으로 변수들 원복
+            recordStats = localStorage.getItem('luckyBeanRecord') !== 'false';
+            const savedNames = JSON.parse(localStorage.getItem('lastCoffeeMembers') || '["User 1","User 2","User 3"]');
+            currentMemberCount = savedNames.length;
+            
+            // UI 원복 (토글 및 이름 입력창)
+            document.getElementById('history-toggle').checked = recordStats;
+            generateNameInputs(savedNames);
+            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
+        }
 
-            // Return to previous view
+        function handleSaveSettings() {
+            recordStats = document.getElementById('history-toggle').checked;
+            localStorage.setItem('luckyBeanRecord', recordStats);
+            
+            const inputs = document.querySelectorAll('.name-input');
+            const tempNames = [];
+            for (let i = 0; i < currentMemberCount; i++) { 
+                tempNames.push(inputs[i].value.trim() || `User ${i+1}`); 
+            }
+            localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
+            
+            updateRecordingDot();
+            showToast(i18n[currentLang].msg_saved);
+        }
+
+        function handleSetupBack() {
+            if (checkSettingsChanged()) {
+                if (confirm(i18n[currentLang].msg_confirm_discard)) {
+                    // "확인(Yes)"를 누르면 저장 후 이동
+                    handleSaveSettings();
+                    navigateBack();
+                } else {
+                    // "취소(No)"를 누르면 변경 전 상태로 되돌리고 이동
+                    revertSettings();
+                    navigateBack();
+                }
+            } else {
+                navigateBack();
+            }
+        }
+
+        function navigateBack() {
             if (fromView === 'hand') startGame(); 
             else if (fromView === 'roulette') goRoulette(); 
             else if (fromView === 'cat') goCatGame(); 
             else if (fromView === 'selector') showGameSelector();
             else goFront();
         }
-
-        // Renamed to avoid confusion, but kept for compatibility if needed (now handleSetupBack does the job)
-        function saveAndGoHome() { handleSetupBack(); }
 
         function exportData() {
             const data = {
@@ -1626,39 +1637,29 @@ const AudioEngine = {
             };
             const str = JSON.stringify(data);
             if (navigator.clipboard) {
-                navigator.clipboard.writeText(str).then(() => showToast(currentLang === 'ko' ? "데이터가 복사되었습니다!" : "Data Copied to Clipboard!")).catch(() => prompt("Copy this:", str));
-            } else {
-                prompt("Copy this:", str);
-            }
+                navigator.clipboard.writeText(str).then(() => showToast(currentLang === 'ko' ? "데이터가 복사되었습니다!" : "Data Copied!")).catch(() => prompt("Copy this:", str));
+            } else { prompt("Copy this:", str); }
         }
 
         function importData() {
-            const input = prompt(currentLang === 'ko' ? "복사한 데이터를 여기에 붙여넣으세요:" : "Paste your backup data here:");
+            const input = prompt(currentLang === 'ko' ? "복사한 데이터를 붙여넣으세요:" : "Paste backup data:");
             if(!input) return;
             try {
                 const data = JSON.parse(input);
                 if(data.members) localStorage.setItem('lastCoffeeMembers', data.members);
                 if(data.teams) localStorage.setItem('coffeeTeams', data.teams);
                 if(data.stats) localStorage.setItem('coffeeStats', data.stats);
-                if(data.history) localStorage.setItem('coffeeHistory', data.history);
                 if(data.settings) {
                     if(data.settings.lang) localStorage.setItem('luckyBeanLang', data.settings.lang);
                     if(data.settings.dark) localStorage.setItem('luckyBeanDark', data.settings.dark);
                     if(data.settings.record) localStorage.setItem('luckyBeanRecord', data.settings.record);
                 }
-                alert(currentLang === 'ko' ? "복원 완료! 페이지를 새로고침합니다." : "Restored! Reloading...");
+                alert(currentLang === 'ko' ? "복원 완료! 새로고침합니다." : "Restored! Reloading...");
                 location.reload();
-            } catch(e) {
-                alert(currentLang === 'ko' ? "유효하지 않은 데이터입니다." : "Invalid Data String.");
-            }
+            } catch(e) { alert("Invalid Data"); }
         }
 
-        function confirmReplay(gameType) {
-            if (confirm(i18n[currentLang].confirm_replay)) {
-                if (AudioEngine.ctx) AudioEngine.ctx.resume();
-                if (gameType === 'hand') startGame(); else if (gameType === 'roulette') goRoulette(); else if (gameType === 'cat') goCatGame();
-            }
-        }
+        /* --- 7. Name & Group Management --- */
         function openMemberModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             overlay.style.display = 'flex'; container.innerHTML = '';
@@ -1703,18 +1704,21 @@ const AudioEngine = {
                 });
             }
         }
-        function deleteTeam(name) { if(confirm(`${name} 팀을 삭제할까요?`)) { const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}'); delete teams[name]; localStorage.setItem('coffeeTeams', JSON.stringify(teams)); openGroupModal(); } }
+        function deleteTeam(name) { if(confirm("Delete team?")) { const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}'); delete teams[name]; localStorage.setItem('coffeeTeams', JSON.stringify(teams)); openGroupModal(); } }
         function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
         function loadTeam(name) { triggerHaptic(10); currentTeamName = name; document.getElementById('display-group-name').innerText = name; const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}'); if (teams[name]) { currentMemberCount = teams[name].count; generateNameInputs(teams[name].names); } closeModal(); }
         function saveCurrentTeam() { const name = prompt(currentLang === 'ko' ? "그룹 이름을 입력하세요:" : "Group Name:"); if (!name) return; const names = Array.from(document.querySelectorAll('.name-input')).map(i => i.value.trim() || `User`); const teams = JSON.parse(localStorage.getItem('coffeeTeams') || '{}'); teams[name] = { count: currentMemberCount, names: names }; localStorage.setItem('coffeeTeams', JSON.stringify(teams)); currentTeamName = name; document.getElementById('display-group-name').innerText = name; }
         function clearNames() { document.querySelectorAll('.name-input').forEach(i => i.value = ''); }
+        function confirmReplay(gameType) { if (confirm(i18n[currentLang].confirm_replay)) { if (AudioEngine.ctx) AudioEngine.ctx.resume(); if (gameType === 'hand') startGame(); else if (gameType === 'roulette') goRoulette(); else if (gameType === 'cat') goCatGame(); } }
 
+        /* --- 8. Game: Random Hand --- */
         function startGame() {
             triggerHaptic(10);
             const saved = localStorage.getItem('lastCoffeeMembers');
             memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"];
-            AudioEngine.play('start'); winnerIndex = Math.floor(Math.random() * memberNames.length);
-            isLuckyRound = !lastWasLucky && Math.random() < 0.15;
+            AudioEngine.play('start'); 
+            winnerIndex = Math.floor(Math.random() * memberNames.length);
+            isLuckyRound = !lastWasLucky && Math.random() < 0.15; 
             isGameOver = false; hideAllViews();
             document.getElementById('game-view').classList.remove('hidden');
             document.getElementById('game-view').classList.add('fade-in-view');
@@ -1771,7 +1775,6 @@ const AudioEngine = {
                 updateText('lucky_round');
                 document.getElementById('main-img').src = isDarkMode ? 'images/cafe_lucky_guy.png' : 'images/cafe_counter_lucky.png';
                 document.getElementById('lucky-area').classList.remove('hidden');
-                document.getElementById('hand-again-btn').classList.remove('hidden');
             } else {
                 lastWasLucky = false; AudioEngine.play('fail'); triggerHaptic([100, 50, 100]);
                 hands.forEach((h, index) => { if (index === winnerIndex) { h.src = 'images/hand_money.png'; h.classList.add('shake'); } else { h.src = 'images/hand_clap.gif'; } });
@@ -1780,11 +1783,21 @@ const AudioEngine = {
                 if (recordStats) updateStats(memberNames[winnerIndex]); 
                 confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
                 showFinish(memberNames.length, memberNames[winnerIndex], 'hand-result-anchor');
-                document.getElementById('hand-again-btn').classList.remove('hidden');
             }
+            document.getElementById('hand-again-btn').classList.remove('hidden');
         }
 
-        function goRoulette() { triggerHaptic(10); hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers'); const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; currentRouletteItems = [...members, i18n[currentLang].all_pass]; document.getElementById('roulette-view').classList.remove('hidden'); document.getElementById('roulette-view').classList.add('fade-in-view'); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; updateText('spin_msg'); rouletteAngle = 0; drawRoulette(); }
+        /* --- 9. Game: Roulette --- */
+        function goRoulette() { 
+            triggerHaptic(10); hideAllViews(); 
+            const saved = localStorage.getItem('lastCoffeeMembers'); 
+            const members = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; 
+            currentRouletteItems = [...members, i18n[currentLang].all_pass]; 
+            document.getElementById('roulette-view').classList.remove('hidden'); 
+            document.getElementById('roulette-view').classList.add('fade-in-view'); 
+            document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; 
+            updateText('spin_msg'); rouletteAngle = 0; drawRoulette(); 
+        }
         function drawRoulette() {
             const canvas = document.getElementById('rouletteCanvas'); const ctx = canvas.getContext('2d');
             const cx = 200, cy = 200, r = 190;
@@ -1803,7 +1816,20 @@ const AudioEngine = {
             }
             ctx.beginPath(); ctx.arc(cx, cy, 15, 0, Math.PI * 2); ctx.fillStyle = "#333"; ctx.fill();
         }
-        function spinRoulette() { if (rouletteSpinning) return; rouletteSpinning = true; AudioEngine.play('whoosh'); triggerHaptic(20); document.getElementById('roulette-spin-btn').disabled = true; const duration = 4500; const startTS = performance.now(); const startRot = rouletteAngle; const targetRot = startRot + (Math.random() * 5 + 5) * Math.PI * 2; let lastTick = 0; function animate(now) { const elapsed = now - startTS; const progress = Math.min(elapsed / duration, 1); const easeOut = 1 - Math.pow(1 - progress, 4); rouletteAngle = startRot + (targetRot - startRot) * easeOut; if(now - lastTick > 150) { triggerHaptic(5); lastTick = now; } drawRoulette(); if (progress < 1) requestAnimationFrame(animate); else { rouletteSpinning = false; finishSpin(); } } requestAnimationFrame(animate); }
+        function spinRoulette() { 
+            if (rouletteSpinning) return; 
+            rouletteSpinning = true; AudioEngine.play('whoosh'); triggerHaptic(20); 
+            document.getElementById('roulette-spin-btn').disabled = true; 
+            const duration = 4500; const startTS = performance.now(); const startRot = rouletteAngle; 
+            const targetRot = startRot + (Math.random() * 5 + 5) * Math.PI * 2; let lastTick = 0; 
+            function animate(now) { 
+                const elapsed = now - startTS; const progress = Math.min(elapsed / duration, 1); 
+                const easeOut = 1 - Math.pow(1 - progress, 4); rouletteAngle = startRot + (targetRot - startRot) * easeOut; 
+                if(now - lastTick > 150) { triggerHaptic(5); lastTick = now; } drawRoulette(); 
+                if (progress < 1) requestAnimationFrame(animate); else { rouletteSpinning = false; finishSpin(); } 
+            } 
+            requestAnimationFrame(animate); 
+        }
         function finishSpin() {
             const weights = currentRouletteItems.map(item => (item.includes('Lucky Pass') || item.includes('전원 통과') || item.includes('生存')) ? 0.2 : 1);
             const totalWeight = weights.reduce((a, b) => a + b, 0);
@@ -1817,18 +1843,55 @@ const AudioEngine = {
                 checkAngle += sliceAngle;
             }
             const winnerName = currentRouletteItems[winnerIdx];
-            document.getElementById('roulette-spin-btn').classList.add('hidden'); document.getElementById('roulette-again-btn').classList.remove('hidden');
-            if (weights[winnerIdx] < 1) { AudioEngine.play('start'); updateText('all_pass_unbelievable'); triggerHaptic([50, 50, 50]); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_lucky_guy.png' : 'images/cafe_counter_lucky.png'; confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] }); } 
-            else { AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif'; if (recordStats) updateStats(winnerName); confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } }); showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-result-anchor'); }
+            document.getElementById('roulette-spin-btn').classList.add('hidden'); 
+            document.getElementById('roulette-again-btn').classList.remove('hidden');
+            if (weights[winnerIdx] < 1) { 
+                AudioEngine.play('start'); updateText('all_pass_unbelievable'); triggerHaptic([50, 50, 50]); 
+                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_lucky_guy.png' : 'images/cafe_counter_lucky.png'; 
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 }, colors: ['#f1c40f', '#fff'] }); 
+            } else { 
+                AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]); 
+                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif'; 
+                if (recordStats) updateStats(winnerName); 
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 } }); 
+                showFinish(currentRouletteItems.length - 1, winnerName, 'roulette-result-anchor'); 
+            }
         }
 
-        function goCatGame() { triggerHaptic(10); hideAllViews(); const saved = localStorage.getItem('lastCoffeeMembers'); memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; document.getElementById('cat-view').classList.remove('hidden'); document.getElementById('cat-view').classList.add('fade-in-view'); document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; updateText('cat_start'); const cat = document.getElementById('moving-cat'); cat.src = 'images/cat_stand.png'; cat.style.transition = 'none'; cat.style.left = '50%'; cat.style.top = '15px'; cat.style.transform = 'translateX(-50%)'; cat.className = ''; setTimeout(() => { cat.style.transition = 'left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; }, 50); renderCatBowls(); }
-        function renderCatBowls() { const container = document.getElementById('bowls-container'); container.innerHTML = ''; const count = memberNames.length; const rows = Math.ceil(count / 6); const whiteBox = document.getElementById('cat-white-box'); if(rows >= 2) { whiteBox.style.minHeight = "400px"; container.style.paddingTop = "100px"; } else { whiteBox.style.minHeight = "320px"; container.style.paddingTop = "120px"; } memberNames.forEach((name, i) => { const bowl = document.createElement('div'); bowl.className = 'cat-bowl'; bowl.innerHTML = `<img src="images/cat_bowl_full.png" class="bowl-img" id="img-bowl-${i}"><div class="bowl-name">${name}</div>`; container.appendChild(bowl); }); }
+        /* --- 10. Game: Cat's Choice --- */
+        function goCatGame() { 
+            triggerHaptic(10); hideAllViews(); 
+            const saved = localStorage.getItem('lastCoffeeMembers'); 
+            memberNames = saved ? JSON.parse(saved) : ["User 1", "User 2", "User 3"]; 
+            document.getElementById('cat-view').classList.remove('hidden'); 
+            document.getElementById('cat-view').classList.add('fade-in-view'); 
+            document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png'; 
+            updateText('cat_start'); 
+            const cat = document.getElementById('moving-cat'); 
+            cat.src = 'images/cat_stand.png'; cat.style.transition = 'none'; 
+            cat.style.left = '50%'; cat.style.top = '15px'; cat.style.transform = 'translateX(-50%)'; cat.className = ''; 
+            setTimeout(() => { cat.style.transition = 'left 0.4s ease-in-out, top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; }, 50); 
+            renderCatBowls(); 
+        }
+        function renderCatBowls() { 
+            const container = document.getElementById('bowls-container'); container.innerHTML = ''; 
+            const count = memberNames.length; const rows = Math.ceil(count / 6); 
+            const whiteBox = document.getElementById('cat-white-box'); 
+            if(rows >= 2) { whiteBox.style.minHeight = "400px"; container.style.paddingTop = "100px"; } 
+            else { whiteBox.style.minHeight = "320px"; container.style.paddingTop = "120px"; } 
+            memberNames.forEach((name, i) => { 
+                const bowl = document.createElement('div'); bowl.className = 'cat-bowl'; 
+                bowl.innerHTML = `<img src="images/cat_bowl_full.png" class="bowl-img" id="img-bowl-${i}"><div class="bowl-name">${name}</div>`; 
+                container.appendChild(bowl); 
+            }); 
+        }
         function startCatGame() {
             if (catRunning) return; catRunning = true;
             document.getElementById('cat-start-btn').disabled = true; updateText('cat_msg'); AudioEngine.play('whoosh'); triggerHaptic(20);
-            const cat = document.getElementById('moving-cat'); cat.src = 'images/cat_walk.gif'; cat.style.transform = 'none'; cat.classList.add('cat-moving');
-            const winnerIdx = Math.floor(Math.random() * memberNames.length); const bowlEls = document.querySelectorAll('.cat-bowl'); const gameArea = document.getElementById('cat-white-box');
+            const cat = document.getElementById('moving-cat'); 
+            cat.src = 'images/cat_walk.gif'; cat.style.transform = 'none'; cat.classList.add('cat-moving');
+            const winnerIdx = Math.floor(Math.random() * memberNames.length); 
+            const bowlEls = document.querySelectorAll('.cat-bowl'); const gameArea = document.getElementById('cat-white-box');
             let visits = 0; const maxVisits = 7 + Math.floor(Math.random() * 4);
             function moveCat() {
                 const parentRect = gameArea.getBoundingClientRect();
@@ -1844,7 +1907,10 @@ const AudioEngine = {
                     cat.style.top = (final.top - parentRect.top - cat.offsetHeight + 18) + 'px';
                     setTimeout(() => {
                         cat.classList.remove('cat-moving'); cat.src = 'images/cat_eat.png';
-                        bowlEls.forEach((b, idx) => { if(idx !== winnerIdx) b.classList.add('bowl-dimmed'); else { b.classList.add('bowl-highlight'); setTimeout(() => { document.getElementById(`img-bowl-${winnerIdx}`).src = 'images/cat_bowl_empty.png'; }, 500); } });
+                        bowlEls.forEach((b, idx) => { 
+                            if(idx !== winnerIdx) b.classList.add('bowl-dimmed'); 
+                            else { b.classList.add('bowl-highlight'); setTimeout(() => { document.getElementById(`img-bowl-${winnerIdx}`).src = 'images/cat_bowl_empty.png'; }, 500); } 
+                        });
                         AudioEngine.play('fail'); updateText(`${memberNames[winnerIdx]}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]);
                         document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif';
                         if (recordStats) updateStats(memberNames[winnerIndex]); 
@@ -1857,25 +1923,49 @@ const AudioEngine = {
             moveCat();
         }
 
+        /* --- 11. Result & History --- */
         function showFinish(total, payerName, anchorId) {
             const now = new Date(); const randomPrice = (Math.random() * 5 + 3.5).toFixed(2); const t = i18n[currentLang];
             const prototype = document.getElementById('receipt-prototype-area').querySelector('.receipt-container').cloneNode(true);
             const receipt = prototype.querySelector('.receipt');
-            receipt.querySelector('.receipt-date').innerText = now.toLocaleDateString(); receipt.querySelector('.receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000); receipt.querySelector('.receipt-qty').innerText = "x" + total; receipt.querySelector('.receipt-price').innerText = "$" + randomPrice; receipt.querySelector('.receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2); receipt.querySelector('.receipt-payer').innerText = payerName;
-            receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price; receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal; receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected; receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
-            
-            // Random fortune logic here kept for receipt, independent of daily fortune card
+            receipt.querySelector('.receipt-date').innerText = now.toLocaleDateString(); 
+            receipt.querySelector('.receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000); 
+            receipt.querySelector('.receipt-qty').innerText = "x" + total; 
+            receipt.querySelector('.receipt-price').innerText = "$" + randomPrice; 
+            receipt.querySelector('.receipt-subtotal').innerText = "$" + (randomPrice * total).toFixed(2); 
+            receipt.querySelector('.receipt-payer').innerText = payerName;
+            receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price; 
+            receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal; 
+            receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected; 
+            receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
             const randomFortune = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
             receipt.querySelector('.receipt-fortune').innerText = randomFortune.summary;
-            
             receipt.querySelector('.receipt-menu').innerText = t.menus[Math.floor(Math.random() * t.menus.length)];
             const anchor = document.getElementById(anchorId); anchor.innerHTML = ''; anchor.appendChild(prototype);
             requestAnimationFrame(() => { AudioEngine.play('print'); receipt.classList.add('print-ani'); triggerHaptic(20); });
             receipt.querySelector('.btn-capture-run').onclick = function() { shareAsImage(receipt, this); };
         }
-        async function shareAsImage(element, btn) { const originalText = btn.innerText; btn.innerText = "..."; try { const canvas = await html2canvas(element, { backgroundColor: "#ffffff", scale: 3 }); canvas.toBlob(async (blob) => { const file = new File([blob], "receipt.png", { type: "image/png" }); if (navigator.share) await navigator.share({ files: [file] }); else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'receipt.png'; a.click(); } btn.innerText = originalText; }); } catch (e) { btn.innerText = "ERROR"; } }
+        async function shareAsImage(element, btn) { 
+            const originalText = btn.innerText; btn.innerText = "..."; 
+            try { 
+                const canvas = await html2canvas(element, { backgroundColor: "#ffffff", scale: 3 }); 
+                canvas.toBlob(async (blob) => { 
+                    const file = new File([blob], "receipt.png", { type: "image/png" }); 
+                    if (navigator.share) await navigator.share({ files: [file] }); 
+                    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'receipt.png'; a.click(); } 
+                    btn.innerText = originalText; 
+                }); 
+            } catch (e) { btn.innerText = "ERROR"; } 
+        }
         
-        function updateStats(name) { let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); const now = new Date(); const monthKey = now.toISOString().slice(0, 7); const dateKey = now.toISOString().slice(0, 10); if(!stats[name]) stats[name] = { total: 0, monthly: {}, daily: [] }; stats[name].total += 1; stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1; if(!stats[name].daily) stats[name].daily = []; stats[name].daily.push(dateKey); localStorage.setItem('coffeeStats', JSON.stringify(stats)); }
+        function updateStats(name) { 
+            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
+            const now = new Date(); const monthKey = now.toISOString().slice(0, 7); const dateKey = now.toISOString().slice(0, 10); 
+            if(!stats[name]) stats[name] = { total: 0, monthly: {}, daily: [] }; 
+            stats[name].total += 1; stats[name].monthly[monthKey] = (stats[name].monthly[monthKey] || 0) + 1; 
+            if(!stats[name].daily) stats[name].daily = []; stats[name].daily.push(dateKey); 
+            localStorage.setItem('coffeeStats', JSON.stringify(stats)); 
+        }
         
         function switchHistoryView(mode) {
             historyViewMode = mode; triggerHaptic(10);
@@ -1889,65 +1979,25 @@ const AudioEngine = {
         function renderHistoryList() {
             const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}'); 
             const month = new Date().toISOString().slice(0, 7);
-            
-            // Get Current Members to ensure they are in the list
             const savedMembers = localStorage.getItem('lastCoffeeMembers');
             const currentMembers = savedMembers ? JSON.parse(savedMembers) : [];
-
             let displayList = [];
-
-            // 1. Add people from stats
-            Object.keys(stats).forEach(name => {
-                displayList.push({ 
-                    name: name, 
-                    total: stats[name].total || 0, 
-                    monthly: (stats[name].monthly && stats[name].monthly[month]) || 0 
-                });
-            });
-
-            // 2. Add current members if missing (0 count)
-            currentMembers.forEach(name => {
-                if (!displayList.find(item => item.name === name)) {
-                    displayList.push({ name: name, total: 0, monthly: 0 });
-                }
-            });
-
-            // 3. Sort by total descending
+            Object.keys(stats).forEach(name => { displayList.push({ name: name, total: stats[name].total || 0, monthly: (stats[name].monthly && stats[name].monthly[month]) || 0 }); });
+            currentMembers.forEach(name => { if (!displayList.find(item => item.name === name)) displayList.push({ name: name, total: 0, monthly: 0 }); });
             displayList.sort((a, b) => b.total - a.total);
-
-            // 4. Render Layout
             const kingArea = document.getElementById('monthly-king-area'); 
             const content = document.getElementById('history-list-content'); 
-            
-            if (displayList.length === 0) { 
-                kingArea.innerHTML = ""; 
-                content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; 
-                return; 
-            } 
-            
-            // Monthly King Logic (Yellow Box)
+            if (displayList.length === 0) { kingArea.innerHTML = ""; content.innerHTML = `<div style="text-align:center; padding:50px; color:#ccc;">NO DATA</div>`; return; } 
             const king = [...displayList].sort((a,b) => b.monthly - a.monthly)[0]; 
             if(king && king.monthly > 0) {
                 kingArea.innerHTML = `<div class="monthly-king-badge"><div class="king-crown">👑</div><div class="king-info"><div class="king-tag">${i18n[currentLang].lbl_monthly_king}</div><div class="king-name">${king.name}</div></div><div class="king-count-area">${king.monthly}${i18n[currentLang].lbl_times}</div></div>`; 
-            } else {
-                kingArea.innerHTML = "";
-            }
-
-            // List Render with Medals and Clovers
+            } else { kingArea.innerHTML = ""; }
             const maxVal = Math.max(...displayList.map(i => i.total));
             const minVal = Math.min(...displayList.map(i => i.total));
-
             content.innerHTML = displayList.map(item => {
                 let prefix = '';
-                // 1st Place (Gold Medal) if count > 0
-                if (item.total === maxVal && item.total > 0) {
-                    prefix = '🥇 ';
-                }
-                // Last Place (Clover) - ties included
-                else if (item.total === minVal) {
-                    prefix = '🍀 ';
-                }
-
+                if (item.total === maxVal && item.total > 0) prefix = '🥇 ';
+                else if (item.total === minVal) prefix = '🍀 ';
                 return `<div class="history-item"><span>${prefix}${item.name}</span><span style="color:var(--point-red)">${item.total}${i18n[currentLang].lbl_times}</span></div>`;
             }).join(''); 
         }

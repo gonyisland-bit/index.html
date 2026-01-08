@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.43</title>
+    <title>lucky bean - v0.6.44</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -350,7 +350,8 @@
         .loading-bar-fill { height: 100%; width: 0%; background: #000 !important; transition: width 0.1s; }
 
         .lounge-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px; font-size: 0.75rem; font-weight: 800; border: 1px solid var(--tablet-border); border-radius: 12px; background: var(--input-bg); color: #bbb; cursor: pointer; transition: 0.2s; }
+        /* [수정됨] 텍스트가 길어져도 한 줄 유지 */
+        .tab-btn { flex: 1; padding: 12px 4px; font-size: 0.75rem; font-weight: 800; border: 1px solid var(--tablet-border); border-radius: 12px; background: var(--input-bg); color: #bbb; cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .tab-btn.active { background: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); }
         .lounge-content { min-height: 250px; }
         
@@ -749,7 +750,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.43 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.44 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -893,10 +894,11 @@
                 menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루", "아인슈페너", "카푸치노", "카페모카", "롱블랙", "에스프레소"],
                 days: ["일", "월", "화", "수", "목", "금", "토"],
                 lounge_title: "🪑 커피 휴게실",
-                lounge_tab_fortune: "오늘의 운세",
-                lounge_tab_menu: "메뉴 추천",
-                lounge_tab_dict: "커피 도감",
-                lounge_tab_map: "주변 카페",
+                /* [수정됨] 탭 이름 단축 (2줄 방지) */
+                lounge_tab_fortune: "운세",
+                lounge_tab_menu: "메뉴",
+                lounge_tab_dict: "도감",
+                lounge_tab_map: "주변",
                 map_desc: "현재 위치 주변의 맛있는 카페를 찾아보세요!",
                 fortune_tap: "카드를 눌러보세요",
                 lounge_msg: "따뜻한 커피와 함께 잠시 쉬어가세요.",
@@ -982,10 +984,11 @@
                 menus: ["アメリカーノ", "カフェラテ", "バニララテ", "フラットホワイト", "コールドブリュー", "アインシュペナー", "カプチーノ", "카페모카", "롱블랙", "에스프레소"],
                 days: ["日", "月", "火", "水", "木", "金", "土"],
                 lounge_title: "🪑 コーヒーラウンジ",
-                lounge_tab_fortune: "今日の運勢",
+                /* [수정됨] 탭 이름 단축 (2줄 방지) */
+                lounge_tab_fortune: "運勢",
                 lounge_tab_menu: "メニュー",
-                lounge_tab_dict: "コーヒー図鑑",
-                lounge_tab_map: "周辺カフェ",
+                lounge_tab_dict: "図鑑",
+                lounge_tab_map: "周辺",
                 map_desc: "現在地周辺のおいしいカフェを探してみましょう！",
                 fortune_tap: "カードをタップ",
                 lounge_msg: "温かいコーヒーと一緒に一休みしてください。",
@@ -1155,20 +1158,16 @@ const AudioEngine = {
             }
         });
 
-        // [FIXED] Robust Loading Logic to prevent freezing
         window.onload = () => {
             try {
-                // Apply settings first
                 if(isDarkMode) document.body.classList.add('dark-mode');
                 document.getElementById('history-toggle').checked = recordStats;
                 applyLanguage();
                 renderVibeList();
 
-                // Loading Animation
                 const fill = document.getElementById('progress-fill');
                 let progress = 0;
                 
-                // Safety timeout: Ensure button appears after 3 seconds even if interval fails
                 const safetyTimer = setTimeout(() => {
                     document.getElementById('loading-progress-area').style.display = 'none';
                     document.getElementById('start-action-area').style.display = 'flex';
@@ -1179,8 +1178,7 @@ const AudioEngine = {
                     if (progress >= 100) {
                         progress = 100; 
                         clearInterval(interval);
-                        clearTimeout(safetyTimer); // Clear safety timer if successful
-                        
+                        clearTimeout(safetyTimer);
                         setTimeout(() => {
                             const loadArea = document.getElementById('loading-progress-area');
                             const actionArea = document.getElementById('start-action-area');
@@ -1193,7 +1191,6 @@ const AudioEngine = {
 
             } catch(e) {
                 console.error("Init Error:", e);
-                // Emergency Fallback
                 document.getElementById('loading-progress-area').style.display = 'none';
                 document.getElementById('start-action-area').style.display = 'flex';
             }
@@ -1321,9 +1318,7 @@ const AudioEngine = {
             const cardFrontText = document.querySelector('.card-front > div:nth-child(2)');
             if(cardFrontText) cardFrontText.innerText = t.fortune_tap;
 
-            // [NEW] Update Menu Recommendation on language change
             renderMenuRecommendation();
-            // [NEW] Update Dict if visible
             if(loungeTabMode === 'dict') renderCoffeeDict();
         }
 
@@ -1426,9 +1421,8 @@ const AudioEngine = {
             triggerHaptic(10); AudioEngine.play('whoosh');
             const resultEl = document.getElementById('menu-recommend-result');
             
-            // Reset state to ensure fresh pick feeling
             selectedMenuIndex = -1;
-            renderMenuRecommendation(); // Shows ? and default image
+            renderMenuRecommendation(); 
 
             resultEl.style.opacity = '0.3';
             
@@ -1441,10 +1435,9 @@ const AudioEngine = {
                 if(count > 12) {
                     clearInterval(interval);
                     
-                    // Final Selection
                     selectedMenuIndex = Math.floor(Math.random() * MENU_KEYS.length);
                     
-                    renderMenuRecommendation(); // Updates Image, Name, Desc
+                    renderMenuRecommendation();
                     
                     resultEl.style.opacity = '1';
                     AudioEngine.play('start');
@@ -1454,7 +1447,7 @@ const AudioEngine = {
             }, 80);
         }
 
-        // [New Helper] Render Menu based on state and language
+        // [Modified] Render Menu with Underscore Filenames
         function renderMenuRecommendation() {
             const imgEl = document.getElementById('menu-img-display');
             const nameEl = document.getElementById('menu-recommend-result');
@@ -1469,12 +1462,14 @@ const AudioEngine = {
                 descEl.style.color = "#888";
             } else {
                 // Selected State
-                const engKey = MENU_KEYS[selectedMenuIndex]; // e.g., "Americano"
-                const localName = i18n[currentLang].menus[selectedMenuIndex]; // e.g., "아메리카노"
-                const localDesc = i18n[currentLang].coffee_dict[localName]; // e.g., "깔끔함의 정석..."
+                const engKey = MENU_KEYS[selectedMenuIndex]; // e.g., "Cafe Latte"
+                const localName = i18n[currentLang].menus[selectedMenuIndex];
+                const localDesc = i18n[currentLang].coffee_dict[localName];
 
-                // Image update
-                imgEl.src = `images/${engKey}.png`;
+                // [수정됨] 파일명 호출 시 공백을 언더바로 치환
+                // 예: "Cafe Latte" -> "Cafe_Latte"
+                const fileName = engKey.replace(/ /g, '_');
+                imgEl.src = `images/${fileName}.png`;
                 
                 // Name & Desc update
                 nameEl.innerText = localName;

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.44</title>
+    <title>lucky bean - v0.6.45</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -112,6 +112,15 @@
         .header-icon-group { display: flex; gap: 8px; align-items: center; }
         .settings-icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #bbb; padding: 0 5px; transition: color 0.2s; }
         .settings-icon-btn:hover { color: var(--text-main); }
+
+        /* [NEW] Recording Dot Animation */
+        .recording-dot {
+            width: 8px; height: 8px; background-color: var(--point-red);
+            border-radius: 50%; display: none; margin-right: 2px;
+            animation: rec-blink 1.2s infinite;
+        }
+        .recording-dot.active { display: inline-block; }
+        @keyframes rec-blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
         .btn-mix-rect {
             padding: 6px 14px; border-radius: 14px;
@@ -350,7 +359,6 @@
         .loading-bar-fill { height: 100%; width: 0%; background: #000 !important; transition: width 0.1s; }
 
         .lounge-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
-        /* [수정됨] 텍스트가 길어져도 한 줄 유지 */
         .tab-btn { flex: 1; padding: 12px 4px; font-size: 0.75rem; font-weight: 800; border: 1px solid var(--tablet-border); border-radius: 12px; background: var(--input-bg); color: #bbb; cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .tab-btn.active { background: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); }
         .lounge-content { min-height: 250px; }
@@ -487,7 +495,13 @@
 
             <div id="selector-view" class="hidden">
                 <div class="card-container">
-                    <div class="order-menu-header" id="txt-choose-luck" style="text-align: center; margin-bottom: 25px;">CHOOSE YOUR LUCK</div>
+                    <div class="order-menu-header" style="margin-bottom: 25px;">
+                        <span id="txt-choose-luck" style="flex:1; text-align:center;">CHOOSE YOUR LUCK</span>
+                        <div class="header-icon-group" style="position:absolute; right:25px;">
+                            <span class="recording-dot"></span>
+                            <button class="settings-icon-btn" onclick="goSetup('selector')">⚙️</button>
+                        </div>
+                    </div>
                     <div class="icon-selector-grid">
                         <div class="icon-btn-item" onclick="handleGameSelection('hand')">
                             <div class="icon-square"><img src="images/random_hand.png" alt="Hand"></div>
@@ -557,7 +571,7 @@
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-                    <button class="btn-main" id="btn-save-exit" onclick="saveAndGoHome()">SAVE & EXIT</button>
+                    <button class="btn-main" id="btn-settings-back" onclick="handleSetupBack()">BACK</button>
                     <button class="btn-sub" id="btn-back-home" onclick="goFront()">BACK TO HOME</button>
                 </div>
             </div>
@@ -568,6 +582,7 @@
                         <span id="txt-game-hand-title">👊 RANDOM HAND</span>
                         <div class="header-icon-group">
                             <button id="btn-mix-header" class="btn-mix-rect" onclick="shufflePositions()">MIX</button>
+                            <span class="recording-dot"></span>
                             <button class="settings-icon-btn" onclick="goSetup('hand')">⚙️</button>
                         </div>
                     </div>
@@ -590,7 +605,10 @@
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
                         <span id="txt-roulette-title">🎡 LUCKY ROULETTE</span>
-                        <button class="settings-icon-btn" onclick="goSetup('roulette')">⚙️</button>
+                        <div class="header-icon-group" style="float:right;">
+                            <span class="recording-dot"></span>
+                            <button class="settings-icon-btn" onclick="goSetup('roulette')">⚙️</button>
+                        </div>
                     </div>
                     <div class="divider"></div>
                     <div class="game-canvas-area" style="min-height: 380px; justify-content: center;">
@@ -615,7 +633,10 @@
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
                         <span id="txt-cat-title">🐈 CAT'S CHOICE</span>
-                        <button class="settings-icon-btn" onclick="goSetup('cat')">⚙️</button>
+                        <div class="header-icon-group" style="float:right;">
+                            <span class="recording-dot"></span>
+                            <button class="settings-icon-btn" onclick="goSetup('cat')">⚙️</button>
+                        </div>
                     </div>
                     <div class="divider"></div>
                     <div id="cat-white-box" class="game-canvas-area" style="min-height: 320px;">
@@ -750,7 +771,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.44 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.45 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -780,6 +801,8 @@
                 btn_back_menu: "BACK TO HOME",
                 btn_back_home: "BACK TO HOME",
                 btn_save_exit: "SAVE & EXIT",
+                btn_back: "BACK", // [NEW]
+                msg_save_confirm: "Do you want to save changes?", // [NEW]
                 btn_shuffle: "SHUFFLE",
                 btn_again: "REPLAY",
                 btn_spin: "SPIN",
@@ -869,6 +892,8 @@
                 btn_back_menu: "홈으로 돌아가기",
                 btn_back_home: "홈으로 돌아가기",
                 btn_save_exit: "저장 및 나가기",
+                btn_back: "뒤로가기", // [NEW]
+                msg_save_confirm: "변경된 설정을 저장하시겠습니까?", // [NEW]
                 btn_shuffle: "셔플",
                 btn_again: "다시하기",
                 btn_spin: "돌리기",
@@ -894,7 +919,6 @@
                 menus: ["아메리카노", "카페라떼", "바닐라라떼", "플랫화이트", "콜드브루", "아인슈페너", "카푸치노", "카페모카", "롱블랙", "에스프레소"],
                 days: ["일", "월", "화", "수", "목", "금", "토"],
                 lounge_title: "🪑 커피 휴게실",
-                /* [수정됨] 탭 이름 단축 (2줄 방지) */
                 lounge_tab_fortune: "운세",
                 lounge_tab_menu: "메뉴",
                 lounge_tab_dict: "도감",
@@ -959,6 +983,8 @@
                 btn_back_menu: "ホームへ戻る",
                 btn_back_home: "ホームへ戻る",
                 btn_save_exit: "保存して終了",
+                btn_back: "戻る", // [NEW]
+                msg_save_confirm: "変更を保存しますか？", // [NEW]
                 btn_shuffle: "シャッフル",
                 btn_again: "もう一度",
                 btn_spin: "回す",
@@ -984,7 +1010,6 @@
                 menus: ["アメリカーノ", "カフェラテ", "バニララテ", "フラットホワイト", "コールドブリュー", "アインシュペナー", "カプチーノ", "카페모카", "롱블랙", "에스프레소"],
                 days: ["日", "月", "火", "水", "木", "金", "土"],
                 lounge_title: "🪑 コーヒーラウンジ",
-                /* [수정됨] 탭 이름 단축 (2줄 방지) */
                 lounge_tab_fortune: "運勢",
                 lounge_tab_menu: "メニュー",
                 lounge_tab_dict: "図鑑",
@@ -1042,7 +1067,6 @@
         let calCursor = new Date();
         let loungeTabMode = 'fortune';
         
-        // Menu Recommendation State
         let selectedMenuIndex = -1;
         const MENU_KEYS = ["Americano", "Cafe Latte", "Vanilla Latte", "Flat White", "Cold Brew", "Einspanner", "Cappuccino", "Cafe Mocha", "Long Black", "Espresso"];
 
@@ -1164,6 +1188,7 @@ const AudioEngine = {
                 document.getElementById('history-toggle').checked = recordStats;
                 applyLanguage();
                 renderVibeList();
+                updateRecordingDot(); // [NEW] Init dot state
 
                 const fill = document.getElementById('progress-fill');
                 let progress = 0;
@@ -1195,6 +1220,16 @@ const AudioEngine = {
                 document.getElementById('start-action-area').style.display = 'flex';
             }
         };
+
+        // [NEW] Update Recording Dot Visibility
+        function updateRecordingDot() {
+            const isRec = localStorage.getItem('luckyBeanRecord') !== 'false';
+            const dots = document.querySelectorAll('.recording-dot');
+            dots.forEach(d => {
+                if(isRec) d.classList.add('active');
+                else d.classList.remove('active');
+            });
+        }
 
         function toggleVibeModal(show) {
             document.getElementById('vibe-modal-overlay').style.display = show ? 'flex' : 'none';
@@ -1250,7 +1285,7 @@ const AudioEngine = {
             currentLang = lang;
             localStorage.setItem('luckyBeanLang', lang);
             applyLanguage();
-            if (!document.getElementById('setup-view').classList.contains('hidden')) goSetup(fromView);
+            // Don't restart, just stay in setup to allow saving
         }
 
         function applyLanguage() {
@@ -1281,7 +1316,8 @@ const AudioEngine = {
                 'btn-backup-export': t.btn_export,
                 'btn-backup-import': t.btn_import,
                 'btn-share-fortune': t.btn_share,
-                'txt-score-label': t.fortune_score
+                'txt-score-label': t.fortune_score,
+                'btn-settings-back': t.btn_back // [NEW]
             };
 
             Object.keys(transMap).forEach(id => {
@@ -1369,6 +1405,7 @@ const AudioEngine = {
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_setting_guy.png' : 'images/cafe_setting.png';
             updateText('setting_msg'); generateNameInputs();
             document.getElementById('dark-toggle').checked = isDarkMode;
+            document.getElementById('history-toggle').checked = (localStorage.getItem('luckyBeanRecord') !== 'false');
         }
 
         function goAbout() {
@@ -1416,7 +1453,6 @@ const AudioEngine = {
             }
         }
 
-        // [New Logic] Menu Recommendation
         function recommendMenu() {
             triggerHaptic(10); AudioEngine.play('whoosh');
             const resultEl = document.getElementById('menu-recommend-result');
@@ -1447,31 +1483,25 @@ const AudioEngine = {
             }, 80);
         }
 
-        // [Modified] Render Menu with Underscore Filenames
         function renderMenuRecommendation() {
             const imgEl = document.getElementById('menu-img-display');
             const nameEl = document.getElementById('menu-recommend-result');
             const descEl = document.getElementById('txt-menu-q'); 
 
             if (selectedMenuIndex === -1) {
-                // Default State
                 imgEl.src = 'images/coffee.png';
                 nameEl.innerText = '?';
                 descEl.innerText = i18n[currentLang].menu_q;
                 descEl.style.fontWeight = "normal";
                 descEl.style.color = "#888";
             } else {
-                // Selected State
-                const engKey = MENU_KEYS[selectedMenuIndex]; // e.g., "Cafe Latte"
+                const engKey = MENU_KEYS[selectedMenuIndex]; 
                 const localName = i18n[currentLang].menus[selectedMenuIndex];
                 const localDesc = i18n[currentLang].coffee_dict[localName];
 
-                // [수정됨] 파일명 호출 시 공백을 언더바로 치환
-                // 예: "Cafe Latte" -> "Cafe_Latte"
                 const fileName = engKey.replace(/ /g, '_');
                 imgEl.src = `images/${fileName}.png`;
                 
-                // Name & Desc update
                 nameEl.innerText = localName;
                 descEl.innerText = localDesc ? localDesc : "";
                 
@@ -1556,15 +1586,32 @@ const AudioEngine = {
             document.querySelectorAll('button').forEach(btn => btn.disabled = false);
         }
 
-        function saveAndGoHome() {
-            recordStats = document.getElementById('history-toggle').checked;
-            localStorage.setItem('luckyBeanRecord', recordStats);
-            const inputs = document.querySelectorAll('.name-input');
-            const tempNames = [];
-            for (let i = 0; i < currentMemberCount; i++) { tempNames.push(inputs[i].value.trim() || `User ${i+1}`); }
-            localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
-            if (fromView === 'hand') startGame(); else if (fromView === 'roulette') goRoulette(); else if (fromView === 'cat') goCatGame(); else goFront();
+        // [NEW] Handle Settings Back Button with Save Confirmation
+        function handleSetupBack() {
+            if(confirm(i18n[currentLang].msg_save_confirm)) {
+                // Save
+                recordStats = document.getElementById('history-toggle').checked;
+                localStorage.setItem('luckyBeanRecord', recordStats);
+                const inputs = document.querySelectorAll('.name-input');
+                const tempNames = [];
+                for (let i = 0; i < currentMemberCount; i++) { tempNames.push(inputs[i].value.trim() || `User ${i+1}`); }
+                localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
+                updateRecordingDot(); 
+            } else {
+                // No save: reset variable to storage
+                recordStats = (localStorage.getItem('luckyBeanRecord') !== 'false');
+            }
+
+            // Return to previous view
+            if (fromView === 'hand') startGame(); 
+            else if (fromView === 'roulette') goRoulette(); 
+            else if (fromView === 'cat') goCatGame(); 
+            else if (fromView === 'selector') showGameSelector();
+            else goFront();
         }
+
+        // Renamed to avoid confusion, but kept for compatibility if needed (now handleSetupBack does the job)
+        function saveAndGoHome() { handleSetupBack(); }
 
         function exportData() {
             const data = {

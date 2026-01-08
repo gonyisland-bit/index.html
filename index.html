@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>lucky bean - v0.6.45</title>
+    <title>lucky bean - v0.6.46</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -113,7 +113,6 @@
         .settings-icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #bbb; padding: 0 5px; transition: color 0.2s; }
         .settings-icon-btn:hover { color: var(--text-main); }
 
-        /* [NEW] Recording Dot Animation */
         .recording-dot {
             width: 8px; height: 8px; background-color: var(--point-red);
             border-radius: 50%; display: none; margin-right: 2px;
@@ -496,8 +495,8 @@
             <div id="selector-view" class="hidden">
                 <div class="card-container">
                     <div class="order-menu-header" style="margin-bottom: 25px;">
-                        <span id="txt-choose-luck" style="flex:1; text-align:center;">CHOOSE YOUR LUCK</span>
-                        <div class="header-icon-group" style="position:absolute; right:25px;">
+                        <span id="txt-choose-luck">CHOOSE YOUR LUCK</span>
+                        <div class="header-icon-group">
                             <span class="recording-dot"></span>
                             <button class="settings-icon-btn" onclick="goSetup('selector')">⚙️</button>
                         </div>
@@ -605,7 +604,7 @@
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
                         <span id="txt-roulette-title">🎡 LUCKY ROULETTE</span>
-                        <div class="header-icon-group" style="float:right;">
+                        <div class="header-icon-group">
                             <span class="recording-dot"></span>
                             <button class="settings-icon-btn" onclick="goSetup('roulette')">⚙️</button>
                         </div>
@@ -633,7 +632,7 @@
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
                         <span id="txt-cat-title">🐈 CAT'S CHOICE</span>
-                        <div class="header-icon-group" style="float:right;">
+                        <div class="header-icon-group">
                             <span class="recording-dot"></span>
                             <button class="settings-icon-btn" onclick="goSetup('cat')">⚙️</button>
                         </div>
@@ -771,7 +770,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.45 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.46 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
     <script>
@@ -801,8 +800,8 @@
                 btn_back_menu: "BACK TO HOME",
                 btn_back_home: "BACK TO HOME",
                 btn_save_exit: "SAVE & EXIT",
-                btn_back: "BACK", // [NEW]
-                msg_save_confirm: "Do you want to save changes?", // [NEW]
+                btn_back: "BACK", 
+                msg_save_confirm: "Do you want to save changes?", 
                 btn_shuffle: "SHUFFLE",
                 btn_again: "REPLAY",
                 btn_spin: "SPIN",
@@ -892,8 +891,8 @@
                 btn_back_menu: "홈으로 돌아가기",
                 btn_back_home: "홈으로 돌아가기",
                 btn_save_exit: "저장 및 나가기",
-                btn_back: "뒤로가기", // [NEW]
-                msg_save_confirm: "변경된 설정을 저장하시겠습니까?", // [NEW]
+                btn_back: "뒤로가기", 
+                msg_save_confirm: "변경된 설정을 저장하시겠습니까?", 
                 btn_shuffle: "셔플",
                 btn_again: "다시하기",
                 btn_spin: "돌리기",
@@ -983,8 +982,8 @@
                 btn_back_menu: "ホームへ戻る",
                 btn_back_home: "ホームへ戻る",
                 btn_save_exit: "保存して終了",
-                btn_back: "戻る", // [NEW]
-                msg_save_confirm: "変更を保存しますか？", // [NEW]
+                btn_back: "戻る", 
+                msg_save_confirm: "変更を保存しますか？", 
                 btn_shuffle: "シャッフル",
                 btn_again: "もう一度",
                 btn_spin: "回す",
@@ -1188,7 +1187,7 @@ const AudioEngine = {
                 document.getElementById('history-toggle').checked = recordStats;
                 applyLanguage();
                 renderVibeList();
-                updateRecordingDot(); // [NEW] Init dot state
+                updateRecordingDot(); 
 
                 const fill = document.getElementById('progress-fill');
                 let progress = 0;
@@ -1221,7 +1220,7 @@ const AudioEngine = {
             }
         };
 
-        // [NEW] Update Recording Dot Visibility
+        // [New Function] Update Recording Dot Visibility
         function updateRecordingDot() {
             const isRec = localStorage.getItem('luckyBeanRecord') !== 'false';
             const dots = document.querySelectorAll('.recording-dot');
@@ -1317,7 +1316,7 @@ const AudioEngine = {
                 'btn-backup-import': t.btn_import,
                 'btn-share-fortune': t.btn_share,
                 'txt-score-label': t.fortune_score,
-                'btn-settings-back': t.btn_back // [NEW]
+                'btn-settings-back': t.btn_back 
             };
 
             Object.keys(transMap).forEach(id => {
@@ -1586,7 +1585,7 @@ const AudioEngine = {
             document.querySelectorAll('button').forEach(btn => btn.disabled = false);
         }
 
-        // [NEW] Handle Settings Back Button with Save Confirmation
+        // [New Logic] Handle Settings Back Button with Save Confirmation
         function handleSetupBack() {
             if(confirm(i18n[currentLang].msg_save_confirm)) {
                 // Save

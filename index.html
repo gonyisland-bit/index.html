@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Lucky Bean - v0.6.47 (Stable)</title>
+    <title>Lucky Bean - v0.6.49</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -255,11 +255,12 @@
         
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
         .modal-content { 
-            background: var(--bg-color); width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 30px 25px; box-sizing: border-box; 
+            background: var(--bg-color); width: 100%; max-width: 500px; border-radius: 30px 30px 0 0; padding: 20px 25px; box-sizing: border-box; 
             animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text-main);
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-item { padding: 18px 5px; border-bottom: 1px solid var(--divider-color); text-align: center; cursor: pointer; font-weight: 700; display: flex; justify-content: space-between; }
+        /* 팝업 간격 줄임 */
+        .modal-item { padding: 12px 5px; border-bottom: 1px solid var(--divider-color); text-align: center; cursor: pointer; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
 
         #vibe-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 12000;
@@ -357,8 +358,8 @@
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .loading-bar-fill { height: 100%; width: 0%; background: #000 !important; transition: width 0.1s; }
 
-        .lounge-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px 4px; font-size: 0.75rem; font-weight: 800; border: 1px solid var(--tablet-border); border-radius: 12px; background: var(--input-bg); color: #bbb; cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lounge-tabs { display: flex; gap: 4px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
+        .tab-btn { flex: 1; padding: 12px 2px; font-size: 0.7rem; font-weight: 800; border: 1px solid var(--tablet-border); border-radius: 12px; background: var(--input-bg); color: #bbb; cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: visible; text-align: center; }
         .tab-btn.active { background: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); }
         .lounge-content { min-height: 250px; }
         
@@ -392,38 +393,40 @@
         .map-btn.google { background-color: #4285F4; }
         .map-desc { font-size: 0.75rem; color: var(--text-gray-70); margin-bottom: 20px; line-height: 1.5; word-break: keep-all; text-align: center; }
 
+        /* 토스트 박스 중앙형 라운드 스퀘어로 수정 */
         #toast-box {
             position: fixed; 
-            background: rgba(0,0,0,0.85); color: #fff; padding: 10px 18px;
-            border-radius: 20px; font-size: 0.8rem; font-weight: 700;
-            opacity: 0; transition: opacity 0.3s; 
+            background: rgba(0,0,0,0.85); color: #fff; padding: 20px 30px;
+            border-radius: 16px; font-size: 0.9rem; font-weight: 700;
+            opacity: 0; transition: opacity 0.3s, transform 0.3s; 
             pointer-events: auto;
-            z-index: 13000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transform: translateX(-50%);
-            max-width: 220px; 
+            z-index: 15000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
             width: max-content;
-            white-space: normal;
+            max-width: 80%;
             text-align: center;
-            display: flex; align-items: center; gap: 8px; justify-content: center;
         }
-        #toast-box.show { opacity: 1; }
-        #toast-box::after {
-            content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
-            border-width: 6px 6px 0; border-style: solid; border-color: rgba(0,0,0,0.85) transparent transparent transparent;
-        }
-        .toast-close {
-            cursor: pointer; font-size: 1.1rem; color: #ffca28; margin-left: 4px; line-height: 1;
-        }
+        #toast-box.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        /* 화살표(말풍선 꼬리) 제거 */
+        #toast-box::after { display: none !important; }
 
         .btn-share { margin-top:15px; background:none; border:1px solid var(--text-gray-70); border-radius:12px; padding:6px 12px; font-size:0.65rem; color:var(--text-gray-70); cursor:pointer; }
 
         .footer { width: 100%; text-align: center; padding: 30px 0; font-size: 0.75rem; color: #888; letter-spacing: 1px; }
         .hidden { display: none !important; }
+
+        /* 히스토리 모달 내부 삭제 버튼용 스타일 */
+        .history-modal-item { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px 0; border-bottom: 1px solid var(--divider-color); }
+        .history-modal-item:last-child { border-bottom: none; }
+        .btn-del-record { background: none; border: none; color: #ccc; font-size: 1.2rem; cursor: pointer; padding: 0 5px; }
+        .btn-del-record:hover { color: var(--point-red); }
     </style>
 </head>
 <body class="">
 
+    <!-- 중앙 토스트 박스 -->
     <div id="toast-box"></div>
 
     <div id="splash-screen">
@@ -442,10 +445,11 @@
         <source src="sounds/cafe_music_bgm.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- 공용 모달창 (그룹, 인원, 히스토리용) -->
     <div id="modal-overlay" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div id="modal-list-container"></div>
-            <button class="btn-text" style="width:100%; margin-top:20px; padding:15px; color:#bbb;" onclick="closeModal()">CLOSE</button>
+            <button class="btn-text" id="btn-modal-close" style="width:100%; margin-top:20px; padding:15px; color:#bbb; border:1px solid #eee; border-radius:14px;" onclick="closeModal()">CLOSE</button>
         </div>
     </div>
 
@@ -575,6 +579,7 @@
                 </div>
             </div>
 
+            <!-- Hand, Roulette, Cat views (기존 유지) -->
             <div id="game-view" class="hidden">
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
@@ -674,18 +679,17 @@
                 </div>
             </div>
 
+            <!-- Lounge, About views (기존 유지) -->
             <div id="lounge-view" class="hidden">
                 <div class="card-container" style="text-align: left;">
                     <div class="order-menu-header" id="txt-lounge-title">🪑 COFFEE LOUNGE</div>
                     <div class="divider"></div>
-                    
                     <div class="lounge-tabs">
                         <button id="btn-tab-fortune" class="tab-btn active" onclick="switchLoungeTab('fortune')">FORTUNE</button>
                         <button id="btn-tab-menu" class="tab-btn" onclick="switchLoungeTab('menu')">MENU</button>
                         <button id="btn-tab-dict" class="tab-btn" onclick="switchLoungeTab('dict')">DICT</button>
                         <button id="btn-tab-map" class="tab-btn" onclick="switchLoungeTab('map')">NEARBY</button>
                     </div>
-
                     <div class="lounge-content">
                         <div id="lounge-fortune-sec">
                             <div class="fortune-card-container" onclick="drawDailyFortune()">
@@ -704,26 +708,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div style="text-align:center;">
-                                <button class="btn-share" onclick="shareFortune()" id="btn-share-fortune">SHARE CARD</button>
-                            </div>
+                            <div style="text-align:center;"><button class="btn-share" onclick="shareFortune()" id="btn-share-fortune">SHARE CARD</button></div>
                         </div>
-
                         <div id="lounge-menu-sec" class="hidden">
                              <div class="menu-recommendation-box">
-                                 <div style="margin-bottom:10px;">
-                                     <img src="images/coffee.png" id="menu-img-display" alt="Coffee" style="width:100px; height:auto; animation: floating 3s ease-in-out infinite;">
-                                 </div>
+                                 <div style="margin-bottom:10px;"><img src="images/coffee.png" id="menu-img-display" alt="Coffee" style="width:100px; height:auto; animation: floating 3s ease-in-out infinite;"></div>
                                  <div style="font-size:0.8rem; color:#888; min-height:1.2rem;" id="txt-menu-q">What should I drink?</div>
                                  <div class="menu-result-display" id="menu-recommend-result">?</div>
                                  <button class="btn-mix-rect" onclick="recommendMenu()" style="margin:0 auto; padding:10px 20px;">PICK MENU</button>
                              </div>
                         </div>
-
-                        <div id="lounge-dict-sec" class="hidden">
-                            <div class="dict-list" id="coffee-dict-list"></div>
-                        </div>
-
+                        <div id="lounge-dict-sec" class="hidden"><div class="dict-list" id="coffee-dict-list"></div></div>
                         <div id="lounge-map-sec" class="hidden" style="text-align:center; padding:10px 0;">
                             <div class="map-desc" id="txt-map-desc">Find the best coffee spots near you!</div>
                             <div class="map-link-container">
@@ -770,7 +765,7 @@
                 <button class="btn-main" id="btn-back-home-history" onclick="goFront()">BACK TO HOME</button>
             </div>
         </main>
-        <div class="footer">v0.6.47 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.6.49 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
 
 <script>
@@ -1028,7 +1023,7 @@
                 lounge_msg: "温かいコーヒーと一緒に一休みしてください。",
                 menu_q: "何を飲もうかな？",
                 coffee_dict: {
-                    "アメリカーノ": "エスプレッソをお湯で割ったコーヒー。すっきりとした味わい。",
+                    "アメリカーノ": "エスプレッソをお湯で割ったコーヒー. すっきりとした味わい。",
                     "カフェラテ": "エスプレッソとスチームミルクの調和. まろやかで香ばしい。",
                     "バニララテ": "ラテに甘いバニラシロップを加えたコーヒー。",
                     "フラットホワイト": "ラテよりフォームが薄く、エスプレッソの味が濃い。",
@@ -1052,7 +1047,7 @@
                     { summary: "アイデアが溢れ出す", detail: "創造的な考えが湧き出る一日です。", score: 94 },
                     { summary: "嬉しいニュース", detail: "待ちわびていた良い知らせが届きます。", score: 88 },
                     { summary: "助っ人に会える予感", detail: "あなたを助けてくれる人に出会います。", score: 90 },
-                    { summary: "小さな幸せ", detail: "ポケットの中の小さな幸せを見つけます。", score: 75 },
+                    { summary: "小さな幸せ", detail: "ポケットの中의 작은 幸せを見つけます。", score: 75 },
                     { summary: "今日のコーヒーは格別", detail: "今日飲むコーヒーは一段と美味しいでしょう。", score: 80 },
                     { summary: "お褒めの言葉", detail: "あなたの努力が輝き、認められます。", score: 95 },
                     { summary: "問題解決", detail: "頭を悩ませていた問題があっさり解決します。", score: 89 }
@@ -1167,22 +1162,13 @@
 
         function triggerHaptic(pattern) { if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch(e) {} } }
 
-        function showToast(msg, targetEl) {
+        /* 수정된 중앙형 토스트 박스 함수 */
+        function showToast(msg) {
             const toast = document.getElementById('toast-box');
-            toast.innerHTML = `<span>${msg}</span><span class="toast-close" onclick="this.parentElement.classList.remove('show')">×</span>`;
-            if (targetEl) {
-                const rect = targetEl.getBoundingClientRect();
-                const toastHeight = 40; 
-                toast.style.position = 'fixed';
-                toast.style.left = (rect.left + rect.width / 2) + 'px';
-                toast.style.top = (rect.top - toastHeight - 8) + 'px';
-                toast.style.bottom = 'auto'; 
-            } else {
-                toast.style.left = '50%'; toast.style.top = 'auto'; toast.style.bottom = '80px';
-            }
+            toast.innerText = msg;
             toast.classList.add('show');
             if(window.toastTimeout) clearTimeout(window.toastTimeout);
-            window.toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            window.toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
         /* --- 4. Initialization --- */
@@ -1552,19 +1538,13 @@
 
         /* --- 6. Settings Logic --- */
         function checkSettingsChanged() {
-            // 히스토리 기록 여부 비교
             const savedRecord = localStorage.getItem('luckyBeanRecord') !== 'false';
             const currentRecord = document.getElementById('history-toggle').checked;
             if (savedRecord !== currentRecord) return true;
 
-            // 멤버 이름 비교
             const savedNames = JSON.parse(localStorage.getItem('lastCoffeeMembers') || '["User 1","User 2","User 3"]');
             const currentInputs = document.querySelectorAll('.name-input');
-            
-            // 인원수가 다르면 무조건 변경됨
             if (savedNames.length !== currentMemberCount) return true;
-            
-            // 개별 이름 비교
             for(let i = 0; i < currentMemberCount; i++) {
                 let currentVal = currentInputs[i].value.trim() || `User ${i+1}`;
                 if (savedNames[i] !== currentVal) return true;
@@ -1573,12 +1553,9 @@
         }
 
         function revertSettings() {
-            // 저장된 값으로 변수들 원복
             recordStats = localStorage.getItem('luckyBeanRecord') !== 'false';
             const savedNames = JSON.parse(localStorage.getItem('lastCoffeeMembers') || '["User 1","User 2","User 3"]');
             currentMemberCount = savedNames.length;
-            
-            // UI 원복 (토글 및 이름 입력창)
             document.getElementById('history-toggle').checked = recordStats;
             generateNameInputs(savedNames);
             document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
@@ -1587,14 +1564,12 @@
         function handleSaveSettings() {
             recordStats = document.getElementById('history-toggle').checked;
             localStorage.setItem('luckyBeanRecord', recordStats);
-            
             const inputs = document.querySelectorAll('.name-input');
             const tempNames = [];
             for (let i = 0; i < currentMemberCount; i++) { 
                 tempNames.push(inputs[i].value.trim() || `User ${i+1}`); 
             }
             localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
-            
             updateRecordingDot();
             showToast(i18n[currentLang].msg_saved);
         }
@@ -1602,11 +1577,9 @@
         function handleSetupBack() {
             if (checkSettingsChanged()) {
                 if (confirm(i18n[currentLang].msg_confirm_discard)) {
-                    // "확인(Yes)"를 누르면 저장 후 이동
                     handleSaveSettings();
                     navigateBack();
                 } else {
-                    // "취소(No)"를 누르면 변경 전 상태로 되돌리고 이동
                     revertSettings();
                     navigateBack();
                 }
@@ -1890,28 +1863,28 @@
             document.getElementById('cat-start-btn').disabled = true; updateText('cat_msg'); AudioEngine.play('whoosh'); triggerHaptic(20);
             const cat = document.getElementById('moving-cat'); 
             cat.src = 'images/cat_walk.gif'; cat.style.transform = 'none'; cat.classList.add('cat-moving');
-            const winnerIdx = Math.floor(Math.random() * memberNames.length); 
+            winnerIndex = Math.floor(Math.random() * memberNames.length); 
             const bowlEls = document.querySelectorAll('.cat-bowl'); const gameArea = document.getElementById('cat-white-box');
             let visits = 0; const maxVisits = 7 + Math.floor(Math.random() * 4);
             function moveCat() {
                 const parentRect = gameArea.getBoundingClientRect();
                 if (visits < maxVisits) {
-                    let nextIdx; do { nextIdx = Math.floor(Math.random() * memberNames.length); } while (nextIdx === winnerIdx && memberNames.length > 1);
+                    let nextIdx; do { nextIdx = Math.floor(Math.random() * memberNames.length); } while (nextIdx === winnerIndex && memberNames.length > 1);
                     const target = bowlEls[nextIdx].getBoundingClientRect();
                     cat.style.left = (target.left - parentRect.left + (target.width / 2)) - (cat.offsetWidth / 2) + 'px';
                     cat.style.top = (15 + Math.random() * 40) + 'px';
                     visits++; setTimeout(moveCat, 450 + Math.random() * 200);
                 } else {
-                    const final = bowlEls[winnerIdx].getBoundingClientRect();
+                    const final = bowlEls[winnerIndex].getBoundingClientRect();
                     cat.style.left = (final.left - parentRect.left + (final.width / 2)) - (cat.offsetWidth / 2) + 'px';
                     cat.style.top = (final.top - parentRect.top - cat.offsetHeight + 18) + 'px';
                     setTimeout(() => {
                         cat.classList.remove('cat-moving'); cat.src = 'images/cat_eat.png';
                         bowlEls.forEach((b, idx) => { 
-                            if(idx !== winnerIdx) b.classList.add('bowl-dimmed'); 
-                            else { b.classList.add('bowl-highlight'); setTimeout(() => { document.getElementById(`img-bowl-${winnerIdx}`).src = 'images/cat_bowl_empty.png'; }, 500); } 
+                            if(idx !== winnerIndex) b.classList.add('bowl-dimmed'); 
+                            else { b.classList.add('bowl-highlight'); setTimeout(() => { document.getElementById(`img-bowl-${winnerIndex}`).src = 'images/cat_bowl_empty.png'; }, 500); } 
                         });
-                        AudioEngine.play('fail'); updateText(`${memberNames[winnerIdx]}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]);
+                        AudioEngine.play('fail'); updateText(`${memberNames[winnerIndex]}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]);
                         document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif';
                         if (recordStats) updateStats(memberNames[winnerIndex]); 
                         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
@@ -2016,13 +1989,82 @@
                 let payers = [];
                 Object.entries(stats).forEach(([name, data]) => { if(data.daily && data.daily.includes(dateStr)) payers.push(name); });
                 const hasDataClass = payers.length > 0 ? 'has-data' : '';
-                const clickAttr = payers.length > 0 ? `onclick="showPayerAlert(this, '${dateStr}', '${payers.join(', ')}')"` : "";
+                const clickAttr = payers.length > 0 ? `onclick="showPayerDetailModal('${dateStr}')"` : "";
                 html += `<div class="calendar-cell ${hasDataClass}" ${clickAttr}><span class="calendar-date-num">${d}</span>${payers.length > 0 ? '<span class="calendar-bean-icon">☕</span>' : ''}</div>`;
             }
             html += `</div>`;
             area.innerHTML = html;
         }
-        function showPayerAlert(el, date, names) { triggerHaptic(10); const label = currentLang === 'ko' ? '당첨자' : (currentLang === 'jp' ? '当選者' : 'Chosen'); showToast(`${date} ${label}: ${names}`, el); }
+
+        /* [개선] 달력 클릭 시 전용 모달 창 표시 및 개별 기록 삭제 기능 */
+        function showPayerDetailModal(dateStr) {
+            triggerHaptic(10);
+            const overlay = document.getElementById('modal-overlay');
+            const container = document.getElementById('modal-list-container');
+            const stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            
+            overlay.style.display = 'flex';
+            container.innerHTML = `<div style="font-weight:900; font-size:1rem; margin-bottom:15px; border-bottom:2px solid #000; padding-bottom:10px;">📅 ${dateStr}</div>`;
+
+            let recordsFound = false;
+            Object.entries(stats).forEach(([name, data]) => {
+                if (data.daily && data.daily.includes(dateStr)) {
+                    // 동일 날짜에 여러 번 당첨되었을 수 있으므로 횟수 체크
+                    const countOnThisDay = data.daily.filter(d => d === dateStr).length;
+                    for(let i=0; i<countOnThisDay; i++) {
+                        recordsFound = true;
+                        const item = document.createElement('div');
+                        item.className = 'history-modal-item';
+                        item.innerHTML = `
+                            <span style="font-weight:700;">☕ ${name}</span>
+                            <button class="btn-del-record" onclick="deleteHistoryRecord('${name}', '${dateStr}')">×</button>
+                        `;
+                        container.appendChild(item);
+                    }
+                }
+            });
+
+            if(!recordsFound) closeModal();
+        }
+
+        /* 개별 기록 삭제 로직 */
+        function deleteHistoryRecord(name, dateStr) {
+            if(!confirm(`${name} 님의 해당 기록을 삭제할까요?`)) return;
+            
+            let stats = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+            if(stats[name]) {
+                // daily 배열에서 해당 날짜 인덱스 하나 찾아서 삭제
+                const idx = stats[name].daily.indexOf(dateStr);
+                if(idx > -1) {
+                    stats[name].daily.splice(idx, 1);
+                    stats[name].total -= 1;
+                    
+                    // 월간 데이터 업데이트
+                    const monthKey = dateStr.slice(0, 7);
+                    if(stats[name].monthly[monthKey]) {
+                        stats[name].monthly[monthKey] -= 1;
+                        if(stats[name].monthly[monthKey] <= 0) delete stats[name].monthly[monthKey];
+                    }
+                    
+                    // 통계 데이터가 0이면 정리
+                    if(stats[name].total <= 0) delete stats[name];
+                    
+                    localStorage.setItem('coffeeStats', JSON.stringify(stats));
+                    showToast("기록이 삭제되었습니다.");
+                    
+                    // UI 즉시 업데이트
+                    renderCalendar();
+                    // 모달 내용 갱신 (남은 기록이 있으면 유지, 없으면 닫음)
+                    const stillHasData = JSON.parse(localStorage.getItem('coffeeStats') || '{}');
+                    let anyLeft = false;
+                    Object.values(stillHasData).forEach(d => { if(d.daily.includes(dateStr)) anyLeft = true; });
+                    
+                    if(anyLeft) showPayerDetailModal(dateStr);
+                    else closeModal();
+                }
+            }
+        }
+
         function changeCalMonth(delta) { triggerHaptic(10); calCursor.setMonth(calCursor.getMonth() + delta); renderCalendar(); }
         function resetStats() { if(confirm("Clear all?")) { localStorage.removeItem('coffeeStats'); goFront(); } }
     </script>

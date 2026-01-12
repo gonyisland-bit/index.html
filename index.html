@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Lucky Bean - v0.7.11 (Espresso Pro)</title>
+    <title>Lucky Bean - v0.7.12 (Crema Edition)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -193,10 +193,9 @@
         .slot-tab.active { background: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .slot-name-edit { font-size: 0.6rem; font-weight: normal; margin-top: 2px; opacity: 0.8; }
 
-        /* [Espresso Game - Updated v0.7.11 Design] */
+        /* [Espresso Game - Final Design (v0.7.12)] */
         #espresso-game-area { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 10px; position: relative; }
         
-        /* Updated Name Card */
         .espresso-player-card {
             position: absolute; top: 0px; z-index: 15;
             background: #fff; padding: 3px 10px; border-radius: 12px;
@@ -214,14 +213,12 @@
         }
         #espressoCanvas { display: block; margin: 0 auto; position: relative; z-index: 10; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.15)); margin-bottom: 0; }
         
-        /* Updated Bar Line */
         .gauge-separator {
             width: 300px; height: 3px; background: #2c3e50; border-radius: 3px;
             margin-top: 0px; 
             z-index: 11; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        /* Updated Visual Center */
         #espresso-visual-center {
             position: relative; width: 100%; height: 120px; z-index: 5;
             transition: opacity 0.5s; margin-top: 30px;
@@ -238,7 +235,6 @@
         .portafilter::before { content: ''; position: absolute; top: 5px; right: -15px; width: 20px; height: 12px; background: #444; transform: rotate(-10deg); }
         .portafilter::after { content: ''; position: absolute; top: 0px; right: -70px; width: 60px; height: 18px; background: #111; border-radius: 0 5px 5px 0; transform: rotate(-10deg); }
         
-        /* Updated Cup */
         .espresso-cup-main {
             width: 50px; height: 40px; 
             background: linear-gradient(90deg, #fff, #f0f0f0);
@@ -260,7 +256,7 @@
         }
         .stream-active { height: 25px; }
 
-        /* New Winner Display */
+        /* Winner Name Display Spot */
         #espresso-winner-display {
             position: absolute; top: 360px; left: 50%; transform: translateX(-50%);
             font-size: 1.5rem; font-weight: 900; color: #6f4e37;
@@ -275,6 +271,8 @@
             border-radius: 50%; pointer-events: none; z-index: 8;
             filter: blur(2px); animation: steamRise 1s forwards;
         }
+        .steam-particle.smoke-dark { background: rgba(50, 50, 50, 0.7); } /* For Burnt Coffee */
+        
         @keyframes steamRise {
             0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
             50% { opacity: 0.8; }
@@ -657,7 +655,7 @@
                 </div>
             </div>
 
-            <!-- Game: Espresso Master (Revised v0.7.11) -->
+            <!-- Game: Espresso Master (Revised v0.7.12) -->
             <div id="espresso-view" class="hidden">
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
@@ -824,7 +822,7 @@
         </main>
         
         <div id="page-transition-overlay"></div>
-        <div class="footer">v0.7.11 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.7.12 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
     <script>
         /* --- 1. Localization Data --- */
@@ -1273,6 +1271,14 @@
                         osc.frequency.setValueAtTime(2000, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
                         gain.gain.setValueAtTime(0.08, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
                         osc.start(now); osc.stop(now + 0.05);
+                    } else if (type === 'god') { // God Shot Sound
+                        const osc = this.ctx.createOscillator(); osc.type='sine';
+                        osc.frequency.setValueAtTime(523.25, now); 
+                        osc.frequency.setValueAtTime(659.25, now + 0.1);
+                        osc.frequency.setValueAtTime(783.99, now + 0.2);
+                        osc.frequency.setValueAtTime(1046.50, now + 0.4);
+                        const g = this.ctx.createGain(); g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 1.0);
+                        osc.connect(g); g.connect(this.ctx.destination); osc.start(now); osc.stop(now + 1.0);
                     }
                 } catch(e) {}
             },
@@ -1303,6 +1309,7 @@
         function triggerGameConfetti(type) {
             let colors = ['#bb0000', '#ffffff']; 
             if(type === 'espresso') colors = ['#6f4e37', '#d2b48c', '#ffffff']; 
+            else if(type === 'god') colors = ['#d4af37', '#f1c40f', '#ffffff']; // Gold Confetti
             else if(type === 'cat') colors = ['#ffca28', '#ffffff', '#000000']; 
             else if(type === 'roulette') colors = ['#e74c3c', '#000000', '#f1c40f']; 
             else if(type === 'hand') colors = ['#333333', '#dddddd']; 
@@ -1427,9 +1434,7 @@
             document.getElementById('main-img').src = isDarkMode ? 'images/cafe_facade_night.png' : 'images/cafe_facade.png';
             updateText('welcome');
             
-            // Use switchView logic but without full overlay delay if calling from Start
             const target = document.getElementById('front-view');
-            // Ensure others are hidden first (manual implementation of switch logic for instant response if needed)
             hideAllViews();
             target.classList.remove('hidden');
             void target.offsetWidth; 
@@ -1579,7 +1584,7 @@
             listArea.innerHTML = html;
         }
 
-        /* --- 5. Settings & Slot Logic --- */
+        /* --- 5. Settings & Slot Logic (Enhanced v0.7.12) --- */
         function renderSlotTabs(containerId, isHistoryMode) {
             const container = document.getElementById(containerId);
             if(!container) return;
@@ -1597,12 +1602,11 @@
                         renderSlotTabs(containerId, true);
                         switchHistoryView(historyViewMode);
                     } else {
-                        // Change active slot
                         if(activeSlot !== slot) {
                             if(confirm(currentLang==='ko'?'슬롯을 변경하시겠습니까? 데이터가 전환됩니다.':'Switch slot? Data will be swapped.')) {
                                 activeSlot = slot;
                                 localStorage.setItem('luckyBean_ActiveSlot', activeSlot);
-                                generateNameInputs(); // Reload members for new slot
+                                generateNameInputs(); 
                                 renderSlotTabs(containerId, false);
                                 showToast(`Switched to ${name}`);
                             }
@@ -1610,7 +1614,6 @@
                     }
                 };
                 
-                // Allow renaming only in settings active slot
                 let nameHtml = `<span>${name}</span>`;
                 if (!isHistoryMode && activeSlot === slot) {
                     nameHtml += `<div class="slot-name-edit" onclick="event.stopPropagation(); renameSlot(${slot})">✏️ Rename</div>`;
@@ -1685,31 +1688,42 @@
             else if (fromView === 'selector') showGameSelector();
             else goFront();
         }
+        
+        // [New] Export only ACTIVE SLOT data
         function exportData() {
             const data = {
-                members: localStorage.getItem('lastCoffeeMembers'),
-                teams: localStorage.getItem('coffeeTeams'),
-                stats: localStorage.getItem('coffeeStats'),
-                history: localStorage.getItem('coffeeHistory'), 
+                version: "v0.7.12",
+                slot: activeSlot,
+                slotName: slotNames[activeSlot],
+                members: localStorage.getItem(getSlotKey('members')),
+                teams: localStorage.getItem(getSlotKey('teams')),
+                stats: localStorage.getItem(getSlotKey('coffeeStats')),
                 settings: { lang: localStorage.getItem('luckyBeanLang'), dark: localStorage.getItem('luckyBeanDark'), record: localStorage.getItem('luckyBeanRecord') }
             };
             const str = JSON.stringify(data);
             if (navigator.clipboard) { navigator.clipboard.writeText(str).then(() => showToast(currentLang === 'ko' ? "데이터가 복사되었습니다!" : "Data Copied!")).catch(() => prompt("Copy this:", str)); } 
             else { prompt("Copy this:", str); }
         }
+        
+        // [New] Import to ACTIVE SLOT (Handles Legacy & New format)
         function importData() {
             const input = prompt(currentLang === 'ko' ? "복사한 데이터를 붙여넣으세요:" : "Paste backup data:");
             if(!input) return;
             try {
                 const data = JSON.parse(input);
-                if(data.members) localStorage.setItem('lastCoffeeMembers', data.members);
-                if(data.teams) localStorage.setItem('coffeeTeams', data.teams);
-                if(data.stats) localStorage.setItem('coffeeStats', data.stats);
+                
+                // Determine keys to save (Save to CURRENT ACTIVE SLOT regardless of origin)
+                if (data.members) localStorage.setItem(getSlotKey('members'), data.members);
+                if (data.teams) localStorage.setItem(getSlotKey('teams'), data.teams);
+                if (data.stats) localStorage.setItem(getSlotKey('coffeeStats'), data.stats);
+                
+                // Global settings
                 if(data.settings) {
                     if(data.settings.lang) localStorage.setItem('luckyBeanLang', data.settings.lang);
                     if(data.settings.dark) localStorage.setItem('luckyBeanDark', data.settings.dark);
                     if(data.settings.record) localStorage.setItem('luckyBeanRecord', data.settings.record);
                 }
+                
                 alert(currentLang === 'ko' ? "복원 완료! 새로고침합니다." : "Restored! Reloading..."); location.reload();
             } catch(e) { alert("Invalid Data"); }
         }
@@ -1733,7 +1747,6 @@
             const currentInputs = Array.from(container.querySelectorAll('.name-input')).map(i => i.value);
             let namesToUse = providedNames || (lastSaved && lastSaved.length === currentMemberCount ? lastSaved : currentInputs);
             
-            // If resizing creates gaps, fill them
             if (namesToUse.length < currentMemberCount) {
                 for(let i=namesToUse.length; i<currentMemberCount; i++) namesToUse.push(`User ${i+1}`);
             }
@@ -1754,7 +1767,6 @@
         function openGroupModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             overlay.style.display = 'flex'; container.innerHTML = '';
-            // Load Teams from Slot
             const teams = JSON.parse(localStorage.getItem(getSlotKey('teams')) || '{}');
             const keys = Object.keys(teams);
             if(keys.length === 0) { container.innerHTML = `<div style="padding:40px; text-align:center; color:#ccc; font-weight:700;">NO SAVED GROUPS</div>`; } 
@@ -1876,7 +1888,7 @@
             document.getElementById('txt-cat-title').innerText = currentLang === 'ko' ? "🐈 고양이의 선택" : (currentLang === 'jp' ? "🐈 猫の選択" : "🐈 CAT'S CHOICE");
             document.getElementById('txt-espresso-title').innerText = t.txt_espresso_title;
             document.getElementById('txt-setting-title').innerHTML = `📋 ${currentLang === 'ko' ? "게임 설정" : (currentLang === 'jp' ? "ゲーム設定" : "GAME SETTING")}`;
-            document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : (currentLang === 'jp' ? "ラッキービーン情報" : "ABOUT LUCKY BEAN")}`;
+            document.getElementById('txt-about-title').innerHTML = `☕ ${currentLang === 'ko' ? "럭키빈 정보" : (currentLang === 'jp' ? "ラッキービーン 정보" : "ABOUT LUCKY BEAN")}`;
             document.getElementById('txt-history-title').innerHTML = `🏆 ${currentLang === 'ko' ? "기부 히스토리" : (currentLang === 'jp' ? "寄付履歴" : "DONATION HISTORY")}`;
             document.getElementById('txt-lounge-title').innerHTML = `🪑 ${t.lounge_title.replace("☕ ", "").replace("🪑 ", "")}`;
             
@@ -2110,7 +2122,7 @@
             moveCat();
         }
 
-        /* --- Game 4: Espresso Master (v0.7.11 Updated) --- */
+        /* --- Game 4: Espresso Master (v0.7.12 Crema Update) --- */
         function goEspressoGame() {
             const s=localStorage.getItem(getSlotKey('members')); espressoPlayers=s?JSON.parse(s):["User 1","User 2","User 3"];
             switchViewWithAnimation('espresso-view', () => {
@@ -2174,11 +2186,13 @@
             drawEspressoGauge(0);
         }
         
-        function createSteamEffect() {
+        function createSteamEffect(isBurnt) {
             const container = document.getElementById('espresso-visual-center');
             for(let i=0; i<8; i++) {
                 const p = document.createElement('div');
                 p.className = 'steam-particle';
+                if(isBurnt) p.classList.add('smoke-dark'); // Dark Smoke for Burnt
+                
                 const tx = (Math.random() - 0.5) * 40; // Random X scatter
                 p.style.setProperty('--tx', `${tx}px`);
                 p.style.left = '50%';
@@ -2203,26 +2217,54 @@
                 btn.disabled = true;
                 cancelAnimationFrame(espressoFrameId);
                 
-                const range = ESPRESSO_MAX_ANGLE - ESPRESSO_MIN_ANGLE; // 270 deg
+                const range = ESPRESSO_MAX_ANGLE - ESPRESSO_MIN_ANGLE; 
                 const currentVal = ((espressoAngle - ESPRESSO_MIN_ANGLE) / range) * 18;
                 const diff = Math.abs(currentVal - ESPRESSO_TARGET_VAL);
                 const player = espressoPlayers[currentEspressoIndex];
                 
-                AudioEngine.play('brew'); // New Brew Sound
-                triggerHaptic(30);
-                createSteamEffect();
+                // Crema Grading Logic
+                let cupColor, title;
+                let isGodShot = false;
+                
+                if (diff <= 0.2) { // GOD SHOT
+                    isGodShot = true;
+                    cupColor = '#d4af37'; // Gold
+                    title = "GOD SHOT 🌟";
+                    AudioEngine.play('god'); 
+                    triggerGameConfetti('god');
+                } else if (currentVal >= 7 && currentVal <= 11) { // NICE BREW
+                    cupColor = '#6f4e37'; // Good Brown
+                    title = "Nice Brew";
+                    AudioEngine.play('brew');
+                } else if (currentVal < 7) { // WATERY
+                    cupColor = '#eefebe'; // Pale
+                    title = "Watery";
+                    AudioEngine.play('brew');
+                } else { // BURNT
+                    cupColor = '#1a1a1a'; // Dark
+                    title = "Burnt 🔥";
+                    AudioEngine.play('fail'); 
+                }
+                
+                triggerHaptic(isGodShot ? [50,50,50,50] : 30);
+                createSteamEffect(currentVal > 11);
 
                 const stream = document.querySelector('.coffee-stream-main');
                 const fill = document.querySelector('.coffee-fill-main');
                 
-                // Color Logic Reversed: < 9 Light, >= 9 Dark
-                fill.style.backgroundColor = (currentVal < 9) ? '#a1887f' : '#3e2723';
+                fill.style.backgroundColor = cupColor;
                 
                 stream.classList.add('stream-active');
                 setTimeout(() => { fill.style.height = '70%'; }, 200);
 
                 espressoResults.push({ name: player, val: currentVal, diff: diff });
-                renderCupResult(player, currentVal);
+                
+                // Update Name Card with Title Temporarily
+                const nameCard = document.getElementById('espresso-name-card');
+                const origName = nameCard.querySelector('.ep-name').innerText;
+                nameCard.querySelector('.ep-name').innerText = title;
+                
+                renderCupResult(player, currentVal, cupColor);
 
                 setTimeout(() => {
                     stream.classList.remove('stream-active');
@@ -2236,13 +2278,12 @@
             }
         }
         
-        function renderCupResult(name, val) {
+        function renderCupResult(name, val, color) {
             const grid = document.getElementById('espresso-result-list');
             const div = document.createElement('div');
             div.className = 'espresso-res-item';
             const heightPct = Math.min(100, (val / 18) * 100);
-            const cupColor = (val < 9) ? '#a1887f' : '#3e2723';
-            div.innerHTML = `<div class="small-cup"><div class="small-cup-fill" style="height:${heightPct}%; background:${cupColor}"></div></div><div>${name}</div><div>${val.toFixed(1)}</div>`;
+            div.innerHTML = `<div class="small-cup"><div class="small-cup-fill" style="height:${heightPct}%; background:${color}"></div></div><div>${name}</div><div>${val.toFixed(1)}</div>`;
             grid.appendChild(div);
         }
 
@@ -2278,9 +2319,6 @@
             ctx.lineWidth = 6; ctx.strokeStyle = "#333"; ctx.stroke();
 
             // 2. Green Zone Sector (Behind ticks)
-            // 7 bar to 11 bar
-            // 7 bar = 135 + 105 = 240 deg
-            // 11 bar = 135 + 165 = 300 deg
             const greenStart = (240 * Math.PI) / 180;
             const greenEnd = (300 * Math.PI) / 180;
             

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Lucky Bean - v0.7.0 (Espresso Pro)</title>
+    <title>Lucky Bean - v0.9.0</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" href="images/luckybean_icon.png">
     <link rel="apple-touch-icon" href="images/luckybean_icon.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@800&family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,300&family=Montserrat:wght@600;800;900&family=Courier+Prime&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
@@ -60,9 +60,9 @@
             overflow-x: hidden; overflow-y: auto; transition: background-color 0.3s, color 0.3s;
         }
 
-        .fade-in-view { animation: fadeInUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .fade-in-view { animation: fadeInUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -221,36 +221,77 @@
         #roulette-container { position: relative; width: 90%; max-width: 300px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
         .roulette-pin { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 34px; height: 44px; z-index: 20; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3)); }
 
-        /* [Espresso Game New Style] */
+        /* [Espresso Game - Final Design] */
         #espresso-game-area { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 10px; position: relative; }
-        .espresso-status { font-size: 1rem; font-weight: 900; margin-bottom: 20px; color: var(--espresso-color); min-height: 1.5rem; text-align: center; }
+        .espresso-status { font-size: 1rem; font-weight: 900; color: var(--espresso-color); min-height: 1.5rem; text-align: center; position: absolute; top: -5px; width: 100%; z-index: 10; }
         body.dark-mode .espresso-status { color: #d7ccc8; }
         
-        #espresso-gauge-container { position: relative; width: 280px; height: 230px; overflow: visible; margin-bottom: 0px; }
-        #espressoCanvas { display: block; margin: 0 auto; position: relative; z-index: 2; }
-        .espresso-result-list { width: 90%; text-align: center; margin-top: 5px; min-height: 1.2rem; font-size: 0.8rem; font-weight: 700; color: #555; z-index: 5; position: relative; }
+        #espresso-gauge-container { position: relative; width: 280px; height: 300px; overflow: visible; margin-top: 30px; margin-bottom: 10px; }
+        #espressoCanvas { display: block; margin: 0 auto; position: relative; z-index: 10; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.15)); }
         
-        /* Espresso Liquid Animation */
-        .espresso-liquid {
-            position: absolute;
-            left: 50%; top: 150px;
-            transform: translateX(-50%);
-            width: 25px; height: 0;
-            background: linear-gradient(180deg, #3e2723, #5d4037);
+        /* Central Visuals (Portafilter + Cup) */
+        #espresso-visual-center {
+            position: absolute; top: 220px; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 100px; z-index: 5;
+            transition: opacity 0.5s;
+        }
+        #espresso-visual-center.fade-out { opacity: 0; pointer-events: none; }
+
+        .portafilter {
+            width: 80px; height: 35px; background: #222;
+            border-radius: 0 0 25px 25px;
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            z-index: 6; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .portafilter::before { /* Handle neck */
+            content: ''; position: absolute; top: 5px; right: -15px; width: 20px; height: 12px; background: #444; transform: rotate(-10deg);
+        }
+        .portafilter::after { /* Handle stick */
+            content: ''; position: absolute; top: 0px; right: -60px; width: 50px; height: 16px; background: #111; border-radius: 0 5px 5px 0; transform: rotate(-10deg);
+        }
+        
+        .espresso-cup-main {
+            width: 50px; height: 40px; 
+            background: linear-gradient(90deg, #fff, #f0f0f0);
+            border: 1px solid #ddd; border-top: none;
             border-radius: 0 0 10px 10px;
-            opacity: 0.9;
-            z-index: 1;
-            transition: height 0.2s ease-in;
+            position: absolute; top: 45px; left: 50%; transform: translateX(-50%);
+            overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 5;
         }
-        .espresso-liquid.pouring {
-            animation: pour 0.8s ease-out forwards;
+        .espresso-cup-main::after { /* Cup Handle */
+            content: ''; position: absolute; right: -10px; top: 5px; width: 12px; height: 18px;
+            border: 2px solid #ddd; border-radius: 0 10px 10px 0; border-left: none;
         }
-        @keyframes pour {
-            0% { height: 0; opacity: 0; }
-            20% { height: 120px; opacity: 1; width: 30px; }
-            80% { height: 140px; opacity: 0.8; width: 20px; }
-            100% { height: 160px; opacity: 0; top: 300px; }
+        .coffee-stream-main {
+            position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+            width: 6px; height: 0; background: #3e2723;
+            z-index: 4; transition: height 0.1s;
         }
+        .coffee-fill-main {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
+            background: #3e2723; transition: height 0.5s ease-out, background-color 0.2s;
+        }
+        .stream-active { height: 25px; }
+
+        /* Result Grid */
+        .espresso-result-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            width: 90%; margin-top: 50px; margin-bottom: 10px; min-height: 80px;
+        }
+        .espresso-res-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            font-size: 0.7rem; font-weight: 700; color: #555;
+            animation: popIn 0.3s;
+        }
+        .small-cup {
+            width: 30px; height: 24px; border: 1px solid #ccc; border-top: none; border-radius: 0 0 5px 5px;
+            background: #fff; position: relative; overflow: hidden; margin-bottom: 4px;
+        }
+        .small-cup-fill { position: absolute; bottom: 0; left: 0; width: 100%; }
+        
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .shake-gauge { animation: gauge-shake 0.8s ease-in-out infinite; }
+        @keyframes gauge-shake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
 
         .btn-main {
             padding: 20px 10px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: var(--bg-color); border: none; border-radius: 20px;
@@ -392,7 +433,7 @@
         .value-customer { font-size: 2.2rem; font-weight: 900; color: var(--point-red); letter-spacing: -1px; text-align: center; }
         .fortune-area { font-size: 0.75rem; line-height: 1.6; color: #555; text-align: center; margin-top: 15px; word-break: keep-all; font-style: italic; }
 
-        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff !important; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff !important; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; }
         .loading-text { font-family: 'Courier Prime', monospace; font-size: 0.8rem; letter-spacing: 3px; margin-top: 20px; color: #000 !important; }
         .loading-bar-container { width: 150px; height: 4px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .loading-bar-fill { height: 100%; width: 0%; background: #000 !important; transition: width 0.1s; }
@@ -459,20 +500,13 @@
         .btn-del-record { background: none; border: none; color: #ccc; font-size: 1.2rem; cursor: pointer; padding: 0 5px; }
         .btn-del-record:hover { color: var(--point-red); }
 
-        /* [Transition Overlay Fixed: Speed 2x] */
+        /* [Transition Overlay - Simple Fade] */
         #page-transition-overlay {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 0%;
-            background: linear-gradient(0deg, #3e2723 0%, #6f4e37 100%);
-            z-index: 20000; pointer-events: none;
-            transition: height 0.2s ease-in-out;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            z-index: 20000; pointer-events: none; opacity: 0;
+            transition: opacity 0.3s ease-in-out;
         }
-        #page-transition-overlay::after {
-            content: ''; position: absolute; top: -15px; left: 0; width: 100%; height: 20px;
-            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%236f4e37" opacity="0.4"></path></svg>');
-            background-size: cover; animation: wave 2s linear infinite;
-        }
-        @keyframes wave { 0% { background-position-x: 0; } 100% { background-position-x: 1200px; } }
     </style>
 </head>
 <body class="">
@@ -712,22 +746,28 @@
             <div id="espresso-view" class="hidden">
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
-                        <span id="txt-espresso-title">☕ ESPRESSO TIMING</span>
+                        <span id="txt-espresso-title">☕ ESPRESSO MASTER</span>
                         <div class="header-icon-group" style="float:right;">
                             <span class="recording-dot"></span>
                             <button class="settings-icon-btn" onclick="goSetup('espresso')">⚙️</button>
                         </div>
                     </div>
                     <div class="divider"></div>
-                    <div class="game-canvas-area" style="min-height: 280px; justify-content: center; background:#f9f9f9;">
+                    <div class="game-canvas-area" style="min-height: 360px; justify-content: center; background:#f9f9f9; padding-bottom: 20px;">
                         <div id="espresso-game-area">
-                            <div class="espresso-status" id="espresso-status-text">Ready to Extract</div>
+                            <div class="espresso-status" id="espresso-status-text"></div>
                             <div id="espresso-gauge-container">
-                                <div class="espresso-liquid" id="espresso-liquid"></div>
-                                <canvas id="espressoCanvas" width="280" height="230"></canvas>
+                                <canvas id="espressoCanvas" width="280" height="280"></canvas>
+                                <!-- Central Visuals: Portafilter & Cup -->
+                                <div id="espresso-visual-center">
+                                    <div class="portafilter"></div>
+                                    <div class="coffee-stream-main"></div>
+                                    <div class="espresso-cup-main">
+                                        <div class="coffee-fill-main"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="espresso-result-list" id="espresso-result-list"></div>
-                            <div style="margin-top:15px; font-size:0.75rem; color:#888; font-weight:700;">TARGET: 9 BAR (GREEN ZONE)</div>
+                            <div class="espresso-result-grid" id="espresso-result-list"></div>
                         </div>
                     </div>
                     <button id="espresso-action-btn" class="btn-spin" onclick="handleEspressoAction()">POWER ON</button>
@@ -859,7 +899,7 @@
         </main>
         
         <div id="page-transition-overlay"></div>
-        <div class="footer">v0.7.0 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.9.0 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
     <script>
         /* --- 1. Localization Data --- */
@@ -917,10 +957,10 @@
                 confirm_replay: "Are you sure you want to replay?",
                 btn_mix: "MIX",
                 /* Espresso Pro Keys */
-                txt_game_espresso: "Espresso Timing",
-                txt_espresso_title: "☕ ESPRESSO TIMING",
-                espresso_ready: "Target: 9 BAR (Green Zone)",
-                espresso_brewing: "Generating Pressure...",
+                txt_game_espresso: "Espresso Master",
+                txt_espresso_title: "☕ ESPRESSO MASTER",
+                espresso_guide: "Stop the gauge at 9 BAR for the perfect shot!",
+                espresso_brewing: "Press Button!",
                 espresso_btn_power: "POWER ON",
                 espresso_btn_extract: "EXTRACT",
                 espresso_result: "Pressure: ",
@@ -1021,10 +1061,10 @@
                 confirm_replay: "정말 게임을 다시 시작하시겠습니까?",
                 btn_mix: "섞기",
                 /* Espresso Pro Keys */
-                txt_game_espresso: "에스프레소 타이밍",
-                txt_espresso_title: "☕ 에스프레소 타이밍",
-                espresso_ready: "목표: 9 BAR (초록 영역)",
-                espresso_brewing: "압력 생성 중... 추출하세요!",
+                txt_game_espresso: "에스프레소 마스터",
+                txt_espresso_title: "☕ 에스프레소 마스터",
+                espresso_guide: "타이밍을 맞춰 9 BAR 압력으로 완벽한 샷을 추출하세요!",
+                espresso_brewing: "버튼을 눌러 추출하세요!",
                 espresso_btn_power: "전원 켜기",
                 espresso_btn_extract: "커피 추출",
                 espresso_result: "추출압력: ",
@@ -1127,8 +1167,8 @@
                 /* Espresso Pro Keys */
                 txt_game_espresso: "エスプレッソ抽出",
                 txt_espresso_title: "☕ エスプレッソ抽出",
-                espresso_ready: "目標: 9 BAR (緑ゾーン)",
-                espresso_brewing: "圧力生成中... 抽出せよ！",
+                espresso_guide: "9 BARの圧力に合わせて、完璧なエスプレッソを抽出してください！",
+                espresso_brewing: "抽出ボタンを押してください！",
                 espresso_btn_power: "電源オン",
                 espresso_btn_extract: "コーヒー抽出",
                 espresso_result: "抽出圧力: ",
@@ -1183,7 +1223,7 @@
         let isDarkMode = localStorage.getItem('luckyBeanDark') === 'true';
         let recordStats = localStorage.getItem('luckyBeanRecord') !== 'false';
         
-        // Temp Settings for Revert
+        // Settings Snapshot for Revert
         let tempSettings = { lang: null, dark: null };
 
         const randomNicknames = ["Coffee Monster", "Latte King", "Ice Bear", "Sugar Addict", "Lucky Guy", "Morning Coffee", "Bean Hunter", "Cream Lover"];
@@ -1209,15 +1249,13 @@
 
         /* [Espresso Pro Game Variables] */
         let espressoPlayers = [];
-        let espressoResults = []; // Stores {name, diff}
+        let espressoResults = []; // Stores {name, val, diff}
         let currentEspressoIndex = 0;
         let espressoFrameId = null;
-        let espressoAngle = 135; // Start at 7 o'clock (135deg)
-        let espressoVelocity = 0;
-        let espressoRunning = false; // Is motor running?
+        let espressoAngle = 135; 
         let espressoPhase = 'idle'; // idle, running, stopped
         const ESPRESSO_MIN_ANGLE = 135;
-        const ESPRESSO_MAX_ANGLE = 405; // 405deg = 270deg range
+        const ESPRESSO_MAX_ANGLE = 405; // 270 deg range
         const ESPRESSO_TARGET_VAL = 9;
 
         /* --- 3. Audio Engine --- */
@@ -1288,6 +1326,10 @@
                         nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
                         noise.connect(filter); filter.connect(nGain); nGain.connect(this.ctx.destination);
                         noise.start(now); noise.stop(now + 0.8);
+                    } else if (type === 'click') {
+                        osc.frequency.setValueAtTime(2000, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                        gain.gain.setValueAtTime(0.08, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                        osc.start(now); osc.stop(now + 0.05);
                     }
                 } catch(e) {}
             },
@@ -1298,6 +1340,13 @@
             },
             stopVibe() { if(this.player) this.player.pause(); }
         };
+
+        // Add global click listener for "Tick" sound
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button') || e.target.closest('.icon-btn-item') || e.target.closest('.picker-btn') || e.target.closest('.setting-row')) {
+                AudioEngine.play('click');
+            }
+        });
 
         function triggerHaptic(pattern) { if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch(e) {} } }
 
@@ -1318,18 +1367,15 @@
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: colors });
         }
 
-        /* [Speed Up: 2x Faster Transition] */
+        /* [Smooth Transition Overlay] */
         let isTransitioning = false;
         function switchViewWithAnimation(targetId, updateLogic) {
             if(isTransitioning) return;
             isTransitioning = true;
             const overlay = document.getElementById('page-transition-overlay');
             
-            // Fast Rise
-            overlay.style.height = '100%';
-            AudioEngine.play('whoosh');
+            overlay.style.opacity = '1';
             
-            // Faster timing: 300ms total sequence
             setTimeout(() => {
                 hideAllViews(); 
                 if(updateLogic) updateLogic();
@@ -1341,11 +1387,10 @@
                     target.classList.add('fade-in-view');
                 }
                 
-                // Fast Sink
                 setTimeout(() => { 
-                    overlay.style.height = '0%'; 
+                    overlay.style.opacity = '0'; 
                     isTransitioning = false;
-                }, 150);
+                }, 100);
             }, 300); 
         }
 
@@ -1422,10 +1467,11 @@
 
         function goFront() {
             fromView = 'front';
-            switchViewWithAnimation('front-view', () => {
-                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_facade_night.png' : 'images/cafe_facade.png';
-                updateText('welcome'); 
-            });
+            document.getElementById('main-img').src = isDarkMode ? 'images/cafe_facade_night.png' : 'images/cafe_facade.png';
+            updateText('welcome');
+            const target = document.getElementById('front-view');
+            target.classList.remove('hidden');
+            void target.offsetWidth; target.classList.add('fade-in-view');
         }
 
         function showGameSelector() {
@@ -1437,7 +1483,7 @@
         }
 
         function goSetup(source = 'front') {
-            // Snapshot current settings for Revert
+            // Snapshot for Revert
             tempSettings.lang = currentLang;
             tempSettings.dark = isDarkMode;
 
@@ -1569,20 +1615,13 @@
             listArea.innerHTML = html;
         }
 
-        /* --- 5. Settings Logic (With Revert) --- */
+        /* --- 5. Settings Logic (With Strict Revert) --- */
         function checkSettingsChanged() {
-            // Check Record toggle
             const savedRecord = localStorage.getItem('luckyBeanRecord') !== 'false';
             const currentRecord = document.getElementById('history-toggle').checked;
             if (savedRecord !== currentRecord) return true;
-            
-            // Check Language & Dark Mode (Visual check vs Saved)
-            const savedLang = localStorage.getItem('luckyBeanLang') || 'en';
-            if (currentLang !== savedLang) return true;
-            const savedDark = localStorage.getItem('luckyBeanDark') === 'true';
-            if (isDarkMode !== savedDark) return true;
-
-            // Check Members
+            if (currentLang !== tempSettings.lang) return true;
+            if (isDarkMode !== tempSettings.dark) return true;
             const savedNames = JSON.parse(localStorage.getItem('lastCoffeeMembers') || '["User 1","User 2","User 3"]');
             const currentInputs = document.querySelectorAll('.name-input');
             if (savedNames.length !== currentMemberCount) return true;
@@ -1593,33 +1632,33 @@
             return false;
         }
         function revertSettings() {
-            // Revert Logic: Restore from Temp Settings
             if(tempSettings.lang) setLanguage(tempSettings.lang);
             if(tempSettings.dark !== null) {
                 document.getElementById('dark-toggle').checked = tempSettings.dark;
                 toggleDarkMode();
             }
-            
-            // Revert Inputs
             recordStats = localStorage.getItem('luckyBeanRecord') !== 'false';
             const savedNames = JSON.parse(localStorage.getItem('lastCoffeeMembers') || '["User 1","User 2","User 3"]');
             currentMemberCount = savedNames.length;
             document.getElementById('history-toggle').checked = recordStats;
             generateNameInputs(savedNames);
-            document.getElementById('display-member-count').innerText = `${currentMemberCount}${currentLang === 'ko' ? '명' : (currentLang === 'jp' ? '人' : 'P')}`;
         }
         function handleSaveSettings() {
             recordStats = document.getElementById('history-toggle').checked;
             localStorage.setItem('luckyBeanRecord', recordStats);
+            localStorage.setItem('luckyBeanLang', currentLang); 
+            localStorage.setItem('luckyBeanDark', isDarkMode); 
+            
             const inputs = document.querySelectorAll('.name-input');
             const tempNames = [];
             for (let i = 0; i < currentMemberCount; i++) { tempNames.push(inputs[i].value.trim() || `User ${i+1}`); }
             localStorage.setItem('lastCoffeeMembers', JSON.stringify(tempNames));
             updateRecordingDot(); showToast(i18n[currentLang].msg_saved);
+            navigateBack();
         }
         function handleSetupBack() {
             if (checkSettingsChanged()) {
-                if (confirm(i18n[currentLang].msg_confirm_discard)) { handleSaveSettings(); navigateBack(); } 
+                if (confirm(i18n[currentLang].msg_confirm_discard)) { handleSaveSettings(); } 
                 else { revertSettings(); navigateBack(); }
             } else { navigateBack(); }
         }
@@ -1733,9 +1772,11 @@
             if(isDarkMode) { document.body.classList.add('dark-mode'); if(mainImg.src.includes('cafe_facade.png')) mainImg.src = 'images/cafe_facade_night.png'; if(mainImg.src.includes('cafe_facade_zoom.png')) mainImg.src = 'images/cafe_facade_zoom_night.png'; } 
             else { document.body.classList.remove('dark-mode'); if(mainImg.src.includes('cafe_facade_night.png')) mainImg.src = 'images/cafe_facade.png'; if(mainImg.src.includes('cafe_facade_zoom_night.png')) mainImg.src = 'images/cafe_facade_zoom.png'; }
             if (!document.getElementById('setup-view').classList.contains('hidden')) { mainImg.src = isDarkMode ? 'images/cafe_setting_guy.png' : 'images/cafe_setting.png'; }
-            localStorage.setItem('luckyBeanDark', isDarkMode);
         }
-        function setLanguage(lang) { currentLang = lang; localStorage.setItem('luckyBeanLang', lang); applyLanguage(); }
+        function setLanguage(lang) { 
+            currentLang = lang; 
+            applyLanguage(); 
+        }
         function applyLanguage() {
             const t = i18n[currentLang];
             document.getElementById('lang-ko').classList.toggle('active', currentLang === 'ko');
@@ -1807,8 +1848,18 @@
         function handleStartGame() {
             triggerHaptic(10); AudioEngine.initAndPlayBGM();
             const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            setTimeout(() => { splash.style.display = 'none'; goFront(); }, 600);
+            const overlay = document.getElementById('page-transition-overlay');
+            
+            // Trigger overlay
+            overlay.style.opacity = '1';
+            
+            // Wait for overlay to cover
+            setTimeout(() => {
+                splash.style.display = 'none';
+                goFront();
+                // Remove overlay
+                setTimeout(() => { overlay.style.opacity = '0'; }, 100);
+            }, 300);
         }
         function handleGameSelection(gameType) {
             triggerHaptic(10); AudioEngine.play('start'); 
@@ -2016,13 +2067,20 @@
             moveCat();
         }
 
-        /* --- Game 4: Espresso Pro (Remade v0.7.0) --- */
+        /* --- Game 4: Espresso Master (v0.9.0 Perfected) --- */
         function goEspressoGame() {
             const s=localStorage.getItem('lastCoffeeMembers'); espressoPlayers=s?JSON.parse(s):["User 1","User 2","User 3"];
             switchViewWithAnimation('espresso-view', () => {
                 document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_guy.png' : 'images/cafe_counter.png';
+                updateText(i18n[currentLang].espresso_guide, true); 
                 document.getElementById('espresso-action-btn').classList.remove('hidden'); 
                 document.getElementById('espresso-again-btn').classList.add('hidden');
+                document.getElementById('espressoCanvas').classList.remove('shake-gauge');
+                
+                // Show visual center elements again (in case they were hidden)
+                const vis = document.getElementById('espresso-visual-center');
+                vis.classList.remove('fade-out');
+
                 initEspressoGame();
             });
         }
@@ -2031,7 +2089,10 @@
             espressoAngle = ESPRESSO_MIN_ANGLE; 
             espressoPhase = 'idle';
             document.getElementById('espresso-result-list').innerHTML = '';
-            document.getElementById('espresso-liquid').classList.remove('pouring');
+            
+            document.querySelector('.coffee-stream-main').classList.remove('stream-active');
+            document.querySelector('.coffee-fill-main').style.height = '0%';
+            
             setupEspressoTurn();
         }
         function setupEspressoTurn() {
@@ -2039,15 +2100,18 @@
             const t = i18n[currentLang];
             const currentPlayer = espressoPlayers[currentEspressoIndex];
             
-            document.getElementById('espresso-status-text').innerText = `${currentPlayer}: ${t.espresso_ready}`;
+            document.getElementById('espresso-status-text').innerText = currentPlayer;
             const btn = document.getElementById('espresso-action-btn');
             btn.innerText = t.espresso_btn_power || "POWER ON";
             btn.disabled = false;
             
             espressoPhase = 'idle';
             espressoAngle = ESPRESSO_MIN_ANGLE; 
+            
+            document.querySelector('.coffee-stream-main').classList.remove('stream-active');
+            document.querySelector('.coffee-fill-main').style.height = '0%';
+            
             drawEspressoGauge(0);
-            document.getElementById('espresso-liquid').classList.remove('pouring');
         }
         
         function handleEspressoAction() {
@@ -2055,159 +2119,194 @@
             const btn = document.getElementById('espresso-action-btn');
 
             if(espressoPhase === 'idle') {
-                // Phase 1: Power On -> Start Running
                 espressoPhase = 'running';
                 btn.innerText = t.espresso_btn_extract || "EXTRACT";
                 AudioEngine.play('start'); triggerHaptic(10);
                 runEspressoLoop();
             } else if(espressoPhase === 'running') {
-                // Phase 2: Extract -> Stop
                 espressoPhase = 'stopped';
                 btn.disabled = true;
                 cancelAnimationFrame(espressoFrameId);
                 
-                // Visual Juice
-                AudioEngine.play('whoosh'); triggerHaptic(30);
-                document.getElementById('espresso-liquid').classList.add('pouring'); // Pour coffee
-                
-                // Calculate Result
-                // Map Angle(135-405) to Value(0-18)
-                const range = ESPRESSO_MAX_ANGLE - ESPRESSO_MIN_ANGLE; // 270
+                const range = ESPRESSO_MAX_ANGLE - ESPRESSO_MIN_ANGLE; // 270 deg
                 const currentVal = ((espressoAngle - ESPRESSO_MIN_ANGLE) / range) * 18;
-                
                 const diff = Math.abs(currentVal - ESPRESSO_TARGET_VAL);
                 const player = espressoPlayers[currentEspressoIndex];
                 
-                // Store result
+                AudioEngine.play('whoosh'); triggerHaptic(30);
+                const stream = document.querySelector('.coffee-stream-main');
+                const fill = document.querySelector('.coffee-fill-main');
+                
+                // Color Logic: < 9 Light, >= 9 Dark
+                fill.style.backgroundColor = (currentVal < 9) ? '#a1887f' : '#3e2723';
+                
+                stream.classList.add('stream-active');
+                setTimeout(() => { fill.style.height = '70%'; }, 200);
+
                 espressoResults.push({ name: player, val: currentVal, diff: diff });
                 
-                // Update UI
-                const list = document.getElementById('espresso-result-list');
-                const diffDisplay = diff.toFixed(1);
-                list.innerHTML += `<div>${player}: ${currentVal.toFixed(1)} bar (Diff: ${diffDisplay})</div>`;
-                
-                currentEspressoIndex++;
-                if(currentEspressoIndex < espressoPlayers.length) {
-                    setTimeout(setupEspressoTurn, 1500); // Next player
-                } else {
-                    setTimeout(finalizeEspresso, 1500); // Finish
-                }
+                renderCupResult(player, currentVal);
+
+                setTimeout(() => {
+                    stream.classList.remove('stream-active');
+                    currentEspressoIndex++;
+                    if(currentEspressoIndex < espressoPlayers.length) {
+                        setTimeout(setupEspressoTurn, 1000); 
+                    } else {
+                        setTimeout(finalizeEspresso, 1000); 
+                    }
+                }, 1500);
             }
+        }
+        
+        function renderCupResult(name, val) {
+            const grid = document.getElementById('espresso-result-list');
+            const div = document.createElement('div');
+            div.className = 'espresso-res-item';
+            const heightPct = Math.min(100, (val / 18) * 100);
+            // Small cups also follow color logic
+            const cupColor = (val < 9) ? '#a1887f' : '#3e2723';
+            
+            div.innerHTML = `
+                <div class="small-cup">
+                    <div class="small-cup-fill" style="height:${heightPct}%; background:${cupColor}"></div>
+                </div>
+                <div>${name}</div>
+                <div>${val.toFixed(1)}</div>
+            `;
+            grid.appendChild(div);
         }
 
         function runEspressoLoop() {
             let speed = 4 + Math.random() * 2; 
             let direction = 1;
-            
             function loop() {
                 if(espressoPhase !== 'running') return;
-                
                 espressoAngle += (speed * direction);
-                
-                // Bounce logic
                 if(espressoAngle >= ESPRESSO_MAX_ANGLE) {
                     espressoAngle = ESPRESSO_MAX_ANGLE;
                     direction = -1;
-                    speed = 4 + Math.random() * 4; // Variable speed
+                    speed = 4 + Math.random() * 4; 
                 } else if(espressoAngle <= ESPRESSO_MIN_ANGLE) {
                     espressoAngle = ESPRESSO_MIN_ANGLE;
                     direction = 1;
                     speed = 4 + Math.random() * 4; 
                 }
-                
-                // Map Angle to Value (0-18) for display
                 const range = ESPRESSO_MAX_ANGLE - ESPRESSO_MIN_ANGLE;
                 const val = ((espressoAngle - ESPRESSO_MIN_ANGLE) / range) * 18;
                 drawEspressoGauge(val);
-                
                 espressoFrameId = requestAnimationFrame(loop);
             }
             loop();
         }
         
-        // Draw 270 degree Gauge (135deg to 405deg)
         function drawEspressoGauge(value) {
             const canvas = document.getElementById('espressoCanvas');
             if(!canvas) return;
             const ctx = canvas.getContext('2d');
             const cw = canvas.width; const ch = canvas.height;
-            const cx = cw / 2; const cy = ch / 2 + 20; 
-            const r = 90; // Radius
+            const cx = cw / 2; const cy = ch / 2 + 10; 
+            const r = 90; 
             
             ctx.clearRect(0,0,cw,ch);
 
-            const startRad = (135 * Math.PI) / 180;
-            const endRad = (405 * Math.PI) / 180;
-
-            // 1. Gauge Background Track
+            // 1. Full Outer Border (Complete Circle)
             ctx.beginPath(); 
-            ctx.arc(cx, cy, r, startRad, endRad);
-            ctx.lineWidth = 18; ctx.strokeStyle = "#eee"; ctx.stroke();
+            ctx.arc(cx, cy, r + 10, 0, 2*Math.PI);
+            ctx.lineWidth = 6; ctx.strokeStyle = "#333"; ctx.stroke();
 
-            // 2. Green Zone (Target 7-11 bar)
-            // Map 7 and 11 to Radians
-            // Total range 0-18 = 270deg. 1 bar = 15deg.
-            // 7 bar = 135 + (7*15) = 240 deg
-            // 11 bar = 135 + (11*15) = 300 deg
+            // 2. Green Zone Arc (7 to 11 BAR)
+            // 7 bar = 135 + 105 = 240 deg
+            // 11 bar = 135 + 165 = 300 deg
             const greenStart = (240 * Math.PI) / 180;
             const greenEnd = (300 * Math.PI) / 180;
             
             ctx.beginPath();
             ctx.arc(cx, cy, r, greenStart, greenEnd);
-            ctx.lineWidth = 18; ctx.strokeStyle = "rgba(46, 204, 113, 0.3)"; ctx.stroke();
+            ctx.lineWidth = 15; ctx.strokeStyle = "#00b300"; ctx.stroke();
             
-            // 3. Center Target Mark (9 bar) = 270 deg (Top)
-            ctx.beginPath();
-            ctx.arc(cx, cy, r + 15, (268*Math.PI)/180, (272*Math.PI)/180);
-            ctx.lineWidth = 4; ctx.strokeStyle = "#e74c3c"; ctx.stroke();
+            // 3. Ticks & Numbers (0 to 18)
+            ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.font = "bold 10px Montserrat"; ctx.fillStyle = "#888";
+            
+            for(let i=0; i<=18; i++) {
+                const deg = 135 + (i * 15);
+                const rad = (deg * Math.PI) / 180;
+                
+                const isMajor = (i % 3 === 0);
+                const len = isMajor ? 12 : 6;
+                const rInner = r - 7;
+                const rOuter = rInner - len;
+                
+                const x1 = cx + rInner * Math.cos(rad);
+                const y1 = cy + rInner * Math.sin(rad);
+                const x2 = cx + rOuter * Math.cos(rad);
+                const y2 = cy + rOuter * Math.sin(rad);
+                
+                ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+                ctx.lineWidth = isMajor ? 2 : 1;
+                ctx.strokeStyle = "#333";
+                ctx.stroke();
+                
+                if(isMajor) {
+                    const rText = r - 32;
+                    const tx = cx + rText * Math.cos(rad);
+                    const ty = cy + rText * Math.sin(rad);
+                    
+                    if(i === 9) { ctx.font = "900 14px Montserrat"; ctx.fillStyle = "#000"; }
+                    else { ctx.font = "700 10px Montserrat"; ctx.fillStyle = "#888"; }
+                    
+                    ctx.fillText(i.toString(), tx, ty);
+                }
+            }
 
-            // 4. Ticks & Labels (0, 9, 18)
-            ctx.fillStyle = "#555"; ctx.font = "bold 11px Montserrat"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-            // 0 bar
-            let rad0 = (135 * Math.PI) / 180;
-            ctx.fillText("0", cx + (r-25)*Math.cos(rad0), cy + (r-25)*Math.sin(rad0));
-            // 9 bar
-            ctx.fillText("9", cx, cy - (r-25));
-            // 18 bar
-            let rad18 = (405 * Math.PI) / 180;
-            ctx.fillText("18", cx + (r-25)*Math.cos(rad18), cy + (r-25)*Math.sin(rad18));
-
-            // 5. Needle
-            // Value 0-18 -> Angle 135-405
+            // 4. Center Needle
             const currentDeg = 135 + (value * 15);
             const currentRad = (currentDeg * Math.PI) / 180;
             
-            const nx = cx + (r - 10) * Math.cos(currentRad);
-            const ny = cy + (r - 10) * Math.sin(currentRad);
+            const nx = cx + (r - 15) * Math.cos(currentRad);
+            const ny = cy + (r - 15) * Math.sin(currentRad);
             
             ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(nx, ny);
-            ctx.lineWidth = 4; ctx.strokeStyle = "#333"; ctx.stroke();
+            ctx.lineWidth = 3; ctx.strokeStyle = "#e74c3c"; ctx.lineCap = "round"; ctx.stroke();
             
             // Pivot
-            ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI*2); ctx.fillStyle="#333"; ctx.fill();
+            ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fillStyle="#333"; ctx.fill();
             
             // Value Text
-            ctx.font = "bold 18px Montserrat"; ctx.fillStyle = "#6f4e37";
-            ctx.fillText(value.toFixed(1) + " BAR", cx, cy + 40);
+            ctx.font = "bold 16px Montserrat"; ctx.fillStyle = "#6f4e37";
+            ctx.fillText(value.toFixed(1), cx, cy + 50);
         }
 
         function finalizeEspresso() {
-            // Find Loser (Max Diff from 9)
             espressoResults.sort((a,b) => b.diff - a.diff);
             const loser = espressoResults[0];
             const t = i18n[currentLang];
-
-            AudioEngine.play('fail'); triggerHaptic([100, 50, 100]);
-            updateText(loser.name + t.pay_msg, true);
-            document.getElementById('espresso-status-text').innerText = `LOSER: ${loser.name} (Diff: ${loser.diff.toFixed(1)})`;
-            document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif';
             
-            document.getElementById('espresso-action-btn').classList.add('hidden');
-            document.getElementById('espresso-again-btn').classList.remove('hidden');
+            const canvas = document.getElementById('espressoCanvas');
+            
+            // Hide Cup and Portafilter
+            const visualCenter = document.getElementById('espresso-visual-center');
+            visualCenter.classList.add('fade-out');
 
-            if (recordStats) updateStats(loser.name);
-            triggerGameConfetti('espresso');
-            showFinish(espressoPlayers.length, loser.name, 'espresso-result-anchor');
+            canvas.classList.add('shake-gauge');
+            AudioEngine.play('whoosh');
+            
+            setTimeout(() => {
+                canvas.classList.remove('shake-gauge');
+                AudioEngine.play('fail'); triggerHaptic([100, 50, 100]);
+                updateText(loser.name + t.pay_msg, true);
+                
+                document.getElementById('espresso-status-text').innerText = `LOSER: ${loser.name}`;
+                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_counter_thanks_guy.gif' : 'images/cafe_counter_thanks.gif';
+                
+                document.getElementById('espresso-action-btn').classList.add('hidden');
+                document.getElementById('espresso-again-btn').classList.remove('hidden');
+
+                if (recordStats) updateStats(loser.name);
+                triggerGameConfetti('espresso');
+                showFinish(espressoPlayers.length, loser.name, 'espresso-result-anchor');
+            }, 1000);
         }
 
         /* --- 8. Result & History System --- */

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Lucky Bean - v0.7.12 (Crema Edition)</title>
+    <title>Lucky Bean - v0.8.1 (Espresso Realism)</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -193,7 +193,7 @@
         .slot-tab.active { background: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .slot-name-edit { font-size: 0.6rem; font-weight: normal; margin-top: 2px; opacity: 0.8; }
 
-        /* [Espresso Game - Final Design (v0.7.12)] */
+        /* [Espresso Game - V0.8.1 Realistic Design] */
         #espresso-game-area { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 10px; position: relative; }
         
         .espresso-player-card {
@@ -211,42 +211,55 @@
             margin-top: 10px; margin-bottom: 10px; 
             overflow: visible; display: flex; flex-direction: column; align-items: center;
         }
-        #espressoCanvas { display: block; margin: 0 auto; position: relative; z-index: 10; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.15)); margin-bottom: 0; }
         
-        .gauge-separator {
-            width: 300px; height: 3px; background: #2c3e50; border-radius: 3px;
-            margin-top: 0px; 
-            z-index: 11; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        /* Realistic Machine Background - Full Area */
+        .espresso-machine-bg {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 100%;
+            object-fit: contain; 
+            z-index: 1; opacity: 0.9;
         }
 
+        /* Gauge Canvas */
+        #espressoCanvas { 
+            display: block; margin: 0 auto; position: relative; 
+            z-index: 10; 
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2)); 
+            margin-bottom: 0; 
+        }
+        
+        /* Visual Center (Portafilter + Cup) */
         #espresso-visual-center {
             position: relative; width: 100%; height: 120px; z-index: 5;
-            transition: opacity 0.5s; margin-top: 30px;
+            transition: opacity 0.5s; margin-top: 30px; /* Connected */
         }
         #espresso-visual-center.fade-out { opacity: 0; pointer-events: none; }
 
+        /* Image-based Portafilter (Large, Connected) */
         .portafilter {
-            width: 90px; height: 40px; background: #222;
-            border-radius: 0 0 30px 30px;
-            position: absolute; top: -5px; 
-            left: 50%; transform: translateX(-50%);
-            z-index: 6; box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            width: 100%; height: 120px; 
+            background: url('images/portafilter.png') no-repeat top center;
+            background-size: contain;
+            position: absolute; top: 0px; 
+            left: 0;
+            z-index: 6; 
         }
-        .portafilter::before { content: ''; position: absolute; top: 5px; right: -15px; width: 20px; height: 12px; background: #444; transform: rotate(-10deg); }
-        .portafilter::after { content: ''; position: absolute; top: 0px; right: -70px; width: 60px; height: 18px; background: #111; border-radius: 0 5px 5px 0; transform: rotate(-10deg); }
         
+        /* Updated Cup */
         .espresso-cup-main {
             width: 50px; height: 40px; 
             background: linear-gradient(90deg, #fff, #f0f0f0);
             border: 2px solid #000; border-top: none;
             border-radius: 0 0 12px 12px;
-            position: absolute; top: 55px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: 65px; 
+            left: 50%; transform: translateX(-50%);
             overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 5;
         }
         .espresso-cup-main::after { content: ''; position: absolute; right: -10px; top: 5px; width: 12px; height: 18px; border: 2px solid #000; border-radius: 0 10px 10px 0; border-left: none; }
         
         .coffee-stream-main {
-            position: absolute; top: 35px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: 25px; /* Stream starts from behind nozzle */
+            left: 50%; transform: translateX(-50%);
             width: 6px; height: 0; background: #3e2723;
             z-index: 4; transition: height 0.1s;
         }
@@ -254,7 +267,7 @@
             position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
             background: #3e2723; transition: height 0.5s ease-out, background-color 0.2s;
         }
-        .stream-active { height: 25px; }
+        .stream-active { height: 75px; }
 
         /* Winner Name Display Spot */
         #espresso-winner-display {
@@ -271,7 +284,7 @@
             border-radius: 50%; pointer-events: none; z-index: 8;
             filter: blur(2px); animation: steamRise 1s forwards;
         }
-        .steam-particle.smoke-dark { background: rgba(50, 50, 50, 0.7); } /* For Burnt Coffee */
+        .steam-particle.smoke-dark { background: rgba(50, 50, 50, 0.7); } 
         
         @keyframes steamRise {
             0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
@@ -280,8 +293,26 @@
         }
 
         .espresso-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; margin-top: 10px; margin-bottom: 10px; min-height: 80px; }
-        .espresso-res-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; font-size: 0.7rem; font-weight: 700; color: #555; animation: popIn 0.3s; }
-        .small-cup { width: 30px; height: 24px; border: 1px solid #ccc; border-top: none; border-radius: 0 0 5px 5px; background: #fff; position: relative; overflow: hidden; margin-bottom: 4px; }
+        
+        .espresso-res-item { 
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            font-size: 0.7rem; color: #555; animation: popIn 0.3s; 
+        }
+        .espresso-res-item .res-name {
+            font-weight: 800; min-height: 2.4em; 
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            line-height: 1.1; width: 100%; margin-top: 2px;
+        }
+        .espresso-res-item .res-val {
+            font-weight: 900; font-size: 0.8rem; color: #333;
+        }
+
+        .small-cup { 
+            width: 50px; height: 45px; 
+            border: 2px solid #000; 
+            border-top: none; border-radius: 0 0 10px 10px; 
+            background: #fff; position: relative; overflow: hidden; margin-bottom: 4px; 
+        }
         .small-cup-fill { position: absolute; bottom: 0; left: 0; width: 100%; }
         
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
@@ -655,7 +686,7 @@
                 </div>
             </div>
 
-            <!-- Game: Espresso Master (Revised v0.7.12) -->
+            <!-- Game: Espresso Master (Revised v0.8.1 Realistic) -->
             <div id="espresso-view" class="hidden">
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
@@ -673,9 +704,8 @@
                                 <span class="ep-name">User</span>
                             </div>
                             <div id="espresso-gauge-container">
+                                <img src="images/espresso_machine.png" class="espresso-machine-bg" alt="Machine BG">
                                 <canvas id="espressoCanvas" width="280" height="280"></canvas>
-                                <!-- The Bar Separator -->
-                                <div class="gauge-separator"></div>
                                 <!-- Central Visuals: Portafilter & Cup -->
                                 <div id="espresso-visual-center">
                                     <div class="portafilter"></div>
@@ -822,7 +852,7 @@
         </main>
         
         <div id="page-transition-overlay"></div>
-        <div class="footer">v0.7.12 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.8.1 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
     <script>
         /* --- 1. Localization Data --- */
@@ -1584,7 +1614,7 @@
             listArea.innerHTML = html;
         }
 
-        /* --- 5. Settings & Slot Logic (Enhanced v0.7.12) --- */
+        /* --- 5. Settings & Slot Logic --- */
         function renderSlotTabs(containerId, isHistoryMode) {
             const container = document.getElementById(containerId);
             if(!container) return;
@@ -1602,11 +1632,12 @@
                         renderSlotTabs(containerId, true);
                         switchHistoryView(historyViewMode);
                     } else {
+                        // Change active slot
                         if(activeSlot !== slot) {
                             if(confirm(currentLang==='ko'?'슬롯을 변경하시겠습니까? 데이터가 전환됩니다.':'Switch slot? Data will be swapped.')) {
                                 activeSlot = slot;
                                 localStorage.setItem('luckyBean_ActiveSlot', activeSlot);
-                                generateNameInputs(); 
+                                generateNameInputs(); // Reload members for new slot
                                 renderSlotTabs(containerId, false);
                                 showToast(`Switched to ${name}`);
                             }
@@ -1614,6 +1645,7 @@
                     }
                 };
                 
+                // Allow renaming only in settings active slot
                 let nameHtml = `<span>${name}</span>`;
                 if (!isHistoryMode && activeSlot === slot) {
                     nameHtml += `<div class="slot-name-edit" onclick="event.stopPropagation(); renameSlot(${slot})">✏️ Rename</div>`;
@@ -1692,7 +1724,7 @@
         // [New] Export only ACTIVE SLOT data
         function exportData() {
             const data = {
-                version: "v0.7.12",
+                version: "v0.8.1",
                 slot: activeSlot,
                 slotName: slotNames[activeSlot],
                 members: localStorage.getItem(getSlotKey('members')),
@@ -1747,6 +1779,7 @@
             const currentInputs = Array.from(container.querySelectorAll('.name-input')).map(i => i.value);
             let namesToUse = providedNames || (lastSaved && lastSaved.length === currentMemberCount ? lastSaved : currentInputs);
             
+            // If resizing creates gaps, fill them
             if (namesToUse.length < currentMemberCount) {
                 for(let i=namesToUse.length; i<currentMemberCount; i++) namesToUse.push(`User ${i+1}`);
             }
@@ -1767,6 +1800,7 @@
         function openGroupModal() {
             const overlay = document.getElementById('modal-overlay'); const container = document.getElementById('modal-list-container');
             overlay.style.display = 'flex'; container.innerHTML = '';
+            // Load Teams from Slot
             const teams = JSON.parse(localStorage.getItem(getSlotKey('teams')) || '{}');
             const keys = Object.keys(teams);
             if(keys.length === 0) { container.innerHTML = `<div style="padding:40px; text-align:center; color:#ccc; font-weight:700;">NO SAVED GROUPS</div>`; } 
@@ -2122,7 +2156,7 @@
             moveCat();
         }
 
-        /* --- Game 4: Espresso Master (v0.7.12 Crema Update) --- */
+        /* --- Game 4: Espresso Master (v0.8.1 Realistic) --- */
         function goEspressoGame() {
             const s=localStorage.getItem(getSlotKey('members')); espressoPlayers=s?JSON.parse(s):["User 1","User 2","User 3"];
             switchViewWithAnimation('espresso-view', () => {
@@ -2283,7 +2317,7 @@
             const div = document.createElement('div');
             div.className = 'espresso-res-item';
             const heightPct = Math.min(100, (val / 18) * 100);
-            div.innerHTML = `<div class="small-cup"><div class="small-cup-fill" style="height:${heightPct}%; background:${color}"></div></div><div>${name}</div><div>${val.toFixed(1)}</div>`;
+            div.innerHTML = `<div class="small-cup"><div class="small-cup-fill" style="height:${heightPct}%; background:${color}"></div></div><div class="res-name">${name}</div><div class="res-val">${val.toFixed(1)}</div>`;
             grid.appendChild(div);
         }
 
@@ -2313,12 +2347,23 @@
             
             ctx.clearRect(0,0,cw,ch);
 
-            // 1. Full Outer Border
+            // 1. Background Fill (White)
+            ctx.beginPath();
+            ctx.arc(cx, cy, r + 10, 0, 2*Math.PI);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+
+            // 2. Thick Outer Border
             ctx.beginPath(); 
             ctx.arc(cx, cy, r + 10, 0, 2*Math.PI);
             ctx.lineWidth = 6; ctx.strokeStyle = "#333"; ctx.stroke();
 
-            // 2. Green Zone Sector (Behind ticks)
+            // 3. Thin Inner Border
+            ctx.beginPath(); 
+            ctx.arc(cx, cy, r - 3, 0, 2*Math.PI);
+            ctx.lineWidth = 1; ctx.strokeStyle = "#999"; ctx.stroke();
+
+            // 4. Green Zone Sector (#008000)
             const greenStart = (240 * Math.PI) / 180;
             const greenEnd = (300 * Math.PI) / 180;
             
@@ -2326,10 +2371,10 @@
             ctx.moveTo(cx, cy);
             ctx.arc(cx, cy, r + 5, greenStart, greenEnd);
             ctx.lineTo(cx, cy);
-            ctx.fillStyle = "rgba(0, 179, 0, 0.2)"; // Light Green Sector
+            ctx.fillStyle = "rgba(0, 128, 0, 0.3)"; 
             ctx.fill();
             
-            // 3. Ticks & Numbers
+            // 5. Ticks & Numbers
             ctx.textAlign = "center"; ctx.textBaseline = "middle";
             ctx.font = "bold 10px Montserrat"; ctx.fillStyle = "#888";
             
@@ -2359,7 +2404,11 @@
                 }
             }
 
-            // 4. Needle
+            // BAR Text
+            ctx.font = "800 12px Montserrat"; ctx.fillStyle = "#aaa";
+            ctx.fillText("BAR", cx, cy + 30);
+
+            // 6. Needle
             const currentDeg = 135 + (value * 15);
             const currentRad = (currentDeg * Math.PI) / 180;
             const nx = cx + (r - 15) * Math.cos(currentRad);

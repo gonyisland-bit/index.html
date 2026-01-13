@@ -207,15 +207,15 @@
         .ep-name { font-size: 1.1rem; color: #333; font-weight: 900; display: block; }
 
         #espresso-gauge-container { 
-            position: relative; width: 280px; height: 420px;
-            margin-top: 10px; margin-bottom: 10px; 
+            position: relative; width: 280px; height: 280px;
+            margin-top: 5px; margin-bottom: 0px; 
             overflow: visible; display: flex; flex-direction: column; align-items: center;
         }
         
         /* Realistic Machine Background - Full Area */
         .espresso-machine-bg {
             position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 100%;
+            height: 100%; 
             object-fit: contain; 
             z-index: 1; opacity: 0.9;
         }
@@ -231,7 +231,7 @@
         /* Visual Center (Portafilter + Cup) */
         #espresso-visual-center {
             position: relative; width: 100%; height: 120px; z-index: 5;
-            transition: opacity 0.5s; margin-top: 30px; /* Connected */
+            transition: opacity 0.5s; margin-top: 0px; /* Connected */
         }
         #espresso-visual-center.fade-out { opacity: 0; pointer-events: none; }
 
@@ -247,7 +247,7 @@
         
         /* Updated Cup */
         .espresso-cup-main {
-            width: 50px; height: 40px; 
+            width: 40px; height: 40px; 
             background: linear-gradient(90deg, #fff, #f0f0f0);
             border: 2px solid #000; border-top: none;
             border-radius: 0 0 12px 12px;
@@ -258,7 +258,7 @@
         .espresso-cup-main::after { content: ''; position: absolute; right: -10px; top: 5px; width: 12px; height: 18px; border: 2px solid #000; border-radius: 0 10px 10px 0; border-left: none; }
         
         .coffee-stream-main {
-            position: absolute; top: 25px; /* Stream starts from behind nozzle */
+            position: absolute; top: 5px; /* Stream starts from behind nozzle */
             left: 50%; transform: translateX(-50%);
             width: 6px; height: 0; background: #3e2723;
             z-index: 4; transition: height 0.1s;
@@ -267,11 +267,11 @@
             position: absolute; bottom: 0; left: 0; width: 100%; height: 0;
             background: #3e2723; transition: height 0.5s ease-out, background-color 0.2s;
         }
-        .stream-active { height: 75px; }
+        .stream-active { height: 60px; }
 
         /* Winner Name Display Spot */
         #espresso-winner-display {
-            position: absolute; top: 360px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: 310px; left: 50%; transform: translateX(-50%);
             font-size: 1.5rem; font-weight: 900; color: #6f4e37;
             text-shadow: 1px 1px 0px #fff, 0 0 10px rgba(111, 78, 55, 0.2);
             z-index: 20; opacity: 0; transition: opacity 0.5s, transform 0.5s;
@@ -292,7 +292,7 @@
             100% { opacity: 0; transform: translate(var(--tx), -40px) scale(2); }
         }
 
-        .espresso-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; margin-top: 10px; margin-bottom: 10px; min-height: 80px; }
+        .espresso-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; margin-top: 120px; margin-bottom: 10px; min-height: 80px; }
         
         .espresso-res-item { 
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
@@ -308,9 +308,9 @@
         }
 
         .small-cup { 
-            width: 50px; height: 45px; 
+            width: 40px; height: 40px; 
             border: 2px solid #000; 
-            border-top: none; border-radius: 0 0 10px 10px; 
+            border-top: none; border-radius: 0 0 12px 12px; 
             background: #fff; position: relative; overflow: hidden; margin-bottom: 4px; 
         }
         .small-cup-fill { position: absolute; bottom: 0; left: 0; width: 100%; }
@@ -319,7 +319,7 @@
         .vibrate-gauge { animation: gauge-vibrate 0.1s infinite; }
         @keyframes gauge-vibrate { 0% { transform: rotate(0deg) translate(0,0); } 25% { transform: rotate(2deg) translate(1px,1px); } 50% { transform: rotate(0deg) translate(0,0); } 75% { transform: rotate(-2deg) translate(-1px,-1px); } 100% { transform: rotate(0deg); } }
 
-        .btn-main { padding: 20px 10px; font-size: 1.1rem; font-weight: 800; background: var(--primary-color); color: var(--bg-color); border: none; border-radius: 20px; cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; box-shadow: 0 8px 0 var(--btn-shadow); text-transform: uppercase; position: relative; top: 0; margin-bottom: 15px; }
+        .btn-main { padding: 20px 10px; font-size: 0.9rem; font-weight: 900; background: var(--primary-color); color: var(--bg-color); border: none; border-radius: 20px; cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; box-shadow: 0 8px 0 var(--btn-shadow); text-transform: uppercase; position: relative; top: 0; margin-bottom: 15px; }
         .btn-main:active:not(:disabled) { top: 4px; box-shadow: 0 4px 0 var(--btn-shadow); transform: scale(0.98); }
         .btn-sub { padding: 16px; font-size: 0.9rem; font-weight: 800; background: var(--card-bg); color: var(--text-main); border: 2px solid var(--text-main); border-radius: 20px; cursor: pointer; width: 85%; max-width: 320px; transition: all 0.1s; box-shadow: 0 3px 0 var(--btn-shadow); text-transform: uppercase; margin-bottom: 12px; }
         .btn-sub:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 3px 0 var(--btn-shadow); }
@@ -2289,7 +2289,7 @@
                 fill.style.backgroundColor = cupColor;
                 
                 stream.classList.add('stream-active');
-                setTimeout(() => { fill.style.height = '70%'; }, 200);
+                setTimeout(() => { fill.style.height = '50%'; }, 200);
 
                 espressoResults.push({ name: player, val: currentVal, diff: diff });
                 

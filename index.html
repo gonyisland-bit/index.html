@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Lucky Bean - v0.8.22</title>
+    <title>Lucky Bean - v0.8.24</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -201,7 +201,7 @@
         .slot-tab.active { background: var(--primary-color); color: var(--bg-color); border-color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .slot-name-edit { font-size: 0.6rem; font-weight: normal; margin-top: 2px; opacity: 0.8; }
 
-        /* [Espresso Game - Final Design (v0.8.1)] */
+        /* [Espresso Game - Final Design] */
         #espresso-game-area { width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 10px; position: relative; }
         
         .espresso-player-card {
@@ -220,7 +220,6 @@
             overflow: visible; display: flex; flex-direction: column; align-items: center;
         }
         
-        /* Realistic Machine Background */
         .espresso-machine-bg {
             position: absolute; top: 0; left: 50%; transform: translateX(-50%);
             width: 100%; height: 100%; 
@@ -228,7 +227,6 @@
             z-index: 1; opacity: 0.9;
         }
 
-        /* Gauge Canvas */
         #espressoCanvas { 
             display: block; margin: 0 auto; position: relative; 
             z-index: 10; 
@@ -236,7 +234,6 @@
             margin-bottom: 0; 
         }
         
-        /* Visual Center (Portafilter + Cup) */
         #espresso-visual-center {
             position: relative; width: 100%; height: 120px; z-index: 5;
             transition: opacity 0.5s; margin-top: 0px; 
@@ -252,7 +249,6 @@
             z-index: 6; 
         }
         
-        /* Updated Cup */
         .espresso-cup-main {
             width: 50px; height: 40px; 
             background: linear-gradient(90deg, #fff, #f0f0f0);
@@ -264,7 +260,7 @@
         .espresso-cup-main::after { content: ''; position: absolute; right: -10px; top: 5px; width: 12px; height: 18px; border: 2px solid #000; border-radius: 0 10px 10px 0; border-left: none; }
         
         .coffee-stream-main {
-            position: absolute; top: 25px; /* Stream starts from behind nozzle */
+            position: absolute; top: 25px; 
             left: 50%; transform: translateX(-50%);
             width: 6px; height: 0; background: #3e2723;
             z-index: 4; transition: height 0.1s;
@@ -275,7 +271,6 @@
         }
         .stream-active { height: 75px; }
 
-        /* Winner Name Display Spot */
         #espresso-winner-display {
             position: absolute; top: 360px; left: 50%; transform: translateX(-50%);
             font-size: 1.5rem; font-weight: 900; color: #6f4e37;
@@ -286,7 +281,7 @@
         #espresso-winner-display.show { opacity: 1; transform: translateX(-50%) scale(1.1); }
 
         .steam-particle {
-            position: absolute; width: 8px; height: 8px; background: rgba(255,255,255,0.6);
+            position: absolute; width: 8px; height: 8px; background: rgba(255,215,0,0.6);
             border-radius: 50%; pointer-events: none; z-index: 8;
             filter: blur(2px); animation: steamRise 1s forwards;
         }
@@ -338,7 +333,7 @@
         /* Holographic overlay */
         .card-back::after {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.4) 45%, rgba(255, 255, 255, 0) 50%);
+            background: linear-gradient(115deg, transparent 40%, rgba(255,215,255,0.4) 45%, rgba(255, 255, 255, 0) 50%);
             animation: holoShine 3s infinite linear; pointer-events: none; opacity: 0.6;
         }
         @keyframes holoShine { from { transform: translateX(-30%) translateY(-30%); } to { transform: translateX(30%) translateY(30%); } }
@@ -748,7 +743,7 @@
                 </div>
             </div>
 
-            <!-- Game: Espresso Master (Revised v0.8.1 Realistic) -->
+            <!-- Game: Espresso Master -->
             <div id="espresso-view" class="hidden">
                 <div class="card-container" style="text-align:left;">
                     <div class="order-menu-header">
@@ -918,7 +913,7 @@
         </main>
         
         <div id="page-transition-overlay"></div>
-        <div class="footer">v0.8.22 | ⓒ 2026. Gonystudio. All rights reserved.</div>
+        <div class="footer">v0.8.24 | ⓒ 2026. Gonystudio. All rights reserved.</div>
     </div>
     <script>
         /* --- 1. Localization Data --- */
@@ -1828,36 +1823,6 @@
             document.querySelector('.receipt-subtotal').innerText = "$" + subtotal.toFixed(2);
         }
 
-        function editReceiptItem(index, type) {
-            const item = receiptData[index];
-            if(type === 'qty') {
-                const newQty = parseInt(prompt(`Enter new quantity for ${item.name} (Max ${item.qty} to split):`, item.qty));
-                if(newQty && newQty > 0 && newQty < item.qty) {
-                    // Split Logic
-                    const remaining = item.qty - newQty;
-                    item.qty = newQty;
-                    // Add new item for remainder
-                    receiptData.push({
-                        name: "Add Menu", // Placeholder
-                        price: item.price,
-                        qty: remaining
-                    });
-                    renderReceiptList(document.querySelector('.receipt-items-list'));
-                } else if (newQty && newQty > 0) {
-                     // Just update if valid and not split
-                     item.qty = newQty;
-                     // Note: Total members constraint is loose here for flexibility
-                     renderReceiptList(document.querySelector('.receipt-items-list'));
-                }
-            } else if (type === 'name') {
-                const newName = prompt("Enter menu name:", item.name);
-                if(newName) { item.name = newName; renderReceiptList(document.querySelector('.receipt-items-list')); }
-            } else if (type === 'price') {
-                const newPrice = prompt("Enter unit price:", item.price);
-                if(newPrice) { item.price = newPrice; renderReceiptList(document.querySelector('.receipt-items-list')); }
-            }
-        }
-
         function showFinish(total, payerName, anchorId) {
             const now = new Date(); 
             const t = i18n[currentLang];
@@ -1871,7 +1836,6 @@
             receipt.querySelector('.receipt-date').innerText = now.toLocaleDateString(); 
             receipt.querySelector('.receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000); 
             receipt.querySelector('.receipt-payer').innerText = payerName;
-            receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price; 
             receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal; 
             receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected; 
             receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
@@ -1902,14 +1866,22 @@
         window.editReceiptItem = function(index, type) {
             const item = receiptData[index];
             if(type === 'qty') {
-                const newQty = parseInt(prompt(`Enter new quantity for ${item.name}:`, item.qty));
+                const newQty = parseInt(prompt(`Enter new quantity for ${item.name} (Max ${item.qty} to split):`, item.qty));
                 if(newQty && newQty > 0 && newQty < item.qty) {
+                    // Split Logic
                     const remaining = item.qty - newQty;
                     item.qty = newQty;
-                    receiptData.push({ name: "Add Menu", price: item.price, qty: remaining });
+                    // Add new item for remainder
+                    receiptData.push({
+                        name: "Add Menu", // Placeholder
+                        price: item.price,
+                        qty: remaining
+                    });
                     renderReceiptList(window.activeReceiptListContainer);
                 } else if (newQty && newQty > 0) {
+                     // Just update if valid and not split
                      item.qty = newQty;
+                     // Note: Total members constraint is loose here for flexibility
                      renderReceiptList(window.activeReceiptListContainer);
                 }
             } else if (type === 'name') {
@@ -2124,7 +2096,7 @@
         // [New] Export only ACTIVE SLOT data
         function exportData() {
             const data = {
-                version: "v0.8.21",
+                version: "v0.8.1",
                 slot: activeSlot,
                 slotName: slotNames[activeSlot],
                 members: localStorage.getItem(getSlotKey('members')),
@@ -2569,7 +2541,7 @@
             moveCat();
         }
 
-        /* --- Game 4: Espresso Master (Revised v0.8.1 Realistic) --- */
+        /* --- Game 4: Espresso Master (v0.8.1 Realistic) --- */
         function goEspressoGame() {
             const s=localStorage.getItem(getSlotKey('members')); espressoPlayers=s?JSON.parse(s):["User 1","User 2","User 3"];
             switchViewWithAnimation('espresso-view', () => {
@@ -2876,63 +2848,7 @@
             }, 1200);
         }
 
-        /* --- 8. Result & History System (Update Key Usage) --- */
-        function showFinish(total, payerName, anchorId) {
-            const now = new Date(); const randomPrice = (Math.random() * 5 + 3.5).toFixed(2); const t = i18n[currentLang];
-            const prototype = document.getElementById('receipt-prototype-area').querySelector('.receipt-container').cloneNode(true);
-            const receipt = prototype.querySelector('.receipt');
-            receipt.querySelector('.receipt-date').innerText = now.toLocaleDateString(); 
-            receipt.querySelector('.receipt-order-no').innerText = "NO." + Math.floor(1000 + Math.random() * 9000); 
-            receipt.querySelector('.receipt-qty').innerText = "x" + total; 
-            
-            // Initial Values
-            const menuNameSpan = receipt.querySelector('.receipt-menu');
-            const priceSpan = receipt.querySelector('.receipt-price');
-            const subtotalSpan = receipt.querySelector('.receipt-subtotal');
-            const randomMenu = t.menus[Math.floor(Math.random() * t.menus.length)];
-            
-            menuNameSpan.innerText = randomMenu;
-            priceSpan.innerText = "$" + randomPrice;
-            subtotalSpan.innerText = "$" + (randomPrice * total).toFixed(2);
-            
-            receipt.querySelector('.receipt-payer').innerText = payerName;
-            receipt.querySelector('.txt-lbl-unit').innerText = t.lbl_unit_price; 
-            receipt.querySelector('.txt-lbl-sub').innerText = t.lbl_subtotal; 
-            receipt.querySelector('.txt-lbl-payer').innerText = t.lbl_selected; 
-            receipt.querySelector('.btn-capture-run').innerText = t.lbl_get_receipt;
-            const randomFortune = t.fortunes[Math.floor(Math.random() * t.fortunes.length)];
-            receipt.querySelector('.receipt-fortune').innerText = randomFortune.summary;
-            
-            const anchor = document.getElementById(anchorId); anchor.innerHTML = ''; anchor.appendChild(prototype);
-            requestAnimationFrame(() => { AudioEngine.play('print'); receipt.classList.add('print-ani'); triggerHaptic(20); });
-            
-            // Capture logic modifies to hide edit buttons
-            receipt.querySelector('.btn-capture-run').onclick = function() { 
-                const editBtns = receipt.querySelectorAll('.btn-edit-pencil');
-                editBtns.forEach(b => b.style.display = 'none'); // Hide for capture
-                shareAsImage(receipt, this, editBtns); 
-            };
-            
-            // Make globally accessible for edit functions
-            window.activeReceiptListContainer = receipt.querySelector('.receipt-items-list'); // Use correct selector if needed or just re-render
-            // Actually receipt-items-list is separate div in HTML structure above, let's fix that
-            // The structure in HTML was a bit mixed. Let's rely on generateInitialReceiptData and renderReceiptList
-        }
-
-        // [New] Receipt Edit Logic
-        function editReceiptItem(btn, type) {
-            const span = btn.previousElementSibling;
-            const newVal = prompt("Enter new value:", span.innerText);
-            if(newVal) {
-                span.innerText = newVal;
-                // Recalculate subtotal if price changed
-                if(type === 'price') {
-                     // Simple logic: if text starts with $, preserve it
-                     // Complex recalc omitted for simplicity, user can just type total text
-                }
-            }
-        }
-
+        /* --- 8. Result & History System --- */
         async function shareAsImage(element, btn, editBtns) { 
             const originalText = btn.innerText; btn.innerText = "..."; 
             try { 

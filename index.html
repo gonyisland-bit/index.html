@@ -2400,7 +2400,7 @@
                 lastWasLucky = true; AudioEngine.play('start'); triggerHaptic([50, 50, 50]);
                 hands.forEach(h => { h.src = 'images/hand_open.png'; h.style.animation = "floating 0.5s infinite"; });
                 updateText('lucky_round');
-                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_lucky_guy.png' : 'images/cafe_counter_lucky.png';
+                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_lucky_guy.gif' : 'images/cafe_counter_lucky.png';
                 document.getElementById('lucky-area').classList.remove('hidden');
             } else {
                 lastWasLucky = false; AudioEngine.play('fail'); triggerHaptic([100, 50, 100]);
@@ -2472,7 +2472,7 @@
             document.getElementById('roulette-again-btn').classList.remove('hidden');
             if (weights[winnerIdx] < 1) { 
                 AudioEngine.play('start'); updateText('all_pass_unbelievable'); triggerHaptic([50, 50, 50]); 
-                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_lucky_guy.png' : 'images/cafe_counter_lucky.png'; 
+                document.getElementById('main-img').src = isDarkMode ? 'images/cafe_lucky_guy.gif' : 'images/cafe_counter_lucky.png'; 
                 triggerGameConfetti('roulette');
             } else { 
                 AudioEngine.play('fail'); updateText(`${winnerName}${i18n[currentLang].pay_msg}`, true); triggerHaptic([100, 50, 100]); 
@@ -2973,3 +2973,4 @@
     </script>
 </body>
 </html>
+
